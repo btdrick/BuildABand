@@ -1,9 +1,11 @@
-# BuildABand
+# Build-A-Band
 Build-a-band is a networking hub for all musicians for 
 collaboration and feedback on their creative endeavors.
-
+***
 Repository: https://github.com/brandond-westga/BuildABand
+
 Wiki: https://github.com/brandond-westga/BuildABand/wiki
+
 URL: https://brandond-westga.github.io/BuildABand/
 
 Iteration 1 Goal:
