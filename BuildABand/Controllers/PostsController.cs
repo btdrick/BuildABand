@@ -49,7 +49,7 @@ namespace BuildABand.Controllers
 
         // GET: api/posts/UserID
         // Gets all posts for specified user
-        [HttpGet("{id")]
+        [HttpGet("{id}")]
         public List<Post> GetPosts(int id)
         {
             return this.postDBDAL.GetPostByMusicianID(id);
