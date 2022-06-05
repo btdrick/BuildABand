@@ -1,11 +1,35 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Post } from './Post';
+import {variables} from './Variables.js';
 
 export class Profile extends Component {
+    /* Constructor for the component. Tracks the posts shown on the profile and whether the page's loading status */
+    constructor(props) {
+        super(props);
+        this.state = { 
+            posts: [], 
+            loading: true
+        };
+    }
+
+    /* Once the page renders, this lifecycle method takes place */
+    componentDidMount(){
+        this.getUsersPosts();
+    }
+    
+    /* Makes api call to backend to get the user's posts */
+    async getUsersPosts() {
+        const response = await fetch(variables.API_URL+'posts/'+ this.props.userID);
+        const data = await response.json();
+        this.setState({
+            posts: data,
+            loading: false,
+        })
+    }
+
+    /* Renders the profile page's html */
     render() {
-        /* make api call to properly populate posts with post objects */
-        const posts = [1, 2, 3];
         return ( 
             <div>
                 <Link to="/">Login</Link>
@@ -15,7 +39,7 @@ export class Profile extends Component {
                     <tr>
                         <th>Post History</th>
                     </tr>
-                    {posts.map(post => <tr><Post /*postDetails={post}*/ /></tr>)}
+                    {this.state.posts.map(post => <tr><Post postDetails={post} /></tr>)}
                 </table> 
                 </div>
             </div>

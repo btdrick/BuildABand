@@ -6,8 +6,8 @@ export class Post extends Component {
         return ( 
             <div>
                 <h3> This is what a post looks like </h3> 
-                {/*<h2>ID: {this.props.post.musicanID}</h2>
-                <p>You said: {this.props.post.content} </p>*/}
+                <h2>ID: {this.props.postDetails.musicianID}</h2>
+                <p>You said: {this.props.postDetails.content} </p>
             </div>
         )
     }
