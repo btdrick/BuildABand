@@ -5,6 +5,7 @@ function App() {
  return (
   <div>
     <Link to="/home">Home</Link>
+    <Link to="/profile">Profile</Link>
     <h2>This is the Login Page</h2>
   </div>
  );
