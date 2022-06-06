@@ -1,8 +1,6 @@
 using BuildABand.DAL;
-using BuildABand.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -50,11 +48,9 @@ namespace BuildABand.Controllers
         // GET: api/posts/UserID
         // Gets all posts for specified user
         [HttpGet("{id}")]
-        public List<Post> GetPosts(int id)
+        public JsonResult GetPosts(int id)
         {
-            return this.postDBDAL.GetPostByMusicianID(id);
-
-            /*
+            this.postDBDAL.GetPostByMusicianID(id);
             string selectStatement = 
             @"SELECT *
             FROM dbo.Post 
@@ -77,7 +73,6 @@ namespace BuildABand.Controllers
             }
 
             return new JsonResult(resultsTable);
-            */
         }
     }
 }

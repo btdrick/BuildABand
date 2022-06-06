@@ -16,6 +16,7 @@ export class Profile extends Component {
     /* Once the page renders, this lifecycle method takes place */
     componentDidMount(){
         this.getUsersPosts();
+        console.log(this.state.posts);
     }
     
     /* Makes api call to backend to get the user's posts */
@@ -25,10 +26,10 @@ export class Profile extends Component {
         this.setState({
             posts: data,
             loading: false,
-        })
+        });
     }
 
-    /* Renders the profile page's html */
+    /* Renders the profile page's html. You can't pass entire object to child component */
     render() {
         return ( 
             <div>
@@ -39,7 +40,7 @@ export class Profile extends Component {
                     <tr>
                         <th>Post History</th>
                     </tr>
-                    {this.state.posts.map(post => <tr><Post postDetails={post} /></tr>)}
+                    {this.state.posts.map(post => <tr style={{ outline:"thin solid black" }}> <Post content={post.content}/></tr>)}
                 </table> 
                 </div>
             </div>
