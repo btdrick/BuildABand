@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 export class Post extends Component {
-    //keep track of each post attribute
     render() {
         return ( 
             <div>

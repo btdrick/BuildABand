@@ -14,7 +14,7 @@ root.render(
       <Routes>
         <Route path="/" element={<App/>} />
         <Route path="/home" element={<Home/>}/>
-        <Route path="/profile" element={<Profile userID = '1' />}/>
+        <Route path="/profile/1" element={<Profile musicianID = '1' />}/>
       </Routes>
     </HashRouter>
   </React.StrictMode>
