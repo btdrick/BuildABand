@@ -7,6 +7,8 @@ export class Post extends Component {
             <div>
                 <h3> This is what a post looks like </h3> 
                 <p>Post info: {this.props.content} </p>
+                <button>Like</button>
+                <button>Comment</button>
             </div>
         )
     }
