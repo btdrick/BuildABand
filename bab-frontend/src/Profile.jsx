@@ -25,10 +25,10 @@ export class Profile extends Component {
         this.setState({
             posts: data,
             loading: false,
-        })
+        });
     }
 
-    /* Renders the profile page's html */
+    /* Renders the profile page's html. You can't pass entire object to child component */
     render() {
         return ( 
             <div>
@@ -39,7 +39,7 @@ export class Profile extends Component {
                     <tr>
                         <th>Post History</th>
                     </tr>
-                    {this.state.posts.map(post => <tr><Post postDetails={post} /></tr>)}
+                    {this.state.posts.map(post => <tr style={{ outline:"thin solid black" }}> <Post content={post.content}/></tr>)}
                 </table> 
                 </div>
             </div>
