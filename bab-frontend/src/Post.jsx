@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
+/* This is a child component to serveral other components, i.e. child component in Profile component */
 export class Post extends Component {
     render() {
         return ( 
             <div>
                 <h3> This is what a post looks like </h3> 
-                <h2>ID: {this.props.postDetails.musicianID}</h2>
-                <p>You said: {this.props.postDetails.content} </p>
+                <p>Post info: {this.props.content} </p>
             </div>
         )
     }
