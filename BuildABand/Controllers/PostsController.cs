@@ -50,7 +50,8 @@ namespace BuildABand.Controllers
         [HttpGet("{id}")]
         public JsonResult GetPosts(int id)
         {
-            this.postDBDAL.GetPostByMusicianID(id);
+            //Don't need to make query twice. Not sure how to incorporate DBDAL at this time
+            //this.postDBDAL.GetPostByMusicianID(id);
             string selectStatement = 
             @"SELECT *
             FROM dbo.Post 

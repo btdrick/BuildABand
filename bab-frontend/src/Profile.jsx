@@ -16,7 +16,6 @@ export class Profile extends Component {
     /* Once the page renders, this lifecycle method takes place */
     componentDidMount(){
         this.getUsersPosts();
-        console.log(this.state.posts);
     }
     
     /* Makes api call to backend to get the user's posts */
