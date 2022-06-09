@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
+using System.IO;
 
 namespace BuildABand
 {
@@ -54,6 +56,13 @@ namespace BuildABand
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                   Path.Combine(Directory.GetCurrentDirectory(), "Photos")),
+                RequestPath = "/Photos"
             });
         }
     }

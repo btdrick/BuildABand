@@ -26,7 +26,7 @@ namespace BuildABand.Controllers
         public JsonResult GetPosts()
         {
             string selectStatement = 
-            @"SELECT *
+            @"SELECT PostID, MusicianID, Content
             FROM dbo.Post";
 
             DataTable resultsTable = new DataTable();
