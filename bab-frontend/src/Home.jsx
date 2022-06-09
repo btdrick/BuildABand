@@ -36,7 +36,7 @@ export class Home extends Component {
                 <h3> This is the Home page </h3> 
                 <div>
                 <ul>
-                    {this.state.posts.map((post, index) => <li key={index}><Post content={post.content} /></li>)}
+                    {this.state.posts.map((post, index) => <li key={index}><Post content={post.Content} /></li>)}
                 </ul>                   
                 </div>
             </div>

@@ -34,12 +34,10 @@ export class Profile extends Component {
             <div>
                 <Link to="/">Login</Link>
                 <h3> This is the Profile page </h3> 
-                <div>
-                <table>
-                    <ul>
-                        {this.state.posts.map(post => <li style={{ outline:"thin solid black" }}> <Post content={post.content}/></li>)}
-                    </ul>  
-                </table> 
+                <div>              
+                <ul>
+                    {this.state.posts.map((post, index) => <li key={index} style={{ outline:"thin solid black" }}> <Post content={post.Content}/></li>)}
+                </ul>  
                 </div>
             </div>
         )
