@@ -26,6 +26,7 @@ export class Home extends Component {
             posts: data,
             loading: false,
         });
+        console.log(data);
     }
 
     render() {
@@ -34,16 +35,9 @@ export class Home extends Component {
                 <Link to="/">Login</Link>
                 <h3> This is the Home page </h3> 
                 <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Main Feed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {this.state.posts.map(post => <tr><Post postDetails={post} /></tr>)}
-                    </tbody>
-                </table> 
+                <ul>
+                    {this.state.posts.map((post, index) => <li key={index}><Post content={post.content} /></li>)}
+                </ul>                   
                 </div>
             </div>
         )
