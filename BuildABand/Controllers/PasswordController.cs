@@ -23,6 +23,8 @@ namespace BuildABand.Controllers
             _configuration = configuration;
         }
 
+        // GET: api/GetSha256Hash/password
+        // Get password hash
         [HttpGet("{password}")]
         public JsonResult GetSha256Hash(string password)
         {
