@@ -31,9 +31,9 @@ export class Home extends Component {
             posts:  data,
             loading: false,
         });
-        console.log(data);
     }
 
+    /* Handles event of text entry for Post content */
     changePostContent =(e)=>{
         this.setState({Content:e.target.value});
     }
