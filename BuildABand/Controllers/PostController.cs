@@ -8,13 +8,22 @@ using System.Data.SqlClient;
 
 namespace BuildABand.Controllers
 {
+    /// <summary>
+    /// This class serves as the controller
+    /// for data related to Post table in DB.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class PostsController : ControllerBase
+    public class PostController : ControllerBase
     {
         private PostDBDAL postDBDAL;
         private readonly IConfiguration _configuration;
-        public PostsController(IConfiguration configuration)
+
+        /// <summary>
+        /// 1-param constructor.
+        /// </summary>
+        /// <param name="configuration"></param>
+        public PostController(IConfiguration configuration)
         {
             _configuration = configuration;
             this.postDBDAL = new PostDBDAL(_configuration);
