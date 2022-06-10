@@ -30,8 +30,8 @@ namespace BuildABand.Controllers
         }
 
         /// <summary>
-        /// Gets all posts
-        /// GET: api/posts
+        /// Gets all post
+        /// GET: api/post
         /// </summary>
         /// <returns>JsonResult table of all posts</returns>
         [HttpGet]
@@ -61,7 +61,7 @@ namespace BuildABand.Controllers
 
         /// <summary>
         /// Gets all posts for specified users
-        /// GET: api/posts/UserID
+        /// GET: api/post/UserID
         /// </summary>
         /// <param name="id"></param>
         /// <returns>JsonResult table of user's posts</returns>
@@ -100,13 +100,22 @@ namespace BuildABand.Controllers
 
         /// <summary>
         /// Submits a post for the current user 
-        /// POST: api/posts
+        /// POST: api/post
         /// </summary>
         /// <param name="newPost"></param>
         /// <returns>JsonResult if added successfully</returns>
         [HttpPost]
         public JsonResult Post(Post newPost)
         {
+            if (String.IsNullOrWhiteSpace(newPost.Content))
+            {
+                throw new ArgumentException("Post cannot be empty");
+            }
+            if (newPost.MusicianID < 1)
+            {
+                throw new ArgumentException("Invalid MusicianID");
+            }
+
             string insertStatement = @"INSERT INTO dbo.Post
                            VALUES (@CreatedTime, @MusicianID, @Content)";
 
@@ -128,7 +137,7 @@ namespace BuildABand.Controllers
                 }
             }
 
-            return new JsonResult("Added Successfully");
+            return new JsonResult("Post Added Successfully");
         }
     }
 }

@@ -20,7 +20,7 @@ export class Profile extends Component {
     
     /* Makes api call to backend to get the user's posts */
     async getUsersPosts() {
-        const response = await fetch(variables.API_URL+'posts/'+ this.props.musicianID);
+        const response = await fetch(variables.API_URL+'post/'+ this.props.musicianID);
         const data = await response.json();
         this.setState({
             posts: data,
