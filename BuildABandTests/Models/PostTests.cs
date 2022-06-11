@@ -2,7 +2,7 @@ using System;
 using BuildABand.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BuildABandTests
+namespace BuildABandTests.Models
 {
     /// <summary>
     /// This class serves as a series
