@@ -16,7 +16,7 @@ namespace BuildABand.Controllers
     [Route("api/[controller]")]
     public class PostController : ControllerBase
     {
-        private PostDBDAL postDBDAL;
+        private readonly PostDBDAL postDBDAL;
         private readonly IConfiguration _configuration;
 
         /// <summary>
