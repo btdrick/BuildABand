@@ -29,6 +29,7 @@ export class Home extends Component {
         console.log(data);
     }
 
+    //todo: if user isn't logged in, show generic home page and prompt them to log in
     render() {
         return ( 
             <div>

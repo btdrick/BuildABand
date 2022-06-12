@@ -9,6 +9,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 
 /* All of the routing is defined here */
 const root = ReactDOM.createRoot(document.getElementById('root'));
+//todo: pass entered musician id to home and profile path if it exists
 root.render(
   <React.StrictMode>
     <HashRouter>
