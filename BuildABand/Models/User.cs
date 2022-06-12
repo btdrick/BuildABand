@@ -15,7 +15,7 @@ namespace BuildABand.Models
         public string Fname {get; set;}
         public string Lname { get; set; }
         public DateTime DateOfbirth { get; set; }
-        public int Phone { get; set; }
+        public string Phone { get; set; }
         public string Email { get; set; }
         public string Instrument { get; set; }
         public string Sex { get; set; }

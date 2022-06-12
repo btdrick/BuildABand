@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildABand.DAL;
+using BuildABand.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -11,17 +14,21 @@ namespace BuildABand.Controllers
     {
 
         private readonly IConfiguration _configuration;
+        private readonly UserDAL userSource;
+
         public UsersController(IConfiguration configuration)
         {
             _configuration = configuration;
+            this.userSource = new UserDAL(_configuration);
         }
 
-
+        // Post: api/users
+        // Post new user
         [HttpGet]
         public JsonResult Get()
         {
             string selectStatement = @"SELECT Username, FName, LName FROM
-                            dbo.Users";
+                            dbo.User";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -39,6 +46,21 @@ namespace BuildABand.Controllers
             }
 
             return new JsonResult(resultsTable);
+        }
+
+        [HttpPost]
+        public JsonResult PostNewUser(User user)
+        {
+            try
+            {
+                this.userSource.RegisterNewUser(user);
+            }
+           catch (Exception)
+            {
+               return new JsonResult("Username Already exist");
+            }
+
+            return new JsonResult("New user created");
         }
     }
 }

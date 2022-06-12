@@ -12,6 +12,7 @@ namespace BuildABand.Controllers
     {
         private PostDBDAL postDBDAL;
         private readonly IConfiguration _configuration;
+
         public PostsController(IConfiguration configuration)
         {
             _configuration = configuration;
