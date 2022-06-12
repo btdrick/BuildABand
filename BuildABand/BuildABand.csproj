@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DB\" />
     <Folder Include="Photos\" />
   </ItemGroup>
 
