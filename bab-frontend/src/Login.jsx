@@ -9,7 +9,8 @@ export class Login extends React.Component {
       input: {},
       errors: {},
       musician: [],
-      redirectToHome: false
+      redirectToHome: false,
+      isAuthenticated: false
     };
     /* Standard way to bind event handlers */
     this.handleChange = this.handleChange.bind(this);
@@ -53,21 +54,32 @@ export class Login extends React.Component {
         errors["password"] = "Please enter your password.";
       }
 
-      this.getUserLogin();
-      
       this.setState({
         errors: errors
       });
+
+      this.getUserLogin();
+      if (!this.state.isAuthenticated) {
+        isValid = false;
+      }
+      
       return isValid;
   }
 
   /* API call to authenticate user */
   async getUserLogin() {
-    const response = await fetch(variables.API_URL+'login/'+ this.state.input);
+    const response = await fetch(variables.API_URL+'login/'+ this.state.input.username + '/' + this.state.input.password);
         const data = await response.json();
-        this.setState({
+        if(Object.entries(data).length === 0){
+          this.setState({
+            errors: "User does not exist."
+          })
+        } else {
+          this.setState({
             musician: data,
+            isAuthenticated: true
         });
+        }
   }
 
   /* If the redirectToHome property is true, it redirects users to their homepage. Otherwise, the
