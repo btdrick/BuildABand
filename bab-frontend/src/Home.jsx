@@ -79,7 +79,7 @@ export class Home extends Component {
             Content
         }=this.state;
         return ( 
-            <div>
+            <div style={{width: 80 + '%', margin: 0 + ' auto'}}>
                 <Link to="/">Login</Link>              
                 <h3> This is the Home page </h3>
                 <button type="button"
@@ -117,10 +117,14 @@ export class Home extends Component {
                         </div>
                     </div>
                 </div>
-                <ul>
-                    {this.state.posts.map((post, index) => 
-                    <li key={index}><Post content={post.Content} /></li>)}
-                </ul>                   
+                 
+                 {/* List-group feed containing card-style group-items */}
+                <div>
+                    <ul className="list-group" style={{listStyleType: 'none'}}>
+                        {this.state.posts.map((post, index) => 
+                        <li key={index} className="list-group-item" style={{width: 'fit-content'}}><Post content={post.Content} /></li>)}
+                    </ul>
+                </div>
             </div>
         )
     }
