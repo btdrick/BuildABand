@@ -62,13 +62,13 @@ export class Login extends React.Component {
       if (!this.state.isAuthenticated) {
         isValid = false;
       }
-      
+
       return isValid;
   }
 
-  /* API call to authenticate user */
+  /* API call to authenticate user. Passes username and password via query strings (https://en.wikipedia.org/wiki/Query_string) */
   async getUserLogin() {
-    const response = await fetch(variables.API_URL+'login/'+ this.state.input.username + '/' + this.state.input.password);
+    const response = await fetch(variables.API_URL+'login?username='+ this.state.input.username + '&password=' + this.state.input.password);
         const data = await response.json();
         if(Object.entries(data).length === 0){
           this.setState({
