@@ -1,16 +1,22 @@
 import React from 'react';
+import {variables} from './Variables.js';
+import {Navigate} from 'react-router-dom';
 
 export class Login extends React.Component {
     constructor() {
     super();
     this.state = {
       input: {},
-      errors: {}
+      errors: {},
+      musician: [],
+      redirectToHome: false
     };
+    /* Standard way to bind event handlers */
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }    
 
+  /* Keeps state up to date when user input changes */
   handleChange(event) {
     let input = this.state.input;
     input[event.target.name] = event.target.value;
@@ -19,6 +25,7 @@ export class Login extends React.Component {
     });
   }    
 
+  /* Handles login form submission */
   handleSubmit(event) {
     event.preventDefault();
     if(this.validate()){
@@ -27,11 +34,12 @@ export class Login extends React.Component {
         input["username"] = "";
         input["password"] = "";
         this.setState({input:input});
-        //re-route to home page here
-        alert('Demo Form is submitted');
     }
+
+    this.setState({redirectToHome: true});
   }
 
+  /* Validates user input */
   validate(){
       let input = this.state.input;
       let errors = {};
@@ -58,17 +66,31 @@ export class Login extends React.Component {
         }
       }
 
-      //todo: validate against database here
+      this.getUserLogin();
       this.setState({
         errors: errors
       });
       return isValid;
   }
 
+  /* API call to authenticate user */
+  async getUserLogin() {
+    const response = await fetch(variables.API_URL+'login/'+ this.state.input);
+        const data = await response.json();
+        this.setState({
+            musician: data,
+        });
+  }
+
+  /* If the redirectToHome property is true, it redirects users to their homepage. Otherwise, the
+  login form appears */
   render() {
+    if (this.state.redirectToHome) {
+      return <Navigate to='/home' />
+    }
     return (
       <div>
-        <h1>React Username and Password Validation Example - ItSolutionStuff.com</h1>
+        <h1>Login</h1>
         <form onSubmit={this.handleSubmit}>
           <div class="form-group">
             <label for="username">Username:</label>
