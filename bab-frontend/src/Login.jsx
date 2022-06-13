@@ -48,25 +48,13 @@ export class Login extends React.Component {
         isValid = false;
         errors["username"] = "Please enter your username.";
       }
-      if (typeof input["username"] !== "undefined") {
-        const re = /^\S*$/;
-        if(input["username"].length < 6 || !re.test(input["username"])){
-            isValid = false;
-            errors["username"] = "Please enter valid username.";
-        }
-      } 
       if (!input["password"]) {
         isValid = false;
         errors["password"] = "Please enter your password.";
       }
-      if (typeof input["password"] !== "undefined") {
-        if(input["password"].length < 6){
-            isValid = false;
-            errors["password"] = "Please add at least 6 charachter.";
-        }
-      }
 
       this.getUserLogin();
+      
       this.setState({
         errors: errors
       });
