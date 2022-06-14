@@ -1,11 +1,6 @@
 ﻿using BuildABand.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BuildABand.Controllers
 {
@@ -18,13 +13,22 @@ namespace BuildABand.Controllers
     public class PasswordController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+
+        /// <summary>
+        /// 1-param constructor
+        /// </summary>
+        /// <param name="configuration"></param>
         public PasswordController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        // GET: api/GetSha256Hash/password
-        // Get password hash
+        /// <summary>
+        /// Gets password hash
+        /// GET: api/GetSha256Hash/password
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns>JsonResult with hash</returns>
         [HttpGet("{password}")]
         public JsonResult GetSha256Hash(string password)
         {
