@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildABand.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BuildABand.Controllers
 {
@@ -15,6 +12,7 @@ namespace BuildABand.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+
         public AccountsController(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -23,7 +21,7 @@ namespace BuildABand.Controllers
         // GET: api/login
         // Confirm login
         [HttpGet("login")]
-        public ActionResult<int> GetLogin([FromQuery] string username, [FromQuery] string password)
+        public ActionResult<int> GetLogin([FromQuery][Required] string username, [FromQuery][Required] string password)
         {
             string selectStatement =
             @"
@@ -42,6 +40,7 @@ namespace BuildABand.Controllers
                 connection.Open();
                 using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
                 {
+                    myCommand.Parameters.AddWithValue("username", username);
                     dataReader = myCommand.ExecuteReader();
                     resultsTable.Load(dataReader);
                     dataReader.Close();
@@ -57,7 +56,7 @@ namespace BuildABand.Controllers
             var row = resultsTable.Rows[0];
             var dbPassword = row.Field<string>("Password");
 
-            if (dbPassword == password) // TODO implement hashing
+            if (dbPassword == PasswordHash.GetSha256Hash(password))
             {
                 return new ActionResult<int>(row.Field<int>("MusicianID"));
             }
