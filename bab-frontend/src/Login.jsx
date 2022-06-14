@@ -9,7 +9,6 @@ export class Login extends React.Component {
       input: {},
       errors: {},
       musician: [],
-      redirectToHome: false,
       isAuthenticated: false
     };
     /* Standard way to bind event handlers */
@@ -36,8 +35,6 @@ export class Login extends React.Component {
         input["password"] = "";
         this.setState({input:input});
     }
-
-    this.setState({redirectToHome: true});
   }
 
   /* Validates user input */
@@ -68,58 +65,63 @@ export class Login extends React.Component {
 
   /* API call to authenticate user. Passes username and password via query strings (https://en.wikipedia.org/wiki/Query_string) */
   async getUserLogin() {
-    const response = await fetch(variables.API_URL+'login?username='+ this.state.input.username + '&password=' + this.state.input.password);
-        const data = await response.json();
-        if(Object.entries(data).length === 0){
-          this.setState({
-            errors: "User does not exist."
-          })
-        } else {
-          this.setState({
-            musician: data,
-            isAuthenticated: true
+    let errors = {};
+
+      const response = await fetch(variables.API_URL+'accounts/login?username='+ this.state.input.username + '&password=' + this.state.input.password);
+      if (!response.ok) {  
+        errors["badResponse"] = await response.text();
+        this.setState({
+          errors: errors
         });
-        }
+        return;
+      }  
+      const data = await response.json();
+      this.setState({
+        musician: data,
+        isAuthenticated: true
+    });
   }
 
-  /* If the redirectToHome property is true, it redirects users to their homepage. Otherwise, the
+  /* If the isAuthenticated property is true, it redirects users to their homepage. Otherwise, the
   login form appears */
   render() {
-    if (this.state.redirectToHome) {
+    if (this.state.isAuthenticated) {
       return <Navigate to='/home' />
     }
     return (
       <div>
         <h1>Login</h1>
         <form onSubmit={this.handleSubmit}>
-          <div class="form-group">
-            <label for="username">Username:</label>
+          <div className="form-group">
+            <label htmlFor="username">Username:</label>
             <input 
               type="text" 
               name="username" 
               value={this.state.input.username}
               onChange={this.handleChange}
-              class="form-control" 
+              className="form-control" 
               placeholder="Enter username" 
               id="username" />
               <div className="text-danger">{this.state.errors.username}</div>
           </div>
 
-          <div class="form-group">
-            <label for="password">Password:</label>
+          <div className="form-group">
+            <label htmlFor="password">Password:</label>
             <input 
               type="password" 
               name="password" 
               value={this.state.input.password}
               onChange={this.handleChange}
-              class="form-control" 
+              className="form-control" 
               placeholder="Enter password" 
               id="password" />
               <div className="text-danger">{this.state.errors.password}</div>
           </div>
 
-          <input type="submit" value="Submit" class="btn btn-success" />
+          <input type="submit" value="Submit" className="btn btn-success" />
         </form>
+
+        <div className="text-danger">{this.state.errors.badResponse}</div>
       </div>
     );
   }
