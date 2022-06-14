@@ -1,4 +1,5 @@
-﻿using BuildABand.Models;
+﻿using BuildABand.Controllers;
+using BuildABand.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,11 @@ namespace BuildABand.DAL
     {
         private IConfiguration _configuration;
 
+
         public UserDAL(IConfiguration configuration)
         {
             _configuration = configuration;
+      
         }
 
         /// <summary>
@@ -34,7 +37,7 @@ namespace BuildABand.DAL
                     {
                         insertCommand.CommandType = System.Data.CommandType.StoredProcedure;
                         insertCommand.Parameters.AddWithValue("@Username", user.Username);
-                        insertCommand.Parameters.AddWithValue("@Password", user.Password);
+                        insertCommand.Parameters.AddWithValue("@Password", PasswordHash.GetSha256Hash(user.Password));
                         insertCommand.Parameters.AddWithValue("@Fname", user.Fname);
                         insertCommand.Parameters.AddWithValue("@Lname", user.Lname);
                         insertCommand.Parameters.AddWithValue("@DateOfBirth", user.DateOfbirth);

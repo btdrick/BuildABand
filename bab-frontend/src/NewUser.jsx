@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import { variables } from "./Variables";
 
 class NewUser extends Component {
+ 
   constructor() {
     super();
     this.state = {
@@ -13,15 +14,20 @@ class NewUser extends Component {
      this.handleSubmit= this.handleSubmit.bind(this);
   }
 
+
+
   handleChange(event){
       let input = this.state.input;
       input[event.target.name] = event.target.value;
-
+  
       this.setState({
           input
       });
 
   }
+
+ 
+  
 
   handleSubmit(event){
       event.preventDefault();
@@ -326,12 +332,8 @@ class NewUser extends Component {
             </div>
             <input type="submit" value="Submit" class="btn btn-success" />
 
-
-
-
           </form>
-
-
+        
         </div>
       </div>
     );
