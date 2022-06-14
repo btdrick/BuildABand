@@ -43,11 +43,18 @@ namespace BuildABand.DAL
                         insertCommand.Parameters.AddWithValue("@Instrument", user.Instrument); 
                         insertCommand.Parameters.AddWithValue("@Sex", user.Sex);
                         insertCommand.Parameters.AddWithValue("@Address1", user.Address1);
-                        insertCommand.Parameters.AddWithValue("@Address2", user.Address2);
+                        if (string.IsNullOrEmpty(user.Address2))
+                            insertCommand.Parameters.AddWithValue("Address2", DBNull.Value);
+                        else
+                            insertCommand.Parameters.AddWithValue("@Address2", user.Address2);
+                        
                         insertCommand.Parameters.AddWithValue("@City", user.City);
                         insertCommand.Parameters.AddWithValue("@Zipcode", user.ZipCode);
                         insertCommand.Parameters.AddWithValue("@Statecode", user.StateCode);
-                        insertCommand.Parameters.AddWithValue("@AvaterFilename", user.AvaterFilename);
+                        if (string.IsNullOrEmpty(user.AvaterFilename))
+                            insertCommand.Parameters.AddWithValue("@AvaterFilename", DBNull.Value);
+                        else
+                            insertCommand.Parameters.AddWithValue("@AvaterFilename", user.AvaterFilename);
 
                         insertCommand.ExecuteNonQuery();
 
