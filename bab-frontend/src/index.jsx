@@ -9,13 +9,14 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 
 /* All of the routing is defined here */
 const root = ReactDOM.createRoot(document.getElementById('root'));
+//todo: pass entered musician id to home and profile path if it exists
 root.render(
   <React.StrictMode>
     <HashRouter>
       <Routes>
         <Route path="/" element={<App/>} />
         <Route path="/home" element={<Home/>}/>
-        <Route path="/profile/1" element={<Profile musicianID = '1' />}/>
+        <Route path="/profile/1" element={<Profile musicianID = {1} />}/>
       </Routes>
     </HashRouter>
   </React.StrictMode>
