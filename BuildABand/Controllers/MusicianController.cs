@@ -10,13 +10,13 @@ namespace BuildABand.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class MusicianController : ControllerBase
     {
 
         private readonly IConfiguration _configuration;
         private readonly UserDAL userSource;
 
-        public UsersController(IConfiguration configuration)
+        public MusicianController(IConfiguration configuration)
         {
             _configuration = configuration;
             this.userSource = new UserDAL(_configuration);
@@ -46,10 +46,10 @@ namespace BuildABand.Controllers
             return new JsonResult(resultsTable);
         }
 
-        // Post: api/users
-        // Post new user
+        // Post: api/musician
+        // Post new musician
         [HttpPost]
-        public JsonResult PostNewUser(User user)
+        public JsonResult PostNewMusician(User user)
         {
             try
             {
