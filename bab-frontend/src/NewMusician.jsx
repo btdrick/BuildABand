@@ -3,7 +3,7 @@ import { variables } from "./Variables";
 import {Navigate} from 'react-router-dom';
 
 
-class NewUser extends Component {
+class NewMusician extends Component {
  
   constructor() {
     super();
@@ -59,7 +59,7 @@ class NewUser extends Component {
       event.preventDefault();
 
       if (this.validate()){
-           fetch(variables.API_URL+'users', {
+           fetch(variables.API_URL+'musician', {
               method: 'POST',
               headers:{
                   'Accept':'application/json',

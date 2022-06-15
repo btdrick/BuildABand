@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import Home from './Home';
 import Profile from './Profile';
-import NewUser from  './NewUser';
+import NewUser from  './NewMusician';
 import reportWebVitals from './reportWebVitals';
 import { HashRouter, Routes, Route } from "react-router-dom";
 
@@ -16,8 +16,8 @@ root.render(
       <Routes>
         <Route path="/" element={<App/>} />
         <Route path="/home" element={<Home/>}/>
-        <Route path="/newUser" element={<NewUser/>}/>
-        <Route path="/profile/1" element={<Profile musicianID = '1' />}/>
+        <Route path="/newMusician" element={<NewMusician/>}/>
+        <Route path="/profile/1" element={<Profile musicianID = {1} />}/>
       </Routes>
     </HashRouter>
   </React.StrictMode>
