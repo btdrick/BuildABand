@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import { variables } from "./Variables";
+import {Navigate} from 'react-router-dom';
 
 
 class NewUser extends Component {
@@ -9,7 +10,8 @@ class NewUser extends Component {
     this.state = {
       input: {},
       errors: {},
-      states: []
+      states: [],
+      result:""
       };  
 
      
@@ -81,11 +83,15 @@ class NewUser extends Component {
               })
           })
           .then(res=> res.json())
-          .then((result) =>{alert(result)},
+          .then((result) =>{
+            this.setState({ result});
+            alert(result)},
           (error)=> {
             alert('Failed');
           }); 
       }
+
+      
   }
   validate(){
       let input = this.state.input;
@@ -207,6 +213,9 @@ class NewUser extends Component {
   }
 
   render() {
+    if (this.state.result === "New user created"){
+      return <Navigate to='/home' />
+    }
     return (
       <div class="container">
         <div>
