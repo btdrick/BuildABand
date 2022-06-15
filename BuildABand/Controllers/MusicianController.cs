@@ -8,6 +8,10 @@ using System.Data.SqlClient;
 
 namespace BuildABand.Controllers
 {
+    /// <summary>
+    /// This class serves as the controller
+    /// for data related to Musician table in DB.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class MusicianController : ControllerBase
@@ -17,16 +21,27 @@ namespace BuildABand.Controllers
         private readonly MusicianDAL userSource;
 
         public MusicianController(IConfiguration configuration)
+
+        /// <summary>
+        /// 1-param constructor.
+        /// </summary>
+        /// <param name="configuration"></param>
+        public MusicianController(IConfiguration configuration)
         {
             _configuration = configuration;
             this.userSource = new MusicianDAL(_configuration);
         }
 
+        /// <summary>
+        /// Gets all musicians
+        /// GET: api/musicians
+        /// </summary>
+        /// <returns>JsonResult table of all musicians</returns>
         [HttpGet]
         public JsonResult Get()
         {
-            string selectStatement = @"SELECT Username, FName, LName FROM
-                            dbo.User";
+            string selectStatement = @"SELECT * 
+                                    FROM dbo.Musician";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");

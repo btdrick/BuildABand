@@ -1,5 +1,7 @@
 import './App.css';
+import { Login } from './Login';
 import { Link } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
  return (
@@ -9,6 +11,7 @@ function App() {
     <br/>
     <Link to="/newMusician">New Musician</Link>
     <h2>This is the Login Page</h2>
+    <Login />
   </div>
  );
 }
