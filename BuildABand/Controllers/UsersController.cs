@@ -22,8 +22,6 @@ namespace BuildABand.Controllers
             this.userSource = new UserDAL(_configuration);
         }
 
-        // Post: api/users
-        // Post new user
         [HttpGet]
         public JsonResult Get()
         {
@@ -48,6 +46,8 @@ namespace BuildABand.Controllers
             return new JsonResult(resultsTable);
         }
 
+        // Post: api/users
+        // Post new user
         [HttpPost]
         public JsonResult PostNewUser(User user)
         {
