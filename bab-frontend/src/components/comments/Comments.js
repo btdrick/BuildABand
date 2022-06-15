@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {variables} from '../Variables.js';
+import {variables} from '../../Variables.js';
 import Comment from './Comment';
 
 /* User will only be able to edit, delete comments linked to their UserID */
@@ -7,10 +7,9 @@ const Comments = ({currentUserID}) => {
     /* All comments from backend */
     const [backendComments, setBackendComments] = useState([]);
     /* Parent comments, not replies */
-    const rootComments = backendComments
-    /* Introduce ParentID attribute for this filter to work
+    const rootComments = backendComments   
     .filter(
-        (backendComment) => backendComment.parentID === null);*/
+        (backendComment) => backendComment.ParentID === null);
 
     /* Sets backend comments */
      useEffect(() => {

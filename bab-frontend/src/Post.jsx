@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Comments from './comments/Comments';
+import Comments from './components/comments/Comments';
 
 /* This is a child component to serveral other components, i.e. child component in Profile component */
 export class Post extends Component {
