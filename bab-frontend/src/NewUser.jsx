@@ -96,6 +96,30 @@ class NewUser extends Component {
         isValid = false;
         errors["username"] = "Please enter your username.";
       }
+
+      if (!input["sex"]) {
+        isValid = false;
+        errors["sex"] = "Please enter your sex.";
+      }
+
+      if (!input["address1"]) {
+        isValid = false;
+        errors["address1"] = "Please enter your address.";
+      }
+      if (!input["city"]) {
+        isValid = false;
+        errors["city"] = "Please enter your city.";
+      }
+
+      if (!input["fname"]) {
+        isValid = false;
+        errors["fname"] = "Please enter your First name.";
+      }
+
+      if (!input["lname"]) {
+        isValid = false;
+        errors["lname"] = "Please enter your Last name.";
+      }
   
       if (typeof input["username"] !== "undefined") {
         const re = /^\S*$/;
@@ -109,13 +133,44 @@ class NewUser extends Component {
         isValid = false;
         errors["email"] = "Please enter your email Address.";
       }
-  
+
+      
+      if (!input["zipCode"]) {
+        isValid = false;
+        errors["zipCode"] = "Please enter your zip code.";
+      }
+
+      if (!input["stateCode"]) {
+        isValid = false;
+        errors["stateCode"] = "Please select your state.";
+      }
+
+
+      if (!input["dateOfBirth"]) {
+        isValid = false;
+        errors["dateOfBirth"] = "Please enter your date of birth.";
+      }
+
       if (typeof input["email"] !== "undefined") {
           
         var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
         if (!pattern.test(input["email"])) {
           isValid = false;
           errors["email"] = "Please enter valid email address.";
+        }
+      }
+  
+      if (!input["phone"]) {
+        isValid = false;
+        errors["phone"] = "Please enter valid phone number(XXX-XXX-XXXX).";
+      }
+
+      if (typeof input["phone"] !== "undefined") {
+          
+        var pattern = new RegExp(/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/i);
+        if (!pattern.test(input["phone"])) {
+          isValid = false;
+          errors["phone"] = "Please enter valid phone number(XXX-XXX-XXXX).";
         }
       }
   
@@ -155,7 +210,7 @@ class NewUser extends Component {
     return (
       <div class="container">
         <div>
-          <h1>Create New Users</h1>
+          <h1>Create New User</h1>
           <form onSubmit={this.handleSubmit}>
             <div class="form-group">
               <label for="username">Username:</label>
@@ -205,7 +260,7 @@ class NewUser extends Component {
                 placeholder="Enter email"
                 id="email" />
 
-              <div className="text-danger">{this.state.email}</div>
+              <div className="text-danger">{this.state.errors.email}</div>
             </div>
             <div class="form-group">
               <label for="password">password:</label>
@@ -333,6 +388,7 @@ class NewUser extends Component {
               <select name="stateCode" id="stateCode" value={this.state.input.stateCode} 
               onChange={this.handleChange}
               className="form-select">
+                <option value=""> -- Select a State -- </option>
                 {this.getStates()}
               </select>
             
@@ -353,6 +409,7 @@ class NewUser extends Component {
 
               <div className="text-danger">{this.state.errors.instrument}</div>
             </div>
+            <br/>
             <input type="submit" value="Submit" class="btn btn-success" />
 
           </form>
