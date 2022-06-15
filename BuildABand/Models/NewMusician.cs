@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BuildABand.Models
 {
-    public class User
+    public class NewMusician
     {
         public int AccountID { get; set; }
         public string Username { get; set; }

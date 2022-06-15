@@ -14,12 +14,12 @@ namespace BuildABand.Controllers
     {
 
         private readonly IConfiguration _configuration;
-        private readonly UserDAL userSource;
+        private readonly MusicianDAL userSource;
 
         public MusicianController(IConfiguration configuration)
         {
             _configuration = configuration;
-            this.userSource = new UserDAL(_configuration);
+            this.userSource = new MusicianDAL(_configuration);
         }
 
         [HttpGet]
@@ -49,7 +49,7 @@ namespace BuildABand.Controllers
         // Post: api/musician
         // Post new musician
         [HttpPost]
-        public JsonResult PostNewMusician(User user)
+        public JsonResult PostNewMusician(NewMusician user)
         {
             try
             {
