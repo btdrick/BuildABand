@@ -7,7 +7,7 @@ function App() {
     <Link to="/home">Home</Link>
     <Link to="/profile/1">Profile</Link>
     <br/>
-    <Link to="/newUser">New User</Link>
+    <Link to="/newMusician">New Musician</Link>
     <h2>This is the Login Page</h2>
   </div>
  );

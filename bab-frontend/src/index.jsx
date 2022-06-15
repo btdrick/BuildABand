@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import Home from './Home';
 import Profile from './Profile';
-import NewUser from  './NewMusician';
+import NewMusician from  './NewMusician';
 import reportWebVitals from './reportWebVitals';
 import { HashRouter, Routes, Route } from "react-router-dom";
 

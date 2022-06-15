@@ -11,7 +11,7 @@ class NewMusician extends Component {
       input: {},
       errors: {},
       states: [],
-      result:""
+      submitResult:""
       };  
 
      
@@ -84,7 +84,7 @@ class NewMusician extends Component {
           })
           .then(res=> res.json())
           .then((result) =>{
-            this.setState({ result});
+            this.setState({ submitResult:result});
             alert(result)},
           (error)=> {
             alert('Failed');
@@ -213,13 +213,13 @@ class NewMusician extends Component {
   }
 
   render() {
-    if (this.state.result === "New user created"){
+    if (this.state.submitResult === "New user created"){
       return <Navigate to='/home' />
     }
     return (
       <div class="container">
         <div>
-          <h1>Create New User</h1>
+          <h1>Create New Musician</h1>
           <form onSubmit={this.handleSubmit}>
             <div class="form-group">
               <label for="username">Username:</label>
@@ -394,8 +394,9 @@ class NewMusician extends Component {
             </div>
             <div className="form-group">
               <label htmlFor="stateCode">StateCode:</label>
-              <select name="stateCode" id="stateCode" value={this.state.input.stateCode} 
-              onChange={this.handleChange}
+              <select name="stateCode" id="stateCode" 
+              value={this.state.input.stateCode} 
+              onChange={this.handleChange} 
               className="form-select">
                 <option value=""> -- Select a State -- </option>
                 {this.getStates()}
@@ -431,5 +432,5 @@ class NewMusician extends Component {
 }
 
 
-export default NewUser;
+export default NewMusician;
 
