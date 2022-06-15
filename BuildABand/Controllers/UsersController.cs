@@ -57,7 +57,7 @@ namespace BuildABand.Controllers
             }
            catch (Exception)
             {
-               return new JsonResult("Username Already exist");
+               return new JsonResult("Username already exist");
             }
 
             return new JsonResult("New user created");

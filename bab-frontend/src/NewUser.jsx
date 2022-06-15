@@ -1,17 +1,33 @@
 import React, {Component} from "react";
 import { variables } from "./Variables";
 
+
 class NewUser extends Component {
  
   constructor() {
     super();
     this.state = {
       input: {},
-      errors: {}
+      errors: {},
+      states: []
       };  
 
+     
      this.handleChange = this.handleChange.bind(this);
      this.handleSubmit= this.handleSubmit.bind(this);
+  }
+   
+  //Load states data by calling its api
+  
+  componentDidMount(){
+      fetch(variables.API_URL+'states')
+      .then(res=> res.json())
+          .then((result) =>{
+            this.setState({
+              states: result
+          });
+        })
+      
   }
 
 
@@ -24,6 +40,14 @@ class NewUser extends Component {
           input
       });
 
+  }
+
+  //method to return option value for states to be called by select element
+  getStates(){
+    return this.state.states.map((item) => {
+      return <option value={item.StateCode} > {item.StateName}</option>;
+    });
+    
   }
 
  
@@ -304,18 +328,17 @@ class NewUser extends Component {
 
               <div className="text-danger">{this.state.errors.zipCode}</div>
             </div>
-            <div class="form-group">
-              <label for="stateCode">StateCode:</label>
-              <input
-                type="text"
-                name="stateCode"
-                value={this.state.input.stateCode}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter StateCode"
-                id="stateCode" />
+            <div className="form-group">
+              <label htmlFor="stateCode">StateCode:</label>
+              <select name="stateCode" id="stateCode" value={this.state.input.stateCode} 
+              onChange={this.handleChange}
+              className="form-select">
+                {this.getStates()}
+              </select>
+            
+           
 
-              <div className="text-danger">{this.state.errors.stateCode}</div>
+            <div className="text-danger">{this.state.errors.stateCode}</div>
             </div>
             <div class="form-group">
               <label for="instrument">instrument:</label>
