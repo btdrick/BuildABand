@@ -12,6 +12,7 @@ namespace BuildABandTests.Models
     public class CommentTests
     {
         private Comment _comment;
+        private DateTime _testDate;
 
         /// <summary>
         /// Initializes _comment for testing.
@@ -20,6 +21,7 @@ namespace BuildABandTests.Models
         public void TestInit()
         {
             _comment = new Comment();
+            _testDate = DateTime.Now;
         }
 
         /// <summary>
@@ -29,6 +31,7 @@ namespace BuildABandTests.Models
         public void TestClean()
         {
             _comment.CommentID = 0;
+            _comment.ParentID = 0;
             _comment.PostID = 0;
             _comment.MusicianID = 0;
             _comment.CreatedTime = DateTime.MinValue;
@@ -44,6 +47,7 @@ namespace BuildABandTests.Models
         {
             Assert.IsNull(_comment.Content);
             Assert.AreEqual(0, _comment.CommentID);
+            Assert.AreEqual(0, _comment.ParentID);
             Assert.AreEqual(0, _comment.PostID);
             Assert.AreEqual(0, _comment.MusicianID);
             Assert.AreEqual(DateTime.MinValue, _comment.CreatedTime);
@@ -58,15 +62,17 @@ namespace BuildABandTests.Models
         {
             _comment.Content = "Test";
             _comment.CommentID++;
+            _comment.ParentID++;
             _comment.PostID++;
             _comment.MusicianID++;
-            _comment.CreatedTime = DateTime.Parse("2022-06-11");
+            _comment.CreatedTime = _testDate;
 
             Assert.AreEqual("Test", _comment.Content);
             Assert.AreEqual(1, _comment.CommentID);
+            Assert.AreEqual(1, _comment.ParentID);
             Assert.AreEqual(1, _comment.PostID);
             Assert.AreEqual(1, _comment.MusicianID);
-            Assert.AreEqual(DateTime.Parse("2022-06-11"), _comment.CreatedTime);
+            Assert.AreEqual(_testDate, _comment.CreatedTime);
         }
     }
 }

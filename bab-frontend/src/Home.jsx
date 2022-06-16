@@ -122,7 +122,7 @@ export class Home extends Component {
                 <div>
                     <ul className="list-group" style={{listStyleType: 'none'}}>
                         {this.state.posts.map((post, index) => 
-                        <li key={index} className="list-group-item"><Post content={post.Content} /></li>)}
+                        <li key={index} className="list-group-item"><Post content={post.Content} postID={post.PostID} /></li>)}
                     </ul>
                 </div>
             </div>

@@ -10,6 +10,7 @@ namespace BuildABand.Models
     {
         public int CommentID { get; set; }
         public DateTime CreatedTime { get; set; }
+        public int ParentID { get; set; }
         public int MusicianID { get; set; }
         public int PostID { get; set; }
         public string Content { get; set; }

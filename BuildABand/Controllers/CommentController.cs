@@ -94,5 +94,59 @@ namespace BuildABand.Controllers
 
             return new JsonResult(resultsTable);
         }
+
+        /// <summary>
+        /// Submits a comment for the current user 
+        /// POST: api/comment
+        /// </summary>
+        /// <param name="newComment"></param>
+        /// <returns>JsonResult if added successfully</returns>
+        [HttpPost]
+        public JsonResult Comment(Comment newComment)
+        {
+            if (String.IsNullOrWhiteSpace(newComment.Content))
+            {
+                throw new ArgumentException("Comment cannot be empty");
+            }
+            if (newComment.MusicianID < 1)
+            {
+                throw new ArgumentException("Invalid MusicianID");
+            }
+            if (newComment.PostID < 1)
+            {
+                throw new ArgumentException("Invalid PostID");
+            }
+
+            string insertStatement = @"INSERT INTO dbo.Comment
+                           VALUES (@CreatedTime, @ParentID, @MusicianID, @PostID, @Content)";
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand myCommand = new SqlCommand(insertStatement, connection))
+                {
+                    myCommand.Parameters.AddWithValue("@CreatedTime", newComment.CreatedTime);
+                    if (newComment.ParentID == 0)
+                    {
+                        myCommand.Parameters.AddWithValue("@ParentID", DBNull.Value);
+                    }
+                    if (newComment.ParentID > 0)
+                    {
+                        myCommand.Parameters.AddWithValue("@ParentID", newComment.ParentID);
+                    }                  
+                    myCommand.Parameters.AddWithValue("@MusicianID", newComment.MusicianID);
+                    myCommand.Parameters.AddWithValue("@PostID", newComment.PostID);
+                    myCommand.Parameters.AddWithValue("@Content", newComment.Content);
+                    dataReader = myCommand.ExecuteReader();
+                    resultsTable.Load(dataReader);
+                    dataReader.Close();
+                    connection.Close();
+                }
+            }
+
+            return new JsonResult("Comment Added Successfully");
+        }
     }
 }
