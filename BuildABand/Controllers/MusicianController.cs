@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildABand.DAL;
+using BuildABand.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -15,6 +18,9 @@ namespace BuildABand.Controllers
     {
 
         private readonly IConfiguration _configuration;
+        private readonly MusicianDAL userSource;
+
+        public MusicianController(IConfiguration configuration)
 
         /// <summary>
         /// 1-param constructor.
@@ -23,6 +29,7 @@ namespace BuildABand.Controllers
         public MusicianController(IConfiguration configuration)
         {
             _configuration = configuration;
+            this.userSource = new MusicianDAL(_configuration);
         }
 
         /// <summary>
@@ -52,6 +59,23 @@ namespace BuildABand.Controllers
             }
 
             return new JsonResult(resultsTable);
+        }
+
+        // Post: api/musician
+        // Post new musician
+        [HttpPost]
+        public JsonResult PostNewMusician(NewMusician user)
+        {
+            try
+            {
+                this.userSource.RegisterNewUser(user);
+            }
+           catch (Exception)
+            {
+               return new JsonResult("Username already exist");
+            }
+
+            return new JsonResult("New user created");
         }
     }
 }
