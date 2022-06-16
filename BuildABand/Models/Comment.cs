@@ -1,16 +1,18 @@
-using System;
+﻿using System;
 
 namespace BuildABand.Models
 {
     /// <summary>
     /// This class models a 
-    /// user-created post for a feed.
+    /// comment for a post.
     /// </summary>
-    public class Post
+    public class Comment
     {
-        public int PostID { get; set; }
+        public int CommentID { get; set; }
         public DateTime CreatedTime { get; set; }
+        public int ParentID { get; set; }
         public int MusicianID { get; set; }
+        public int PostID { get; set; }
         public string Content { get; set; }
     }
 }
