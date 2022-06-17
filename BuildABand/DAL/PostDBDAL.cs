@@ -42,7 +42,7 @@ namespace BuildABand.DAL
                             Post post = new Post
                             {
                                 PostID = (int)reader["postID"],
-                                CreatedTime = (byte[])reader["createdTime"],
+                                CreatedTime = (DateTime)reader["createdTime"],
                                 MusicianID = (int)reader["musicianID"],
                                 Content = reader["content"].ToString(),
                             };
