@@ -246,11 +246,11 @@ GO
 SET IDENTITY_INSERT [dbo].[Accounts] ON 
 
 INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (1, N'dnancy', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
-INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (2, N'fandrew', N'test1234', 1)
-INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (3, N'ljanet', N'test1234', 1)
-INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (4, N'pmargaret', N'test1234', 1)
-INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (5, N'bsteven', N'test1234', 1)
-INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (6, N'smichael', N'test1234', 1)
+INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (2, N'fandrew', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
+INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (3, N'ljanet', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
+INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (4, N'pmargaret', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
+INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (5, N'bsteven', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
+INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (6, N'smichael', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
 SET IDENTITY_INSERT [dbo].[Accounts] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Comment] ON 
