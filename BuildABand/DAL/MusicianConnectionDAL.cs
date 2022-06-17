@@ -33,8 +33,14 @@ namespace BuildABand.DAL
         public List<MusicianConnection> GetMusicianConnectionsByID(int MusicianID)
         {
             List<MusicianConnection> musicianConnections = new List<MusicianConnection>();
-            string selectStatement = "Select * from connection " +
-                                    "where InitiatorID = @MusicianID";
+            string selectStatement = "SELECT ConnectionID, InitiatorID, " +
+                "CONCAT(A.Fname,' ',A.Lname) as InitiatorNames, " +
+                "FollowerID, CONCAT(B.Fname, ' ', B.Lname) as FollowerNames, " +
+                "CreatedTime, Connected " +
+                "FROM Connection C " +
+                "JOIN Musician A on C.InitiatorID = A.AccountID " +
+                "JOIN Musician B on C.FollowerID = B.AccountID " +
+                "WHERE c.InitiatorID = @MusicianID ";
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
@@ -49,7 +55,9 @@ namespace BuildABand.DAL
                             {
                                 ConnectionID = (int)reader["ConnectionID"],
                                 InitiatorID = (int)reader["InitiatorID"],
+                                InitiatorNames = reader["InitiatorNames"].ToString(),
                                 FollowerID = (int)reader["FollowerID"],
+                                FollowerNames = reader["FollowerNames"].ToString(),
                                 CreatedTime = (DateTime)reader["createdTime"],
                                 Connected = Convert.ToBoolean(Convert.ToInt32(reader["Connected"]))
                             };
