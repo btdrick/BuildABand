@@ -8,6 +8,8 @@ const Comments = ({ currentUserID, currentPostID }) => {
     
     /* All comments from backend */
     const [backendComments, setBackendComments] = useState([]);
+    /* Which comment is active */
+    const [activeComment, setActiveComment] = useState(null);
     
     /* Parent comments (not replies) with postID referencing current post*/
     const rootComments = backendComments   
@@ -24,8 +26,9 @@ const Comments = ({ currentUserID, currentPostID }) => {
         );
     
     /* Add comment */
-    const addComment = (text) => {
-        createComment(text);
+    const addComment = (text, parentID) => {
+        createComment(text, parentID);
+        setActiveComment(null);
     }
     
     /* Sets backend comments */
@@ -43,7 +46,7 @@ const Comments = ({ currentUserID, currentPostID }) => {
     };
 
     /* Posts comment to database */
-    const createComment = async(text) => {
+    const createComment = async(text, parentID) => {
         fetch(variables.API_URL+'comment',{
             method:'POST',
             headers:{
@@ -52,19 +55,18 @@ const Comments = ({ currentUserID, currentPostID }) => {
             },
             body:JSON.stringify({   
                 CreatedTime: new Date(),
-                ParentID:    0,                           
+                ParentID:    parentID,                           
                 MusicianID:  currentUserID,
                 PostID:      currentPostID,
                 Content:     text
             })
         })
         .then(res=>res.json())
-        .then((result)=>{
-            alert(result); 
+        .then(()=>{ 
             /* Refresh backendComments */
             getComments().then((data) => {
                 setBackendComments(data);
-            });       
+            })       
         },(_error)=>{
             alert('An error has occurred with submitting your comment');
         })
@@ -79,9 +81,13 @@ const Comments = ({ currentUserID, currentPostID }) => {
                 {/* Map comments and their replies by parent */}
                 {rootComments.map(rootComment => (
                     <Comment 
-                    key={rootComment.CommentID} 
-                    comment={rootComment} 
-                    replies={getReplies(rootComment.CommentID)} />
+                    key={ rootComment.CommentID } 
+                    comment={ rootComment } 
+                    addComment={ addComment }
+                    replies={ getReplies(rootComment.CommentID) }
+                    currentUserID={ currentUserID }
+                    activeComment={ activeComment }
+                    setActiveComment={ setActiveComment } />
                 ))}
             </div>
         </div>
