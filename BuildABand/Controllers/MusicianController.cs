@@ -20,8 +20,6 @@ namespace BuildABand.Controllers
         private readonly IConfiguration _configuration;
         private readonly MusicianDAL userSource;
 
-        public MusicianController(IConfiguration configuration)
-
         /// <summary>
         /// 1-param constructor.
         /// </summary>
