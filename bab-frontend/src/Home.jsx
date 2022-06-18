@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Post } from './Post';
 import {variables} from './Variables.js';
+import Navbar from './components/header/Navbar'
 
 export class Home extends Component {
     /* Constructor for the component. Tracks the posts shown on the feed and whether the page's loading status */
@@ -80,7 +81,8 @@ export class Home extends Component {
         }=this.state;
         return ( 
             <div>
-                <Link to="/">Login</Link>              
+                <Link to="/">Login</Link>  
+                <Navbar />            
                 <h3> This is the Home page </h3>
                 <button type="button"
                 className="btn btn-primary m-2 float-end"

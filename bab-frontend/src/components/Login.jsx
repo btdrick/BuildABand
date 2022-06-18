@@ -1,5 +1,5 @@
 import React from 'react';
-import {variables} from './Variables.js';
+import {variables} from '../Variables.js';
 import {Navigate} from 'react-router-dom';
 
 export class Login extends React.Component {
