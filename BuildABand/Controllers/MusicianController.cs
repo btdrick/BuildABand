@@ -30,15 +30,16 @@ namespace BuildABand.Controllers
         }
 
         /// <summary>
-        /// Gets all musicians
-        /// GET: api/musicians
+        /// Gets all musician
+        /// GET: api/musician
         /// </summary>
         /// <returns>JsonResult table of all musicians</returns>
         [HttpGet]
         public JsonResult Get()
         {
-            string selectStatement = @"SELECT * 
-                                    FROM dbo.Musician";
+            string selectStatement = 
+            @"SELECT * 
+            FROM dbo.Musician";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");

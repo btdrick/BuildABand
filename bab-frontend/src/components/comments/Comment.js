@@ -1,4 +1,4 @@
-import '../../index.css';
+import './comments.css';
 import CommentForm from "./CommentForm";
 
 /* Attributes */

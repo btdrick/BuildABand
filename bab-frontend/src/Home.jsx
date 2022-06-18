@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Post } from './Post';
-import {variables} from './Variables.js';
+import Search from "./components/search/Search";
+import { variables } from './Variables.js';
 
 export class Home extends Component {
     /* Constructor for the component. Tracks the posts shown on the feed and whether the page's loading status */
@@ -9,6 +10,7 @@ export class Home extends Component {
         super(props);
         this.state = { 
             posts:      [], 
+            musicians:  [],
             PostID:     0,          
             MusicianID: 0,
             Content:    "",
@@ -21,6 +23,7 @@ export class Home extends Component {
     /* Once the page renders, this lifecycle method takes place */
     componentDidMount(){
         this.getPosts();
+        this.getMusicians();
     }
     
     /* Makes api call to backend to get all posts */
@@ -30,6 +33,15 @@ export class Home extends Component {
         this.setState({
             posts:  data,
             loading: false,
+        });
+    }
+
+    /* Makes api call to backend to get all Musicians */
+    async getMusicians() {
+        const response = await fetch(variables.API_URL+'musician');
+        const data = await response.json();
+        this.setState({
+            musicians: data
         });
     }
 
@@ -86,12 +98,18 @@ export class Home extends Component {
                 <Link to="/connections">View Connections</Link>              
                 <h3> This is the Home page </h3>
                 <button type="button"
-                className="btn btn-primary m-2 float-end"
+                className="btn btn-primary m-2"
                 data-bs-toggle="modal"
                 data-bs-target="#exampleModal"
                 onClick={()=>this.addClick()}>
                     Create Post
                 </button>
+
+                {/* Search bar to find other users */}
+                <Search 
+                placeholder="Search for a musician..." 
+                data={ this.state.musicians } />
+
 
                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                     <div className="modal-dialog modal-lg modal-dialog-centered">
