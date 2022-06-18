@@ -12,7 +12,7 @@ class Connections extends Component{
 
     //Get connections
     componentDidMount(){
-        fetch(variables.API_URL + "musicianconnections/" + this.props.musicianID)
+        fetch(variables.API_URL + "musicianconnections/" + 1)
             .then(res => res.json())
             .then(result => {
                 this.setState({
@@ -20,6 +20,37 @@ class Connections extends Component{
                 });
             })
     }
+
+    render() {
+      return(
+          <div>
+            <h1>Friends connections</h1>
+            <table style={{width: "20%"}}>
+                <thead>
+                    <tr>
+                        <th>
+                            Musician Name
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                    this.state.connections.map(conn =>
+                        <tr key={conn.ConnectionID}>
+                            <td> {conn.FollowerNames}</td>
+                            <td> {conn.Connected? "Connected": "Not Connected"}</td>
+                        </tr>
+                        )
+                    }
+                </tbody>
+            </table>
+          </div>  
+        )  
+    }
+        
 
 
 }
