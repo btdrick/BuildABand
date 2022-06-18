@@ -1,9 +1,6 @@
 USE [master]
 GO
-
-DROP DATABASE IF EXISTS BuildABand;
-
-/****** Object:  Database [BuildABand]    Script Date: 10/06/2022 1:17:01 AM ******/
+/****** Object:  Database [BuildABand]    Script Date: 16/06/2022 11:53:25 PM ******/
 CREATE DATABASE [BuildABand]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -135,7 +132,24 @@ CREATE TABLE [dbo].[Comment](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Message]    Script Date: 10/06/2022 1:17:02 AM ******/
+/****** Object:  Table [dbo].[Connection]    Script Date: 16/06/2022 11:53:26 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Connection](
+	[ConnectionID] [int] IDENTITY(1,1) NOT NULL,
+	[InitiatorID] [int] NOT NULL,
+	[FollowerID] [int] NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+	[Connected] [tinyint] NOT NULL,
+ CONSTRAINT [PK_ConnectionID] PRIMARY KEY CLUSTERED 
+(
+	[ConnectionID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Message]    Script Date: 16/06/2022 11:53:26 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -262,6 +276,14 @@ INSERT [dbo].[Comment] ([CommentID], [CreatedTime], [ParentID], [MusicianID], [P
 INSERT [dbo].[Comment] ([CommentID], [CreatedTime], [ParentID], [MusicianID], [PostID], [Content]) VALUES (5, CAST(N'2022-05-20T00:05:00.000' AS DateTime), NULL, 1, 2, N'I total agree with you')
 SET IDENTITY_INSERT [dbo].[Comment] OFF
 GO
+SET IDENTITY_INSERT [dbo].[Connection] ON 
+
+INSERT [dbo].[Connection] ([ConnectionID], [InitiatorID], [FollowerID], [CreatedTime], [Connected]) VALUES (1, 1, 2, CAST(N'2022-02-09T00:00:00.000' AS DateTime), 1)
+INSERT [dbo].[Connection] ([ConnectionID], [InitiatorID], [FollowerID], [CreatedTime], [Connected]) VALUES (2, 1, 3, CAST(N'2022-02-09T00:00:00.000' AS DateTime), 0)
+INSERT [dbo].[Connection] ([ConnectionID], [InitiatorID], [FollowerID], [CreatedTime], [Connected]) VALUES (3, 1, 4, CAST(N'2022-02-09T00:00:00.000' AS DateTime), 1)
+INSERT [dbo].[Connection] ([ConnectionID], [InitiatorID], [FollowerID], [CreatedTime], [Connected]) VALUES (4, 1, 5, CAST(N'2022-06-09T00:00:00.000' AS DateTime), 1)
+SET IDENTITY_INSERT [dbo].[Connection] OFF
+GO
 SET IDENTITY_INSERT [dbo].[Message] ON 
 
 INSERT [dbo].[Message] ([MessageID], [CreatedTime], [SenderID], [RecipientID], [Subject], [Body]) VALUES (1, CAST(N'2022-04-20T00:00:00.000' AS DateTime), 1, 2, N'Happy bday', N'Happy bday Andrew')
@@ -380,6 +402,16 @@ REFERENCES [dbo].[Post] ([PostID])
 GO
 ALTER TABLE [dbo].[Comment] CHECK CONSTRAINT [FK_Comment_Post]
 GO
+ALTER TABLE [dbo].[Connection]  WITH CHECK ADD  CONSTRAINT [FK_Connection_Musician_FollowerID] FOREIGN KEY([FollowerID])
+REFERENCES [dbo].[Musician] ([MusicianID])
+GO
+ALTER TABLE [dbo].[Connection] CHECK CONSTRAINT [FK_Connection_Musician_FollowerID]
+GO
+ALTER TABLE [dbo].[Connection]  WITH CHECK ADD  CONSTRAINT [FK_Connection_Musician_InitiatorID] FOREIGN KEY([InitiatorID])
+REFERENCES [dbo].[Musician] ([MusicianID])
+GO
+ALTER TABLE [dbo].[Connection] CHECK CONSTRAINT [FK_Connection_Musician_InitiatorID]
+GO
 ALTER TABLE [dbo].[Comment]  WITH CHECK ADD  CONSTRAINT [FK_Comment_Comment] FOREIGN KEY([ParentID])
 REFERENCES [dbo].Comment ([CommentID])
 GO
@@ -424,6 +456,43 @@ ALTER TABLE [dbo].[Project_Workon]  WITH CHECK ADD  CONSTRAINT [FK_Project_Worko
 REFERENCES [dbo].[Project] ([ProjectID])
 GO
 ALTER TABLE [dbo].[Project_Workon] CHECK CONSTRAINT [FK_Project_Workon_Project]
+GO
+/****** Object:  StoredProcedure [dbo].[createUser]    Script Date: 16/06/2022 11:53:26 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+Create Procedure [dbo].[createUser] 
+(
+	@Username varchar(50),
+	@Password varchar(50),
+	@Fname varchar(50),
+	@Lname varchar(50),
+	@DateOfBirth date,
+	@Phone varchar(50),
+	@Email varchar(200),
+	@Instrument varchar(500),
+	@Sex varchar(10),
+	@Address1 varchar(50),
+	@Address2 varchar(50),
+	@City varchar(20),
+	@ZipCode varchar(20),
+	@StateCode char(2),
+	@AvaterFilename varchar(200)
+)
+
+AS
+
+BEGIN
+INSERT INTO Accounts
+VALUES(@Username, @Password, 1)
+
+
+INSERT INTO Musician
+VALUES(@Fname, @Lname, @DateOfBirth, @Phone, @Email, @Instrument, @Sex,
+       @Address1, @Address2, @City, @Zipcode,  @@IDENTITY, @StateCode, 
+       @AvaterFilename)
+END
 GO
 USE [master]
 GO

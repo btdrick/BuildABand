@@ -81,6 +81,9 @@ export class Home extends Component {
         return ( 
             <div>
                 <Link to="/">Login</Link>              
+ 
+                <br/>
+                <Link to="/connections">View Connections</Link>              
                 <h3> This is the Home page </h3>
                 <button type="button"
                 className="btn btn-primary m-2 float-end"
