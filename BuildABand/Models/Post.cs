@@ -12,5 +12,6 @@ namespace BuildABand.Models
         public DateTime CreatedTime { get; set; }
         public int MusicianID { get; set; }
         public string Content { get; set; }
+        public int Likes { get; set; }
     }
 }
