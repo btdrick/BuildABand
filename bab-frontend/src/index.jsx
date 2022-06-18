@@ -7,6 +7,7 @@ import Profile from './Profile';
 import NewMusician from  './NewMusician';
 import reportWebVitals from './reportWebVitals';
 import { HashRouter, Routes, Route } from "react-router-dom";
+import Connections from './Connections';
 
 /* All of the routing is defined here */
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -19,6 +20,7 @@ root.render(
         <Route path="/home" element={<Home/>}/>
         <Route path="/newMusician" element={<NewMusician/>}/>
         <Route path="/profile/1" element={<Profile musicianID = {1} />}/>
+        <Route path="/connections" element={<Connections/>}/>
       </Routes>
     </HashRouter>
   </React.StrictMode>

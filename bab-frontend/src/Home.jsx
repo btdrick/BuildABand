@@ -80,7 +80,9 @@ export class Home extends Component {
         }=this.state;
         return ( 
             <div style={{width: 80 + '%', margin: 0 + ' auto'}}>
-                <Link to="/">Login</Link>              
+                <Link to="/">Login</Link> 
+                <br/>
+                <Link to="/connections">View Connections</Link>              
                 <h3> This is the Home page </h3>
                 <button type="button"
                 className="btn btn-primary m-2 float-end"
