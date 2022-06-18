@@ -40,7 +40,7 @@ namespace BuildABand.DAL
                 "FROM Connection C " +
                 "JOIN Musician A on C.InitiatorID = A.AccountID " +
                 "JOIN Musician B on C.FollowerID = B.AccountID " +
-                "WHERE c.InitiatorID = @MusicianID ";
+                "WHERE c.InitiatorID = @MusicianID AND Connected = 1 ";
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
