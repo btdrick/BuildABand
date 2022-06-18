@@ -79,8 +79,9 @@ export class Home extends Component {
             Content
         }=this.state;
         return ( 
-            <div style={{width: 80 + '%', margin: 0 + ' auto'}}>
-                <Link to="/">Login</Link> 
+            <div>
+                <Link to="/">Login</Link>              
+ 
                 <br/>
                 <Link to="/connections">View Connections</Link>              
                 <h3> This is the Home page </h3>
@@ -124,7 +125,7 @@ export class Home extends Component {
                 <div>
                     <ul className="list-group" style={{listStyleType: 'none'}}>
                         {this.state.posts.map((post, index) => 
-                        <li key={index} className="list-group-item" style={{width: 'fit-content'}}><Post content={post.Content} /></li>)}
+                        <li key={index} className="list-group-item"><Post content={post.Content} postID={post.PostID} /></li>)}
                     </ul>
                 </div>
             </div>

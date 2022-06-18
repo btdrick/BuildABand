@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Comments from './components/comments/Comments';
 
 /* This is a child component to serveral other components, i.e. child component in Profile component */
 export class Post extends Component {
@@ -14,8 +15,9 @@ export class Post extends Component {
                     </div>
                 
                     <button type="button" className="btn btn-primary" style={{margin: 0.2 + 'em'}}> Like </button>
-                    <button type="button" className="btn btn-secondary" style={{margin: 0.2 + 'em'}}> Comment </button>
                 </div>
+                {/* Render comments for current post */}
+                <Comments currentUserID="1" currentPostID={this.props.postID} />
             </div>
                            
                   

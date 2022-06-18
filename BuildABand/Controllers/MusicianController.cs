@@ -16,7 +16,6 @@ namespace BuildABand.Controllers
     [ApiController]
     public class MusicianController : ControllerBase
     {
-
         private readonly IConfiguration _configuration;
         private readonly MusicianDAL userSource;
 
