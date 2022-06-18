@@ -42,6 +42,8 @@ const Comment = ({
                     <div>{ createdTime }</div>
                 </div>
                 <div className="comment-text">{comment.Content}</div>
+                {(comment.Likes > 1) 
+                && <div className="comment-content">{ comment.Likes } Likes</div>}
                 <div className="comment-actions">
                     {/* Reply section */}
                     {canReply 
