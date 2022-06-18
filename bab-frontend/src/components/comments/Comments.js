@@ -8,6 +8,8 @@ const Comments = ({ currentUserID, currentPostID }) => {
     
     /* All comments from backend */
     const [backendComments, setBackendComments] = useState([]);
+    /* Amount of comments to show at a time */
+    const [visibleComments, setVisibleComments] = useState(5);
     /* Which comment is active */
     const [activeComment, setActiveComment] = useState(null);
     
@@ -44,6 +46,16 @@ const Comments = ({ currentUserID, currentPostID }) => {
         const data = await response.json(); 
         return data;
     };
+
+    /* Increases amount of visible comments */
+    const showMoreComments = () => {
+        setVisibleComments(prevValue => prevValue + 5);
+    }
+
+    /* Decreases amoung of visible comments */
+    const showFewerComments = () => {
+        setVisibleComments(prevValue => prevValue - 5);
+    }
 
     /* Posts comment to database */
     const createComment = async(text, parentID) => {
@@ -105,7 +117,7 @@ const Comments = ({ currentUserID, currentPostID }) => {
             <CommentForm submitLabel="Write" handleSubmit={addComment} />
             <div className="comments-container">
                 {/* Map comments and their replies by parent */}
-                {rootComments.map(rootComment => (
+                {rootComments.slice(0, visibleComments).map(rootComment => (
                     <Comment 
                     key={ rootComment.CommentID } 
                     comment={ rootComment } 
@@ -117,6 +129,17 @@ const Comments = ({ currentUserID, currentPostID }) => {
                     deleteComment={ deleteComment } />
                 ))}
             </div>
+            {(rootComments.length > 5) 
+            && (visibleComments < rootComments.length) 
+            && <button 
+                className="btn btn-secondary" 
+                onClick={showMoreComments}>Load next 5 comments</button>
+            }
+            {(visibleComments > 5)
+                && <button 
+                className="btn btn-secondary" 
+                onClick={showFewerComments}>Show fewer comments</button>
+            }
         </div>
     );
 };
