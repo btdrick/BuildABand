@@ -1,7 +1,17 @@
 import '../../index.css';
 import CommentForm from "./CommentForm";
 
-const Comment = ({ comment, addComment, replies, parentID = null, currentUserID, activeComment, setActiveComment }) => {
+/* Attributes */
+const Comment = ({ 
+    comment, 
+    addComment, 
+    replies, 
+    parentID = 
+    null, 
+    currentUserID, 
+    activeComment, 
+    setActiveComment, 
+    deleteComment }) => {
     
     /* Only a logged-in user can reply to a comment */
     const canReply = Boolean(currentUserID);
@@ -10,6 +20,10 @@ const Comment = ({ comment, addComment, replies, parentID = null, currentUserID,
         && activeComment.CommentID === comment.CommentID;
     /* Ensures only one layer of replies */
     const replyID = parentID ? parentID : comment.CommentID;
+
+    /* User can only delete their own comments (if it has no replies) */
+    const canDelete = currentUserID === comment.MusicianID 
+    && replies.length === 0;
 
     /* Format comment time displayed */
     const createdTime = 
@@ -29,13 +43,20 @@ const Comment = ({ comment, addComment, replies, parentID = null, currentUserID,
                 </div>
                 <div className="comment-text">{comment.Content}</div>
                 <div className="comment-actions">
-                    {/* Reply option will be unavailable if user not logged in */}
+                    {/* Reply section */}
                     {canReply 
-                    && <div 
+                    && (<div 
                     className="comment-action" 
                     onClick={() => setActiveComment({CommentID: comment.CommentID, type: "replying"})}>
                     Reply
-                    </div>}
+                    </div>)}
+                    {/* Delete section */}
+                    {canDelete 
+                    && (<div
+                    className="comment-action"
+                    onClick={() => deleteComment(comment.CommentID)}>
+                    Delete
+                    </div>)}
                 </div>
                 {/* Replies form */}
                 {isReplying && (
@@ -55,7 +76,8 @@ const Comment = ({ comment, addComment, replies, parentID = null, currentUserID,
                             parentID={ comment.CommentID }
                             currentUserID={ currentUserID }
                             activeComment={ activeComment }
-                            setActiveComment={ setActiveComment }/>
+                            setActiveComment={ setActiveComment }
+                            deleteComment={ deleteComment }/>
                         ))}
                     </div>
                 )}

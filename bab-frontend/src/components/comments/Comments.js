@@ -72,6 +72,32 @@ const Comments = ({ currentUserID, currentPostID }) => {
         })
     }
 
+    /* Delete comment from database */
+    const deleteComment = async(commentID) => {
+        if (window.confirm("Are you sure you want to remove comment?")) {
+            fetch(variables.API_URL+'comment/'+commentID,{
+                method:'DELETE',
+                headers:{
+                    'Accept':'application/json',
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({   
+                    CommentID: commentID
+                })
+            })
+            .then(res=>res.json())
+            .then(()=>{ 
+                /* Update backendComments */
+                const updatedBackendComments = backendComments.filter(
+                    (backendComment) => backendComment.CommentID !== commentID
+                  );
+                  setBackendComments(updatedBackendComments);         
+            },(_error)=>{
+                alert('An error has occurred with deleting your comment');
+            })
+        }
+    }
+
     return ( 
         <div className="comments">
             <h3 className="comments-title">Comments</h3>
@@ -87,7 +113,8 @@ const Comments = ({ currentUserID, currentPostID }) => {
                     replies={ getReplies(rootComment.CommentID) }
                     currentUserID={ currentUserID }
                     activeComment={ activeComment }
-                    setActiveComment={ setActiveComment } />
+                    setActiveComment={ setActiveComment }
+                    deleteComment={ deleteComment } />
                 ))}
             </div>
         </div>
