@@ -18,6 +18,20 @@ const Comments = ({ currentUserID, currentPostID }) => {
     .filter(
         (backendComment) => backendComment.ParentID === null && backendComment.PostID === currentPostID);
     
+    /* Sets backend comments */
+    useEffect(() => {
+        getComments().then((data) => {
+            setBackendComments(data);
+        });
+    }, []);
+
+    /* Makes api call to backend to get all comments */
+    const getComments = async() => {
+        const response = await fetch(variables.API_URL+'comment');
+        const data = await response.json(); 
+        return data;
+    };
+    
     /* Replies to comments */
     const getReplies = (commentID) =>
     backendComments
@@ -32,20 +46,6 @@ const Comments = ({ currentUserID, currentPostID }) => {
         createComment(text, parentID);
         setActiveComment(null);
     }
-    
-    /* Sets backend comments */
-     useEffect(() => {
-        getComments().then((data) => {
-            setBackendComments(data);
-        });
-    }, []);
-
-    /* Makes api call to backend to get all comments */
-    const getComments = async() => {
-        const response = await fetch(variables.API_URL+'comment');
-        const data = await response.json(); 
-        return data;
-    };
 
     /* Increases amount of visible comments */
     const showMoreComments = () => {
@@ -74,34 +74,61 @@ const Comments = ({ currentUserID, currentPostID }) => {
             })
         })
         .then(res=>res.json())
-        .then(()=>{ 
+        .then((result)=>{ 
             /* Refresh backendComments */
             getComments().then((data) => {
                 setBackendComments(data);
-            })       
+            })
+            alert(result);       
         },(_error)=>{
             alert('An error has occurred with submitting your comment');
         })
     }
 
+    /* Update comment content */
+    const updateComment = async(text, comment) => {
+        fetch(variables.API_URL+'comment/'+comment.CommentID,{
+            method:'PATCH',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({   
+                CommentID:   comment.CommentID,
+                Content:     text
+            })
+        })
+        .then(res=>res.json())
+        .then((result)=>{ 
+            /* Refresh backendComments */
+            getComments().then((data) => {
+                setBackendComments(data);
+            });
+            setActiveComment(null); 
+            alert(result);                  
+        },(_error)=>{
+            alert('An error has occurred with updating your comment');
+        })
+    }
+
     /* Delete comment from database */
-    const deleteComment = async(commentID) => {
-        if (window.confirm("Are you sure you want to remove comment?")) {
-            fetch(variables.API_URL+'comment/'+commentID,{
+    const deleteComment = async(comment) => {
+        if (window.confirm("Are you sure you want to remove this comment?")) {
+            fetch(variables.API_URL+'comment/'+comment.CommentID,{
                 method:'DELETE',
                 headers:{
                     'Accept':'application/json',
                     'Content-Type':'application/json'
                 },
                 body:JSON.stringify({   
-                    CommentID: commentID
+                    CommentID: comment.CommentID
                 })
             })
             .then(res=>res.json())
             .then(()=>{ 
                 /* Update backendComments */
                 const updatedBackendComments = backendComments.filter(
-                    (backendComment) => backendComment.CommentID !== commentID
+                    (backendComment) => backendComment.CommentID !== comment.CommentID
                   );
                   setBackendComments(updatedBackendComments);         
             },(_error)=>{
@@ -126,6 +153,7 @@ const Comments = ({ currentUserID, currentPostID }) => {
                     currentUserID={ currentUserID }
                     activeComment={ activeComment }
                     setActiveComment={ setActiveComment }
+                    updateComment= { updateComment }
                     deleteComment={ deleteComment } />
                 ))}
             </div>
