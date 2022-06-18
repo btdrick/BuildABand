@@ -3,8 +3,8 @@ import { variables } from "./Variables";
 
 class Connections extends Component{
     
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             connections: []
         };
@@ -12,7 +12,7 @@ class Connections extends Component{
 
     //Get connections
     componentDidMount(){
-        fetch(variables.API_URL + "musicianconnections/" + 1)
+        fetch(variables.API_URL + "musicianconnections/" + this.props.MusicianID)
             .then(res => res.json())
             .then(result => {
                 this.setState({
