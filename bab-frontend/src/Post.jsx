@@ -17,7 +17,7 @@ export class Post extends Component {
                     <button type="button" className="btn btn-primary" style={{margin: 0.2 + 'em'}}> Like </button>
                 </div>
                 {/* Render comments for current post */}
-                <Comments currentUserID="1" currentPostID={this.props.postID} />
+                <Comments currentUserID={1} currentPostID={this.props.postID} />
             </div>
                            
                   

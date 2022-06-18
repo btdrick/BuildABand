@@ -139,5 +139,43 @@ namespace BuildABand.Controllers
 
             return new JsonResult("Post Added Successfully");
         }
+
+        /// <summary>
+        /// Gets all comments for specified post
+        /// GET: api/post/postID/comments
+        /// </summary>
+        /// <param name="postID"></param>
+        /// <returns>JsonResult table of post's comments</returns>
+        [HttpGet("{postID}/comments")]
+        public JsonResult GetPostComments(int postID)
+        {
+            if (postID < 1)
+            {
+                throw new ArgumentException("PostID must be greater than 0");
+            }
+
+            string selectStatement =
+            @"SELECT *
+            FROM dbo.Comment 
+            WHERE PostID = @PostID";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                {
+                    myCommand.Parameters.AddWithValue("@PostID", postID);
+                    dataReader = myCommand.ExecuteReader();
+                    resultsTable.Load(dataReader);
+                    dataReader.Close();
+                    connection.Close();
+                }
+            }
+
+            return new JsonResult(resultsTable);
+        }
     }
 }

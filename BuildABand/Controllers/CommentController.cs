@@ -59,22 +59,22 @@ namespace BuildABand.Controllers
 
         /// <summary>
         /// Gets all comments for specified post
-        /// GET: api/comment/PostID
+        /// GET: api/comment/CommentID
         /// </summary>
-        /// <param name="postID"></param>
-        /// <returns>JsonResult table of post's comments</returns>
-        [HttpGet("{PostID}")]
-        public JsonResult GetPosts(int postID)
+        /// <param name="commentID"></param>
+        /// <returns>JsonResult table of comment</returns>
+        [HttpGet("{CommentID}")]
+        public JsonResult GetComment(int commentID)
         {
-            if (postID < 1)
+            if (commentID < 1)
             {
-                throw new ArgumentException("PostID must be 1 or greater");
+                throw new ArgumentException("CommentID must be greater than 0");
             }
 
             string selectStatement =
             @"SELECT *
             FROM dbo.Comment 
-            WHERE PostID = @postID";
+            WHERE CommentID = @CommentID";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -84,7 +84,7 @@ namespace BuildABand.Controllers
                 connection.Open();
                 using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
                 {
-                    myCommand.Parameters.AddWithValue("@PostID", postID);
+                    myCommand.Parameters.AddWithValue("@CommentID", commentID);
                     dataReader = myCommand.ExecuteReader();
                     resultsTable.Load(dataReader);
                     dataReader.Close();
@@ -102,8 +102,12 @@ namespace BuildABand.Controllers
         /// <param name="newComment"></param>
         /// <returns>JsonResult if added successfully</returns>
         [HttpPost]
-        public JsonResult Comment(Comment newComment)
+        public JsonResult CreateComment(Comment newComment)
         {
+            if (newComment is null)
+            {
+                throw new ArgumentException("Comment cannot be null");
+            }
             if (String.IsNullOrWhiteSpace(newComment.Content))
             {
                 throw new ArgumentException("Comment cannot be empty");
@@ -147,6 +151,40 @@ namespace BuildABand.Controllers
             }
 
             return new JsonResult("Comment Added Successfully");
+        }
+
+        /// <summary>
+        /// Deletes a comment  
+        /// DELETE: api/comment/CommentID
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <returns>JsonResult if deleted successfully</returns>
+        [HttpDelete("{CommentID}")]
+        public JsonResult DeleteComment(int commentID)
+        {
+            if (commentID < 1)
+            {
+                throw new ArgumentException("Invalid CommentID");
+            }
+
+            string deleteStatement = @"DELETE FROM dbo.Comment WHERE CommentID = @CommentID";
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand myCommand = new SqlCommand(deleteStatement, connection))
+                {
+                    myCommand.Parameters.AddWithValue("@CommentID", commentID);
+                    dataReader = myCommand.ExecuteReader();
+                    resultsTable.Load(dataReader);
+                    dataReader.Close();
+                    connection.Close();
+                }
+            }
+
+            return new JsonResult("Comment Deleted Successfully");
         }
     }
 }
