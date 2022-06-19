@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import { variables } from "./Variables";
+import UserProfile from "./components/UserProfile";
 
 class Connections extends Component{
     
@@ -12,7 +13,7 @@ class Connections extends Component{
 
     //Get connections
     componentDidMount(){
-        fetch(variables.API_URL + "musicianconnections/" + this.props.MusicianID)
+        fetch(variables.API_URL + "musicianconnections/" + UserProfile.getMusicianID())
             .then(res => res.json())
             .then(result => {
                 this.setState({
