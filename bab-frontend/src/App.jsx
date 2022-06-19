@@ -1,11 +1,11 @@
 import './style/App.css';
-import { Link } from "react-router-dom";
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navigate} from 'react-router-dom';
 import {variables} from './Variables.js';
 import { useEffect } from 'react';
 import UserProfile from './components/UserProfile.js';
+import { Link } from "react-router-dom";
  
 function App() {
   const [username, setUsername] = useState('');
@@ -67,34 +67,51 @@ function App() {
   return (
     <>
       <div style={{ textAlign: 'center' }}>
-        <h1>This is the landing page</h1>
+        <h1>Login</h1>
         {!isLoggedin ? 
         (
-          <>
-          <Link to="/newMusician">New Musician</Link>
+          <div>
 
-            <form action="">
-              <input
-                type="text"
-                onChange={(e) => setUsername(e.target.value)}
-                value={username}
-                placeholder="Username"
-              />
-              <div className="text-danger">{error.username}</div>
+            <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="tab-login" data-mdb-toggle="pill" href="#/" role="tab"
+                  aria-controls="pills-login" aria-selected="true">Login</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab-register" data-mdb-toggle="pill" href="#/newMusician" role="tab"
+                  aria-controls="pills-register" aria-selected="false">Register</a>
+              </li>
+            </ul>
 
-              <input
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                placeholder="Password"
-              />
-              <div className="text-danger">{error.password}</div>
-              <div className="text-danger">{error.badResponse}</div>
-              <button type="submit" onClick={login}>
-                Login
-              </button>
-            </form>
-          </>
+            <div class="tab-content">
+              
+              <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+                <form action="">
+                    <input
+                      type="text"
+                      onChange={(e) => setUsername(e.target.value)}
+                      value={username}
+                      placeholder="Username"
+                    />
+                    <div className="text-danger">{error.username}</div>
+
+                    <input
+                      type="password"
+                      onChange={(e) => setPassword(e.target.value)}
+                      value={password}
+                      placeholder="Password"
+                    />
+                    <div className="text-danger">{error.password}</div>
+                    <div className="text-danger">{error.badResponse}</div>
+                    <button class="btn btn-success" type="submit" onClick={login}>
+                      Login
+                    </button>
+                </form>
+              </div>
+
+            </div>
+
+          </div>
         ) : 
         (
           <>

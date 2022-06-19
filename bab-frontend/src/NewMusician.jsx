@@ -217,215 +217,228 @@ class NewMusician extends Component {
       return <Navigate to='/home' />
     }
     return (
-      <div class="container">
         <div>
-          <h1>Create New Musician</h1>
-          <form onSubmit={this.handleSubmit}>
-            <div class="form-group">
-              <label for="username">Username:</label>
-              <input type="text"
-                name="username"
-                value={this.state.input.username}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter Username"
-                id="username" />
-              <div className="text-danger">{this.state.errors.username}</div>
+          <h1 style={{ textAlign: 'center' }}>Register</h1>
+
+          <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab-login" data-mdb-toggle="pill" href="#/" role="tab"
+                  aria-controls="pills-login" aria-selected="true">Login</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="tab-register" data-mdb-toggle="pill" href="#/newMusician" role="tab"
+                  aria-controls="pills-register" aria-selected="false">Register</a>
+              </li>
+            </ul>
+
+            <div class="tab-content">
+              <div id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+                <form onSubmit={this.handleSubmit}>
+                  <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text"
+                      name="username"
+                      value={this.state.input.username}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter Username"
+                      id="username" />
+                    <div className="text-danger">{this.state.errors.username}</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="First Name">First Name:</label>
+                    <input
+                      type="text"
+                      name="fname"
+                      value={this.state.input.fname}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter First Name"
+                      id="fname" />
+
+                    <div className="text-danger">{this.state.errors.fname}</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="Last Name">Last Name:</label>
+                    <input
+                      type="text"
+                      name="lname"
+                      value={this.state.input.lname}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter Last Name"
+                      id="lname" />
+                    <div className="text-danger">{this.state.errors.lname}</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="email">email Address:</label>
+                    <input
+                      type="text"
+                      name="email"
+                      value={this.state.input.email}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter email"
+                      id="email" />
+
+                    <div className="text-danger">{this.state.errors.email}</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="password">password:</label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={this.state.input.password}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter password"
+                      id="password" />
+
+                    <div className="text-danger">{this.state.errors.password}</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="password">Confirm Password:</label>
+                    <input
+                      type="password"
+                      name="confirm_password"
+                      value={this.state.input.confirm_password}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter confirm password"
+                      id="confirm_password" />
+
+                    <div className="text-danger">{this.state.errors.confirm_password}</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="dateOfBirth">Date of Birth:</label>
+                    <input
+                      type="Date"
+                      name="dateOfBirth"
+                      value={this.state.input.dateOfBirth}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter Date of Birth"
+                      id="dateOfBirth" />
+
+                    <div className="text-danger">{this.state.errors.dateOfBirth}</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">phone:</label>
+                    <input
+                      type="text"
+                      name="phone"
+                      value={this.state.input.phone}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter phone number"
+                      id="phone" />
+
+                    <div className="text-danger">{this.state.errors.phone}</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="sex">sex:</label>
+                    <input
+                      type="text"
+                      name="sex"
+                      value={this.state.input.sex}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter sex"
+                      id="sex" />
+
+                    <div className="text-danger">{this.state.errors.sex}</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="address1">address1:</label>
+                    <input
+                      type="text"
+                      name="address1"
+                      value={this.state.input.address1}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter address1"
+                      id="address1" />
+
+                    <div className="text-danger">{this.state.errors.address1}</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="address2">address2:</label>
+                    <input
+                      type="text"
+                      name="address2"
+                      value={this.state.input.address2}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter address2"
+                      id="address2" />
+
+                    <div className="text-danger">{this.state.errors.address2}</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="city">city:</label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={this.state.input.city}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter city"
+                      id="city" />
+
+                    <div className="text-danger">{this.state.errors.city}</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="zipCode">zipCode:</label>
+                    <input
+                      type="text"
+                      name="zipCode"
+                      value={this.state.input.zipCode}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter zipCode"
+                      id="zipCode" />
+
+                    <div className="text-danger">{this.state.errors.zipCode}</div>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="stateCode">StateCode:</label>
+                    <select name="stateCode" id="stateCode" 
+                    value={this.state.input.stateCode} 
+                    onChange={this.handleChange} 
+                    className="form-select">
+                      <option value=""> -- Select a State -- </option>
+                      {this.getStates()}
+                    </select>
+                  
+                
+
+                  <div className="text-danger">{this.state.errors.stateCode}</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="instrument">instrument:</label>
+                    <input
+                      type="text"
+                      name="instrument"
+                      value={this.state.input.instrument}
+                      onChange={this.handleChange}
+                      class="form-control"
+                      placeholder="Enter instrument"
+                      id="instrument" />
+
+                    <div className="text-danger">{this.state.errors.instrument}</div>
+                  </div>
+                  <br/>
+                  <input type="submit" value="Submit" class="btn btn-success" />
+
+                </form>
+              </div>
             </div>
-
-            <div class="form-group">
-              <label for="First Name">First Name:</label>
-              <input
-                type="text"
-                name="fname"
-                value={this.state.input.fname}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter First Name"
-                id="fname" />
-
-              <div className="text-danger">{this.state.errors.fname}</div>
-            </div>
-            <div class="form-group">
-              <label for="Last Name">Last Name:</label>
-              <input
-                type="text"
-                name="lname"
-                value={this.state.input.lname}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter Last Name"
-                id="lname" />
-              <div className="text-danger">{this.state.errors.lname}</div>
-            </div>
-            <div class="form-group">
-              <label for="email">email Address:</label>
-              <input
-                type="text"
-                name="email"
-                value={this.state.input.email}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter email"
-                id="email" />
-
-              <div className="text-danger">{this.state.errors.email}</div>
-            </div>
-            <div class="form-group">
-              <label for="password">password:</label>
-              <input
-                type="password"
-                name="password"
-                value={this.state.input.password}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter password"
-                id="password" />
-
-              <div className="text-danger">{this.state.errors.password}</div>
-            </div>
-
-            <div class="form-group">
-              <label for="password">Confirm Password:</label>
-              <input
-                type="password"
-                name="confirm_password"
-                value={this.state.input.confirm_password}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter confirm password"
-                id="confirm_password" />
-
-              <div className="text-danger">{this.state.errors.confirm_password}</div>
-            </div>
-            <div class="form-group">
-              <label for="dateOfBirth">Date of Birth:</label>
-              <input
-                type="Date"
-                name="dateOfBirth"
-                value={this.state.input.dateOfBirth}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter Date of Birth"
-                id="dateOfBirth" />
-
-              <div className="text-danger">{this.state.errors.dateOfBirth}</div>
-            </div>
-            <div class="form-group">
-              <label for="phone">phone:</label>
-              <input
-                type="text"
-                name="phone"
-                value={this.state.input.phone}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter phone number"
-                id="phone" />
-
-              <div className="text-danger">{this.state.errors.phone}</div>
-            </div>
-            <div class="form-group">
-              <label for="sex">sex:</label>
-              <input
-                type="text"
-                name="sex"
-                value={this.state.input.sex}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter sex"
-                id="sex" />
-
-              <div className="text-danger">{this.state.errors.sex}</div>
-            </div>
-
-            <div class="form-group">
-              <label for="address1">address1:</label>
-              <input
-                type="text"
-                name="address1"
-                value={this.state.input.address1}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter address1"
-                id="address1" />
-
-              <div className="text-danger">{this.state.errors.address1}</div>
-            </div>
-
-            <div class="form-group">
-              <label for="address2">address2:</label>
-              <input
-                type="text"
-                name="address2"
-                value={this.state.input.address2}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter address2"
-                id="address2" />
-
-              <div className="text-danger">{this.state.errors.address2}</div>
-            </div>
-
-            <div class="form-group">
-              <label for="city">city:</label>
-              <input
-                type="text"
-                name="city"
-                value={this.state.input.city}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter city"
-                id="city" />
-
-              <div className="text-danger">{this.state.errors.city}</div>
-            </div>
-            <div class="form-group">
-              <label for="zipCode">zipCode:</label>
-              <input
-                type="text"
-                name="zipCode"
-                value={this.state.input.zipCode}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter zipCode"
-                id="zipCode" />
-
-              <div className="text-danger">{this.state.errors.zipCode}</div>
-            </div>
-            <div className="form-group">
-              <label htmlFor="stateCode">StateCode:</label>
-              <select name="stateCode" id="stateCode" 
-              value={this.state.input.stateCode} 
-              onChange={this.handleChange} 
-              className="form-select">
-                <option value=""> -- Select a State -- </option>
-                {this.getStates()}
-              </select>
-            
-           
-
-            <div className="text-danger">{this.state.errors.stateCode}</div>
-            </div>
-            <div class="form-group">
-              <label for="instrument">instrument:</label>
-              <input
-                type="text"
-                name="instrument"
-                value={this.state.input.instrument}
-                onChange={this.handleChange}
-                class="form-control"
-                placeholder="Enter instrument"
-                id="instrument" />
-
-              <div className="text-danger">{this.state.errors.instrument}</div>
-            </div>
-            <br/>
-            <input type="submit" value="Submit" class="btn btn-success" />
-
-          </form>
-        
         </div>
-      </div>
     );
   }
   
