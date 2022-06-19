@@ -43,5 +43,46 @@ namespace BuildABand.Controllers
                 return new JsonResult(ex.Message);
             }
         }
+
+        [HttpPost("{fromMusicianID}/{toMusicianID}")]
+        public JsonResult SendConnectionRequest(int fromMusicianID, int toMusicianID)
+        {
+            if (fromMusicianID < 0 || toMusicianID < 0)
+            {
+                throw new ArgumentException("Invalid musician");
+            }
+
+            this.connectionSource.SendConnectionRequest(fromMusicianID, toMusicianID);
+
+            return new JsonResult("Connection request sent");
+        }
+
+        [HttpPost("accept/{connectionRequestID}")]
+        public JsonResult AcceptConnectionRequest(int connectionRequestID)
+        {
+            if (connectionRequestID < 0)
+            {
+                throw new ArgumentException("Invalid connection request");
+            }
+
+            this.connectionSource.AcceptConnectionRequest(connectionRequestID);
+
+            return new JsonResult("You have a new connection!");
+        }
+
+        [HttpPost("reject/{connectionRequestID}")]
+        public JsonResult RejectConnectionRequest(int connectionRequestID)
+        {
+            if (connectionRequestID < 0)
+            {
+                throw new ArgumentException("Invalid connection request");
+            }
+
+            this.connectionSource.RejectConnectionRequest(connectionRequestID);
+           
+            return new JsonResult("Connection request removed.");
+        }
+
+
     }
 }

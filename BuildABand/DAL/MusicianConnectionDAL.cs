@@ -69,5 +69,43 @@ namespace BuildABand.DAL
             }
             return musicianConnections;
         }
+
+        /// <summary>
+        /// Removes user from connections table. This can also be used to disconnect a current connection.
+        /// </summary>
+        /// <param name="connectionRequestID"></param>
+        public void RejectConnectionRequest(int connectionRequestID)
+        {
+            string statement = "";
+
+            //Remove connection row from Connection table
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Changes connection status
+        /// </summary>
+        /// <param name="connectionRequestID"></param>
+        public void AcceptConnectionRequest(int connectionRequestID)
+        {
+            string statement = "";
+
+            //Change Connected column in Connection table from 0 to 1
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Adds pending connection to connections table
+        /// </summary>
+        /// <param name="fromMusicianID"></param>
+        /// <param name="toMusicianID"></param>
+        public void SendConnectionRequest(int fromMusicianID, int toMusicianID)
+        {
+            string statement = "";
+
+            //add connection to Connection table
+            throw new NotImplementedException();
+        }
     }
 }
