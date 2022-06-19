@@ -11,21 +11,25 @@ function App() {
   const [musicianID, setMusicianID] = useState('')
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [isAuthenticated, setAuthentication] = useState(false);
-  const [error, setError] = useState({});
+  const [error, setError] = useState({username: '', password: '', badResponse: ''});
  
   const login = (event) => {
     event.preventDefault();
-    console.log(username, password);
     const userData = {
       username,
       password,
+      musicianID,
+      isLoggedin,
+      isAuthenticated,
     };
     if (validate()) {
       localStorage.setItem('token-info', JSON.stringify(userData));
       setIsLoggedin(true);
       setUsername('');
       setPassword('');
-      setError({})
+      setAuthentication(false);
+      setMusicianID('')
+      setError({username: '', password: '', badResponse: ''})
     }
   };
  
@@ -36,18 +40,17 @@ function App() {
 
   /* Validates user input */
   const validate = () => {
-    let errors = {};
     let isValid = true;
     if (!username) {
       isValid = false;
-      errors["username"] = "Please enter your username.";
+      setError({username: 'Please enter your username'})
+      return;
     }
     if (!password) {
       isValid = false;
-      errors["password"] = "Please enter your password.";
+      setError({username: 'Please enter your password'})
+      return;
     }
-    setError(errors);
-    console.log('errors: ' + error.username + error.password)
     getUserLogin();
 
     if (!isAuthenticated) {
@@ -58,11 +61,9 @@ function App() {
 
   /* API call to authenticate user. Passes username and password via query strings (https://en.wikipedia.org/wiki/Query_string) */
   const getUserLogin = async () => {
-    let errors = {};
       const response = await fetch(variables.API_URL+'accounts/login?username='+ username + '&password=' + password);
       if (!response.ok) {  
-        errors["badResponse"] = await response.text();
-        setError("Username or password incorrect");
+        setError({badResponse: 'Username or password incorrect'})
         return;
       }  
       const data = await response.json();
@@ -82,10 +83,10 @@ function App() {
 
             <form action="">
               <input
-                type="email"
+                type="text"
                 onChange={(e) => setUsername(e.target.value)}
                 value={username}
-                placeholder="Email"
+                placeholder="Username"
               />
               <div className="text-danger">{error.username}</div>
 
@@ -96,7 +97,6 @@ function App() {
                 placeholder="Password"
               />
               <div className="text-danger">{error.password}</div>
-
               <div className="text-danger">{error.badResponse}</div>
               <button type="submit" onClick={login}>
                 Login
