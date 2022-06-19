@@ -218,13 +218,14 @@ class NewMusician extends Component {
                     aria-controls="pills-login" aria-selected="true">Login</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                  <a class="nav-link active" id="tab-register" data-mdb-toggle="pill" href="#/newMusician" role="tab"
+                  <a style={{backgroundColor: '#495c7c'}} class="nav-link active" id="tab-register" data-mdb-toggle="pill" href="#/newMusician" role="tab"
                     aria-controls="pills-register" aria-selected="false">Register</a>
                 </li>
-              </ul>
+            </ul>
 
               <div class="tab-content">
                 <div id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+                  
                   <form onSubmit={this.handleSubmit}>
                     <div class="form-group">
                       <input type="text"
@@ -409,7 +410,9 @@ class NewMusician extends Component {
                     </div>
                     <br/>
                     <div style={{ textAlign: 'center' }}>
-                      <input type="submit" value="Submit" className="btn btn-dark btn-lg btn-block" />
+                      <button className="btn btn-dark btn-lg btn-block" type="submit" value="Register" style={{backgroundColor: '#495c7c', border: 'none'}}>
+                        Register
+                        </button>
                     </div>
                   </form>
                 </div>

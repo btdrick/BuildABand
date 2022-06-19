@@ -69,11 +69,11 @@ function App() {
         <h1>Login</h1>
         {!isLoggedin ? 
         (
-          <body>
+          <div>
 
             <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
               <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="tab-login" data-mdb-toggle="pill" href="#/" role="tab"
+                <a style={{backgroundColor: '#495c7c'}} class="nav-link active" id="tab-login" data-mdb-toggle="pill" href="#/" role="tab"
                   aria-controls="pills-login" aria-selected="true">Login</a>
               </li>
               <li class="nav-item" role="presentation">
@@ -83,26 +83,33 @@ function App() {
             </ul>
 
             <div class="tab-content">
-              
               <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+
                 <form action="">
+                  <div class="form-group">
                     <input
                       type="text"
+                      class="form-control"
                       onChange={(e) => setUsername(e.target.value)}
                       value={username}
                       placeholder="Username"
                     />
                     <div className="text-danger">{error.username}</div>
+                  </div>
 
-                    <input
-                      type="password"
-                      onChange={(e) => setPassword(e.target.value)}
-                      value={password}
-                      placeholder="Password"
-                    />
-                    <div className="text-danger">{error.password}</div>
-                    <div className="text-danger">{error.badResponse}</div>
-                    <button className="btn btn-dark btn-lg btn-block" type="submit" onClick={login}>
+                    <div class="form-group">
+                      <input
+                        type="password"
+                        class="form-control"
+                        onChange={(e) => setPassword(e.target.value)}
+                        value={password}
+                        placeholder="Password"
+                      />
+                      <div className="text-danger">{error.password}</div>
+                      <div className="text-danger">{error.badResponse}</div>
+                    </div>
+                    <br/>
+                    <button className="btn btn-dark btn-lg btn-block" type="submit" onClick={login} style={{backgroundColor: '#495c7c', border: 'none'}}>
                       Login
                     </button>
                 </form>
@@ -110,7 +117,7 @@ function App() {
 
             </div>
 
-          </body>
+          </div>
         ) : 
         (
           <>
