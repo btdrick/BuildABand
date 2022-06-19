@@ -1,6 +1,7 @@
 import React from 'react';
 import {variables} from './Variables.js';
 import {Navigate} from 'react-router-dom';
+import UserProfile from './components/UserProfile.js';
 
 export class Login extends React.Component {
     constructor() {
@@ -80,6 +81,7 @@ export class Login extends React.Component {
         musician: data,
         isAuthenticated: true
     });
+    UserProfile.setMusicianID(data);
   }
 
   /* If the isAuthenticated property is true, it redirects users to their homepage. Otherwise, the
