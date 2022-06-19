@@ -5,7 +5,6 @@ import {Navigate} from 'react-router-dom';
 import {variables} from './Variables.js';
 import { useEffect } from 'react';
 import UserProfile from './components/UserProfile.js';
-import { Link } from "react-router-dom";
  
 function App() {
   const [username, setUsername] = useState('');
@@ -66,11 +65,11 @@ function App() {
 
   return (
     <>
-      <div style={{ textAlign: 'center' }}>
+      <div className='login-page' style={{ textAlign: 'center' }}>
         <h1>Login</h1>
         {!isLoggedin ? 
         (
-          <div>
+          <body>
 
             <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
               <li class="nav-item" role="presentation">
@@ -103,7 +102,7 @@ function App() {
                     />
                     <div className="text-danger">{error.password}</div>
                     <div className="text-danger">{error.badResponse}</div>
-                    <button class="btn btn-success" type="submit" onClick={login}>
+                    <button className="btn btn-dark btn-lg btn-block" type="submit" onClick={login}>
                       Login
                     </button>
                 </form>
@@ -111,7 +110,7 @@ function App() {
 
             </div>
 
-          </div>
+          </body>
         ) : 
         (
           <>
