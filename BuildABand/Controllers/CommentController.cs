@@ -1,5 +1,4 @@
-﻿using BuildABand.DAL;
-using BuildABand.Models;
+﻿using BuildABand.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -58,23 +57,23 @@ namespace BuildABand.Controllers
         }
 
         /// <summary>
-        /// Gets all comments for specified post
-        /// GET: api/comment/PostID
+        /// Gets specified comment
+        /// GET: api/comment/comment.CommentID
         /// </summary>
-        /// <param name="postID"></param>
-        /// <returns>JsonResult table of post's comments</returns>
-        [HttpGet("{PostID}")]
-        public JsonResult GetPosts(int postID)
+        /// <param name="comment"></param>
+        /// <returns>JsonResult table of comment</returns>
+        [HttpGet("{commentID}")]
+        public JsonResult GetComment(int commentID)
         {
-            if (postID < 1)
+            if (commentID < 1)
             {
-                throw new ArgumentException("PostID must be 1 or greater");
+                throw new ArgumentException("CommentID must be greater than 0");
             }
 
             string selectStatement =
             @"SELECT *
             FROM dbo.Comment 
-            WHERE PostID = @postID";
+            WHERE CommentID = @CommentID";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -84,7 +83,7 @@ namespace BuildABand.Controllers
                 connection.Open();
                 using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
                 {
-                    myCommand.Parameters.AddWithValue("@PostID", postID);
+                    myCommand.Parameters.AddWithValue("@CommentID", commentID);
                     dataReader = myCommand.ExecuteReader();
                     resultsTable.Load(dataReader);
                     dataReader.Close();
@@ -102,8 +101,12 @@ namespace BuildABand.Controllers
         /// <param name="newComment"></param>
         /// <returns>JsonResult if added successfully</returns>
         [HttpPost]
-        public JsonResult Comment(Comment newComment)
+        public JsonResult CreateComment(Comment newComment)
         {
+            if (newComment is null)
+            {
+                throw new ArgumentException("Comment cannot be null");
+            }
             if (String.IsNullOrWhiteSpace(newComment.Content))
             {
                 throw new ArgumentException("Comment cannot be empty");
@@ -117,8 +120,10 @@ namespace BuildABand.Controllers
                 throw new ArgumentException("Invalid PostID");
             }
 
-            string insertStatement = @"INSERT INTO dbo.Comment
-                           VALUES (@CreatedTime, @ParentID, @MusicianID, @PostID, @Content)";
+            string insertStatement = 
+            @"INSERT INTO dbo.Comment
+            VALUES (@CreatedTime, @ParentID, @MusicianID, @PostID, @Content)";
+
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
             SqlDataReader dataReader;
@@ -147,6 +152,82 @@ namespace BuildABand.Controllers
             }
 
             return new JsonResult("Comment Added Successfully");
+        }
+
+        /// <summary>
+        /// Updates a comment
+        /// POST: api/comment/comment.CommentID
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <returns>JsonResult if updated successfully</returns>
+        [HttpPatch("{comment.CommentID}")]
+        public JsonResult UpdateComment(Comment comment)
+        {
+            if (comment is null)
+            {
+                throw new ArgumentException("Comment cannot be null");
+            }
+
+            string updateStatement = 
+            @"UPDATE dbo.Comment 
+            SET Content = @Content
+            WHERE CommentID = @CommentID";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand myCommand = new SqlCommand(updateStatement, connection))
+                {
+                    myCommand.Parameters.AddWithValue("@CommentID", comment.CommentID);
+                    myCommand.Parameters.AddWithValue("@Content", comment.Content);
+                    dataReader = myCommand.ExecuteReader();
+                    resultsTable.Load(dataReader);
+                    dataReader.Close();
+                    connection.Close();
+                }
+            }
+
+            return new JsonResult("Comment Updated Successfully");
+        }
+
+        /// <summary>
+        /// Deletes a comment  
+        /// DELETE: api/comment/comment.CommentID
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <returns>JsonResult if deleted successfully</returns>
+        [HttpDelete("{comment.CommentID}")]
+        public JsonResult DeleteComment(Comment comment)
+        {
+            if (comment is null)
+            {
+                throw new ArgumentException("Comment cannot be null");
+            }
+
+            string deleteStatement = 
+            @"DELETE FROM dbo.Comment 
+            WHERE CommentID = @CommentID";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand myCommand = new SqlCommand(deleteStatement, connection))
+                {
+                    myCommand.Parameters.AddWithValue("@CommentID", comment.CommentID);
+                    dataReader = myCommand.ExecuteReader();
+                    resultsTable.Load(dataReader);
+                    dataReader.Close();
+                    connection.Close();
+                }
+            }
+
+            return new JsonResult("Comment Deleted Successfully");
         }
     }
 }

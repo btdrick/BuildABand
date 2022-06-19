@@ -11,13 +11,14 @@ export class Post extends Component {
                     <div className="card-header"><h3> This is what a post looks like </h3></div>
                     <div className="card-body">
                         <h5 className="card-title"> Post info: </h5>
-                        <p className="card-text"> {this.props.content} </p>
+                        <p className="card-text"> { this.props.content } </p>
                     </div>
                 
                     <button type="button" className="btn btn-primary" style={{margin: 0.2 + 'em'}}> Like </button>
                 </div>
                 {/* Render comments for current post */}
-                <Comments currentUserID="1" currentPostID={this.props.postID} />
+                {/** @todo: replace set currentUserID with session variable **/}
+                <Comments currentUserID={1} currentPostID={ this.props.postID } />
             </div>
                            
                   
