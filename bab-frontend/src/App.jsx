@@ -73,7 +73,7 @@ function App() {
         setMusicianID(0);
         setError({username: '', password: '', badResponse: ''});
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, isLoggedin, musicianID, password, username])
 
   return (
     <>
