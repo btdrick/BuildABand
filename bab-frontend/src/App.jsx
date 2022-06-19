@@ -65,31 +65,35 @@ function App() {
 
   return (
     <>
+      <div style={{backgroundColor: '#3a3a3f'}}>
+          <img src={require('./style/images/Build-A-Band.png')} alt={'Build a band logo'}/>
+      </div>
+      
       <div className='login-page' style={{ textAlign: 'center' }}>
         <h1>Login</h1>
         {!isLoggedin ? 
         (
           <div>
 
-            <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
-              <li class="nav-item" role="presentation">
-                <a style={{backgroundColor: '#495c7c'}} class="nav-link active" id="tab-login" data-mdb-toggle="pill" href="#/" role="tab"
+            <ul className="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+              <li className="nav-item" role="presentation">
+                <a style={{backgroundColor: '#495c7c'}} className="nav-link active" id="tab-login" data-mdb-toggle="pill" href="#/" role="tab"
                   aria-controls="pills-login" aria-selected="true">Login</a>
               </li>
-              <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tab-register" data-mdb-toggle="pill" href="#/newMusician" role="tab"
+              <li className="nav-item" role="presentation">
+                <a className="nav-link" id="tab-register" data-mdb-toggle="pill" href="#/newMusician" role="tab"
                   aria-controls="pills-register" aria-selected="false">Register</a>
               </li>
             </ul>
 
-            <div class="tab-content">
-              <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+            <div className="tab-content">
+              <div className="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
 
                 <form action="">
-                  <div class="form-group">
+                  <div className="form-group">
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       onChange={(e) => setUsername(e.target.value)}
                       value={username}
                       placeholder="Username"
@@ -97,10 +101,10 @@ function App() {
                     <div className="text-danger">{error.username}</div>
                   </div>
 
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="password"
-                        class="form-control"
+                        className="form-control"
                         onChange={(e) => setPassword(e.target.value)}
                         value={password}
                         placeholder="Password"

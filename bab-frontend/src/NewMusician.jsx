@@ -208,178 +208,183 @@ class NewMusician extends Component {
       return <Navigate to='/' />
     }
     return (
+      <>
+        <div style={{backgroundColor: '#3a3a3f'}}>
+          <img src={require('./style/images/Build-A-Band.png')} alt={'Build a band logo'}/>
+        </div>
+
         <div className='login-page'>
           <h1 style={{ textAlign: 'center' }}>Register</h1>
 
           <div>
-            <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <a class="nav-link" id="tab-login" data-mdb-toggle="pill" href="#/" role="tab"
+            <ul className="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+                <li className="nav-item" role="presentation">
+                  <a className="nav-link" id="tab-login" data-mdb-toggle="pill" href="#/" role="tab"
                     aria-controls="pills-login" aria-selected="true">Login</a>
                 </li>
-                <li class="nav-item" role="presentation">
-                  <a style={{backgroundColor: '#495c7c'}} class="nav-link active" id="tab-register" data-mdb-toggle="pill" href="#/newMusician" role="tab"
+                <li className="nav-item" role="presentation">
+                  <a style={{backgroundColor: '#495c7c'}} className="nav-link active" id="tab-register" data-mdb-toggle="pill" href="#/newMusician" role="tab"
                     aria-controls="pills-register" aria-selected="false">Register</a>
                 </li>
             </ul>
 
-              <div class="tab-content">
+              <div className="tab-content">
                 <div id="pills-register" role="tabpanel" aria-labelledby="tab-register">
                   
                   <form onSubmit={this.handleSubmit}>
-                    <div class="form-group">
+                    <div className="form-group">
                       <input type="text"
                         name="username"
                         value={this.state.input.username}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter Username"
                         id="username" />
                       <div className="text-danger">{this.state.errors.username}</div>
                     </div>
 
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="text"
                         name="fname"
                         value={this.state.input.fname}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter First Name"
                         id="fname" />
 
                       <div className="text-danger">{this.state.errors.fname}</div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="text"
                         name="lname"
                         value={this.state.input.lname}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter Last Name"
                         id="lname" />
                       <div className="text-danger">{this.state.errors.lname}</div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="text"
                         name="email"
                         value={this.state.input.email}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter email"
                         id="email" />
 
                       <div className="text-danger">{this.state.errors.email}</div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="password"
                         name="password"
                         value={this.state.input.password}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter password"
                         id="password" />
 
                       <div className="text-danger">{this.state.errors.password}</div>
                     </div>
 
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="password"
                         name="confirm_password"
                         value={this.state.input.confirm_password}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter confirm password"
                         id="confirm_password" />
 
                       <div className="text-danger">{this.state.errors.confirm_password}</div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="Date"
                         name="dateOfBirth"
                         value={this.state.input.dateOfBirth}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter Date of Birth"
                         id="dateOfBirth" />
 
                       <div className="text-danger">{this.state.errors.dateOfBirth}</div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="text"
                         name="phone"
                         value={this.state.input.phone}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter phone number"
                         id="phone" />
 
                       <div className="text-danger">{this.state.errors.phone}</div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="text"
                         name="sex"
                         value={this.state.input.sex}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter sex"
                         id="sex" />
 
                       <div className="text-danger">{this.state.errors.sex}</div>
                     </div>
 
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="text"
                         name="address1"
                         value={this.state.input.address1}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter address1"
                         id="address1" />
 
                       <div className="text-danger">{this.state.errors.address1}</div>
                     </div>
 
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="text"
                         name="address2"
                         value={this.state.input.address2}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter address2"
                         id="address2" />
 
                       <div className="text-danger">{this.state.errors.address2}</div>
                     </div>
 
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="text"
                         name="city"
                         value={this.state.input.city}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter city"
                         id="city" />
 
                       <div className="text-danger">{this.state.errors.city}</div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="text"
                         name="zipCode"
                         value={this.state.input.zipCode}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter zipCode"
                         id="zipCode" />
 
@@ -396,13 +401,13 @@ class NewMusician extends Component {
                     
                     <div className="text-danger">{this.state.errors.stateCode}</div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                       <input
                         type="text"
                         name="instrument"
                         value={this.state.input.instrument}
                         onChange={this.handleChange}
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter instrument"
                         id="instrument" />
 
@@ -419,6 +424,7 @@ class NewMusician extends Component {
               </div>
           </div>
         </div>
+      </>
     );
   }
   

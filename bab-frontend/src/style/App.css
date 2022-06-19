@@ -3,9 +3,14 @@
     background-color: #cb9a9f;
 }
 
+img {
+    width: 100px;
+    height: 100px;
+}
+
 .login-page {
     width: 360px;
-    padding: 8% 0 0;
+    padding: 2% 0 0;
     margin: auto;
 }
 
