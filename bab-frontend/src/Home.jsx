@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
 import { Post } from './Post';
 import Search from "./components/search/Search";
 import { variables } from './Variables.js';
 import UserProfile from './components/UserProfile.js';
+import Navbar from './components/header/Navbar';
 
 export class Home extends Component {
     /* Constructor for the component. Tracks the posts shown on the feed and whether the page's loading status */
@@ -90,11 +90,8 @@ export class Home extends Component {
             Content
         }=this.state;
         return ( 
-            <div>
-                <Link to="/">Login</Link>              
- 
-                <br/>
-                <Link to="/connections">View Connections</Link>              
+            <div>   
+                <Navbar/>          
                 <h3> This is the Home page </h3>
                 <button type="button"
                 className="btn btn-primary m-2"

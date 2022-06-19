@@ -2,7 +2,7 @@ import './style/App.css';
 import { Link } from "react-router-dom";
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Home} from './Home'
+import {Navigate} from 'react-router-dom';
 import {variables} from './Variables.js';
 import { useEffect } from 'react';
 import UserProfile from './components/UserProfile.js';
@@ -18,11 +18,6 @@ function App() {
   const login = (event) => {
     event.preventDefault();
     validate();
-  };
- 
-  const logout = () => {
-    localStorage.removeItem('token-info');
-    setIsLoggedin(false);
   };
 
   /* Validates user input */
@@ -60,14 +55,6 @@ function App() {
  
   useEffect(() => {
     if (isAuthenticated) {
-      const userData = {
-        username,
-        password,
-        musicianID,
-        isLoggedin,
-        isAuthenticated,
-      };
-      localStorage.setItem('token-info', JSON.stringify(userData));
         setIsLoggedin(true);
         setUsername('');
         setPassword('');
@@ -111,9 +98,7 @@ function App() {
         ) : 
         (
           <>
-            <h1>User is logged in</h1>
-            <button onClickCapture={logout}>logout user</button>
-            <Home musicianID={musicianID} />
+            <Navigate to='/home' />
           </>
         )}
       </div>
