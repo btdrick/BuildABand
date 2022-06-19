@@ -4,33 +4,19 @@ import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Home} from './Home'
 import {variables} from './Variables.js';
+import { useEffect } from 'react';
  
 function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [musicianID, setMusicianID] = useState('')
+  const [musicianID, setMusicianID] = useState(0);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [isAuthenticated, setAuthentication] = useState(false);
   const [error, setError] = useState({username: '', password: '', badResponse: ''});
  
   const login = (event) => {
     event.preventDefault();
-    const userData = {
-      username,
-      password,
-      musicianID,
-      isLoggedin,
-      isAuthenticated,
-    };
-    if (validate()) {
-      localStorage.setItem('token-info', JSON.stringify(userData));
-      setIsLoggedin(true);
-      setUsername('');
-      setPassword('');
-      setAuthentication(false);
-      setMusicianID('')
-      setError({username: '', password: '', badResponse: ''})
-    }
+    validate();
   };
  
   const logout = () => {
@@ -52,7 +38,6 @@ function App() {
       return;
     }
     getUserLogin();
-
     if (!isAuthenticated) {
       isValid = false;
     }
@@ -63,15 +48,33 @@ function App() {
   const getUserLogin = async () => {
       const response = await fetch(variables.API_URL+'accounts/login?username='+ username + '&password=' + password);
       if (!response.ok) {  
-        setError({badResponse: 'Username or password incorrect'})
+        setError({badResponse: (await response.text())})
         return;
       }  
       const data = await response.json();
       setMusicianID(data);
-      console.log('musician' + musicianID);
       setAuthentication(true);
   }
  
+  useEffect(() => {
+    if (isAuthenticated) {
+      const userData = {
+        username,
+        password,
+        musicianID,
+        isLoggedin,
+        isAuthenticated,
+      };
+      localStorage.setItem('token-info', JSON.stringify(userData));
+        setIsLoggedin(true);
+        setUsername('');
+        setPassword('');
+        setAuthentication(false);
+        setMusicianID(0);
+        setError({username: '', password: '', badResponse: ''});
+    }
+  }, [isAuthenticated])
+
   return (
     <>
       <div style={{ textAlign: 'center' }}>
