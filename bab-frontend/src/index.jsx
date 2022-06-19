@@ -20,7 +20,7 @@ root.render(
         <Route path="/" element={<App/>} />
         <Route path="/home" element={<Home/>}/>
         <Route path="/newMusician" element={<NewMusician/>}/>
-        <Route path={`/profile/${UserProfile.getMusicianID()}`} element={<Profile/>}/>
+        <Route path="/profile/:id" element={<Profile/>}/>
         <Route path="/connections" element={<Connections/>}/>
       </Routes>
     </HashRouter>

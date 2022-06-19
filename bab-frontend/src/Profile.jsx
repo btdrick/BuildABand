@@ -77,51 +77,60 @@ export class Profile extends Component {
             PostID,
             Content
         }=this.state;
-        return ( 
-            <div>
-                <Navbar/>
-                <h3> This is the Profile page </h3> 
-                <button type="button"
-                className="btn btn-primary m-2 float-end"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
-                onClick={()=>this.addClick()}>
-                    Create Post
-                </button>
-
-                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
-                    <div className="modal-dialog modal-lg modal-dialog-centered">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">{modalTitle}</h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                                ></button>
-                            </div> 
-
-                            <div className="input-group mb-3">
-                                <span className="input-group-text">Content</span>
-                                <input type="text" className="form-control"
-                                value={Content}
-                                onChange={this.changePostContent}/>
-                            </div>
-
-                            <div className="modal-body">               
-                                {PostID===0?
-                                <button type="button"
-                                className="btn btn-primary float-start"
-                                onClick={()=>this.createClick()}
-                                >Create</button>
-                                :null}
+        if (this.state.loading) {
+            return (
+                <div>
+                    <p>loading...</p>
+                </div>
+            );
+        }
+        else {
+            return ( 
+                <div>
+                    <Navbar/>
+                    <h3> This is the Profile page </h3> 
+                    <button type="button"
+                    className="btn btn-primary m-2 float-end"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    onClick={()=>this.addClick()}>
+                        Create Post
+                    </button>
+    
+                    <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
+                        <div className="modal-dialog modal-lg modal-dialog-centered">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">{modalTitle}</h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                    ></button>
+                                </div> 
+    
+                                <div className="input-group mb-3">
+                                    <span className="input-group-text">Content</span>
+                                    <input type="text" className="form-control"
+                                    value={Content}
+                                    onChange={this.changePostContent}/>
+                                </div>
+    
+                                <div className="modal-body">               
+                                    {PostID===0?
+                                    <button type="button"
+                                    className="btn btn-primary float-start"
+                                    onClick={()=>this.createClick()}
+                                    >Create</button>
+                                    :null}
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <ul>
+                        {this.state.posts.map((post, index) => 
+                        <li key={index}><Post content={post.Content} /></li>)}
+                    </ul>                   
                 </div>
-                <ul>
-                    {this.state.posts.map((post, index) => 
-                    <li key={index}><Post content={post.Content} /></li>)}
-                </ul>                   
-            </div>
-        )
+            )
+        }
     }
 }
 
