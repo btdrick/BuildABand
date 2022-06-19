@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import { variables } from "./Variables";
 import UserProfile from "./components/UserProfile";
+import Navbar from './components/header/Navbar';
 
 class Connections extends Component{
     
@@ -25,6 +26,7 @@ class Connections extends Component{
     render() {
       return(
           <div>
+            <Navbar/>
             <h1>Friends connections</h1>
             <table style={{width: "20%"}}>
                 <thead>

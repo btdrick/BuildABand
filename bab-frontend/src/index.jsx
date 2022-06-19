@@ -8,10 +8,11 @@ import NewMusician from  './NewMusician';
 import reportWebVitals from './reportWebVitals';
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Connections from './Connections';
+import UserProfile from './components/UserProfile.js';
 
-/* All of the routing is defined here */
+/* All of the routing is defined here. Note: Use backtics ` for dynamic paths, not double
+or single quotes */
 const root = ReactDOM.createRoot(document.getElementById('root'));
-//todo: pass entered musician id to home and profile path if it exists
 root.render(
   <React.StrictMode>
     <HashRouter>
@@ -19,7 +20,7 @@ root.render(
         <Route path="/" element={<App/>} />
         <Route path="/home" element={<Home/>}/>
         <Route path="/newMusician" element={<NewMusician/>}/>
-        <Route path="/profile/1" element={<Profile musicianID = {1} />}/>
+        <Route path={`/profile/${UserProfile.getMusicianID()}`} element={<Profile/>}/>
         <Route path="/connections" element={<Connections/>}/>
       </Routes>
     </HashRouter>
