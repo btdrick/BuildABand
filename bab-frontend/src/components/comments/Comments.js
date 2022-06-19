@@ -31,7 +31,7 @@ const Comments = ({ currentUserID, currentPostID }) => {
         const data = await response.json(); 
         return data;
     };
-    
+
     /* Replies to comments */
     const getReplies = (commentID) =>
     backendComments
@@ -154,7 +154,7 @@ const Comments = ({ currentUserID, currentPostID }) => {
                     activeComment={ activeComment }
                     setActiveComment={ setActiveComment }
                     updateComment= { updateComment }
-                    deleteComment={ deleteComment } />
+                    deleteComment={ deleteComment }  />
                 ))}
             </div>
             {(rootComments.length > 5) 
