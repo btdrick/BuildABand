@@ -8,7 +8,6 @@ import NewMusician from  './NewMusician';
 import reportWebVitals from './reportWebVitals';
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Connections from './Connections';
-import UserProfile from './components/UserProfile.js';
 
 /* All of the routing is defined here. Note: Use backtics ` for dynamic paths, not double
 or single quotes */
