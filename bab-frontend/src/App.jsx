@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Home} from './Home'
 import {variables} from './Variables.js';
 import { useEffect } from 'react';
+import UserProfile from './components/UserProfile.js';
  
 function App() {
   const [username, setUsername] = useState('');
@@ -54,6 +55,7 @@ function App() {
       const data = await response.json();
       setMusicianID(data);
       setAuthentication(true);
+      UserProfile.setMusicianID(data);
   }
  
   useEffect(() => {

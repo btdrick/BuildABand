@@ -80,7 +80,7 @@ export class Profile extends Component {
         }=this.state;
         return ( 
             <div>
-                <Link to="/">Login</Link>
+                <Link to="/home">Home</Link>
                 <h3> This is the Profile page </h3> 
                 <button type="button"
                 className="btn btn-primary m-2 float-end"
