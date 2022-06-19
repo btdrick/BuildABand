@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Post } from './Post';
 import {variables} from './Variables.js';
+import UserProfile from './components/UserProfile.js';
 
 export class Profile extends Component {
     /* Constructor for the component. Tracks the posts shown on the profile and whether the page's loading status */
@@ -10,9 +11,8 @@ export class Profile extends Component {
         this.state = { 
             posts:      [], 
             PostID:     0,          
-            MusicianID: this.props.musicianID,
+            MusicianID: UserProfile.getMusicianID(),
             Content:    "",
-
             modalTitle: "",
             loading:    true
         };
@@ -43,7 +43,6 @@ export class Profile extends Component {
         this.setState({
             modalTitle: "Create Post",
             PostID:     0,
-            MusicianID: 1,
             Content:    ""          
         });
     }
@@ -58,7 +57,7 @@ export class Profile extends Component {
             },
             body:JSON.stringify({   
                 CreatedTime: new Date(),                           
-                MusicianID: this.props.musicianID,
+                MusicianID: this.state.MusicianID,
                 Content:    this.state.Content
             })
         })

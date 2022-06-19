@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Post } from './Post';
 import Search from "./components/search/Search";
 import { variables } from './Variables.js';
+import UserProfile from './components/UserProfile.js';
 
 export class Home extends Component {
     /* Constructor for the component. Tracks the posts shown on the feed and whether the page's loading status */
@@ -12,9 +13,8 @@ export class Home extends Component {
             posts:      [], 
             musicians:  [],
             PostID:     0,          
-            MusicianID: 0,
+            MusicianID: UserProfile.getMusicianID(),
             Content:    "",
-
             modalTitle: "",
             loading:    true
         };
@@ -55,7 +55,6 @@ export class Home extends Component {
         this.setState({
             modalTitle: "Create Post",
             PostID:     0,
-            MusicianID: 1,
             Content:    ""          
         });
     }
