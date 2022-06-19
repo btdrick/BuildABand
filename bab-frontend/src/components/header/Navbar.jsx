@@ -41,7 +41,7 @@ export class Navbar extends React.Component {
                 return (
                 <header>
                 <Link to="/home">Home</Link>
-                <Link to="/profile">Profile</Link>
+                <Link to={`/profile/${UserProfile.getMusicianID()}`}>Profile</Link>
                 <Link to="/connections">Connections</Link>
                 <button onClickCapture={this.logout}>Logout</button>
                 <Search 
