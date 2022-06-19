@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./search.css";
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
+import { Link } from "react-router-dom";
 
 function Search({ placeholder, data }) {
     /* Search Results array */
@@ -53,11 +54,10 @@ function Search({ placeholder, data }) {
         {filteredData.length !== 0 && (
         <div className="data-result">
             {filteredData.slice(0, 15).map((value, key) => {
-            {/** @todo: href must be updated to redirect to appropriate page **/}
             return (
-                <a key={value.MusicianID} className="data-item" href={"/#/profile/" + value.MusicianID}>
-                <p>{value.Fname + " " + value.Lname} </p>
-                </a>
+                <div className="data-item">
+                    <Link to={`/profile/${value.MusicianID}`}>{value.Fname + " " + value.Lname}</Link>
+                </div>
             );
             })}
         </div>
