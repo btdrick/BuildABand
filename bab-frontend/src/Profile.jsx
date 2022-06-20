@@ -3,6 +3,7 @@ import { Post } from './Post';
 import {variables} from './Variables.js';
 import UserProfile from './components/UserProfile.js';
 import Navbar from './components/header/Navbar';
+import AddConnection from './components/connection/AddConnection.js'
 
 export class Profile extends Component {
     /* Constructor for the component. Tracks the posts shown on the profile and whether the page's loading status */
@@ -127,7 +128,9 @@ export class Profile extends Component {
                     <ul>
                         {this.state.posts.map((post, index) => 
                         <li key={index}><Post content={post.Content} /></li>)}
-                    </ul>                   
+                        <AddConnection followerID={this.state.MusicianID}/>    
+                    </ul>
+                               
                 </div>
             )
         }
