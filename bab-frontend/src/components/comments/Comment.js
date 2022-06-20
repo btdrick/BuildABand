@@ -29,6 +29,8 @@ const Comment = ({
     const createdTime = 
         new Date(comment.CreatedTime).toLocaleDateString() + " " 
         + new Date(comment.CreatedTime).toLocaleTimeString();
+
+    const likes = 0;
     
     return(
         <div className="comment">
@@ -43,7 +45,7 @@ const Comment = ({
                 </div>
                 <div className="comment-text">{comment.Content}</div>
                 {(comment.Likes > 1) 
-                && <div className="comment-content">{ comment.Likes } Likes</div>}
+                && <div className="comment-content">{ likes } Likes</div>}
                 <div className="comment-actions">
                     {/* Reply section */}
                     {canReply 

@@ -1,5 +1,4 @@
-﻿using BuildABand.DAL;
-using BuildABand.Models;
+﻿using BuildABand.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
