@@ -1,10 +1,10 @@
-import './style/App.css';
 import { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navigate} from 'react-router-dom';
 import {variables} from './Variables.js';
 import { useEffect } from 'react';
 import UserProfile from './components/UserProfile.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './style/App.css';
  
 function App() {
   const [username, setUsername] = useState('');
@@ -64,9 +64,9 @@ function App() {
   }, [isAuthenticated, isLoggedin, musicianID, password, username])
 
   return (
-    <>
+    <div id="login-background">
       <div style={{backgroundColor: '#3a3a3f'}}>
-          <img src={require('./style/images/Build-A-Band.png')} alt={'Build a band logo'}/>
+          <img id="logo" src={require('./style/images/Build-A-Band.png')} alt={'Build a band logo'}/>
       </div>
       
       <div className='login-page' style={{ textAlign: 'center' }}>
@@ -129,7 +129,7 @@ function App() {
           </>
         )}
       </div>
-    </>
+    </div>
   );
 }
  

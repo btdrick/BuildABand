@@ -2,7 +2,7 @@ var UserProfile = (function() {
    
     // pull id from sessionStorage 
    var getMusicianID = function() {
-     return sessionStorage.musicianID;   
+     return parseInt(sessionStorage.musicianID);   
    };
  
    //Set musician id to sessionStorage 

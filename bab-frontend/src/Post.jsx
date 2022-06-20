@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Comments from './components/comments/Comments';
+import UserProfile from './components/UserProfile';
 
 /* This is a child component to serveral other components, i.e. child component in Profile component */
 export class Post extends Component {
@@ -18,7 +19,7 @@ export class Post extends Component {
                 </div>
                 {/* Render comments for current post */}
                 {/** @todo: replace set currentUserID with session variable **/}
-                <Comments currentUserID={1} currentPostID={ this.props.postID } />
+                <Comments currentUserID={UserProfile.getMusicianID()} currentPostID={ this.props.postID } />
             </div>
                            
                   
