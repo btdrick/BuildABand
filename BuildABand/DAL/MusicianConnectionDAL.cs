@@ -15,6 +15,7 @@ namespace BuildABand.DAL
     public class MusicianConnectionDAL
     {
         private readonly IConfiguration _configuration;
+        private SqlTransaction transaction;
 
         /// <summary>
         /// Constructor to initialize configuration variable
@@ -102,10 +103,20 @@ namespace BuildABand.DAL
         /// <param name="toMusicianID"></param>
         public void SendConnectionRequest(int fromMusicianID, int toMusicianID)
         {
-            string statement = "";
-
-            //add connection to Connection table
-            throw new NotImplementedException();
+            string insertStatement = "INSERT INTO Connection " +
+                "VALUEs (@InitiatorID, @FollowerID, @CreatedTime, 0)";
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand insertCommand = new SqlCommand(insertStatement, connection))
+                {
+                   
+                    insertCommand.Parameters.AddWithValue("@InitiatorID", fromMusicianID);
+                    insertCommand.Parameters.AddWithValue("@FollowerID", toMusicianID);
+                    insertCommand.Parameters.AddWithValue("@CreatedTime", DateTime.Now);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

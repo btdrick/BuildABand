@@ -52,7 +52,16 @@ namespace BuildABand.Controllers
                 throw new ArgumentException("Invalid musician");
             }
 
-            this.connectionSource.SendConnectionRequest(fromMusicianID, toMusicianID);
+            try
+            {
+                this.connectionSource.SendConnectionRequest(fromMusicianID, toMusicianID);
+            }
+            catch (Exception ex)
+            {
+
+               return new JsonResult(ex.Message);
+            }
+           
 
             return new JsonResult("Connection request sent");
         }
