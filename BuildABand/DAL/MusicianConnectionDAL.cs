@@ -77,10 +77,17 @@ namespace BuildABand.DAL
         /// <param name="connectionRequestID"></param>
         public void RejectConnectionRequest(int connectionRequestID)
         {
-            string statement = "";
-
-            //Remove connection row from Connection table
-            throw new NotImplementedException();
+            string deleteStatement = "DELETE FROM Connection " +
+               "WHERE ConnectionID = @ConnectionID";
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand insertCommand = new SqlCommand(deleteStatement, connection))
+                {
+                    insertCommand.Parameters.AddWithValue("@ConnectionID", connectionRequestID);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
         }
 
 
@@ -90,10 +97,18 @@ namespace BuildABand.DAL
         /// <param name="connectionRequestID"></param>
         public void AcceptConnectionRequest(int connectionRequestID)
         {
-            string statement = "";
-
-            //Change Connected column in Connection table from 0 to 1
-            throw new NotImplementedException();
+            string updateStatement = "UPDATE Connection " +
+                "SET connected = 1 " +
+                "WHERE ConnectionID = @ConnectionID";
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand insertCommand = new SqlCommand(updateStatement, connection))
+                {
+                    insertCommand.Parameters.AddWithValue("@ConnectionID", connectionRequestID);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
         }
 
         /// <summary>

@@ -32,6 +32,7 @@ namespace BuildABand.Controllers
         [HttpGet("{password}")]
         public JsonResult GetSha256Hash(string password)
         {
+
             return new JsonResult( PasswordHash.GetSha256Hash(password));
         }
     }
