@@ -1,6 +1,7 @@
 ﻿using BuildABand.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace BuildABand.Controllers
 {
@@ -32,6 +33,8 @@ namespace BuildABand.Controllers
         [HttpGet("{password}")]
         public JsonResult GetSha256Hash(string password)
         {
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentException("Invalid musician");
 
             return new JsonResult( PasswordHash.GetSha256Hash(password));
         }

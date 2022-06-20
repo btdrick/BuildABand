@@ -64,6 +64,8 @@ namespace BuildABand.Controllers
         [HttpPost]
         public JsonResult PostNewMusician(NewMusician user)
         {
+            if (user == null)
+                throw new ArgumentException("Invalid arguement");
             try
             {
                 this.userSource.RegisterNewUser(user);
