@@ -1,19 +1,40 @@
-import './comments.css';
+import { useState, useEffect } from "react";
+import { variables } from '../../Variables.js';
+import { Link } from "react-router-dom";
 import CommentForm from "./CommentForm";
+import './comments.css';
 
 /* Attributes */
 const Comment = ({ 
     comment, 
     addComment, 
     replies, 
-    parentID = 
-    null, 
+    parentID = null, 
     currentUserID, 
     activeComment, 
     setActiveComment, 
     updateComment,
     deleteComment }) => {
-    
+
+    /* Author of comment */
+    const [authorInfo, setAuthorInfo] = useState([]);
+
+    /* Sets state for comment author information */
+    useEffect(() => {
+        const getAuthorInfo = async() => {
+            const response = await fetch(variables.API_URL+'musician/'+comment.MusicianID);
+            const data = await response.json(); 
+            var author = data[0]
+            
+            return author;
+        };
+        getAuthorInfo().then((data) => {
+            setAuthorInfo(data);
+        })
+    }, [comment.MusicianID]);
+
+    /* Name of comment author */
+    const authorName = authorInfo.Fname + " " + authorInfo.Lname;
     /* Only a logged-in user can reply to a comment */
     const canReply = Boolean(currentUserID);
     const isReplying = activeComment 
@@ -36,7 +57,7 @@ const Comment = ({
     const createdTime = 
         new Date(comment.CreatedTime).toLocaleDateString() + " " 
         + new Date(comment.CreatedTime).toLocaleTimeString();
-    
+      
     return(
         <div key={ comment.ComentID } className="comment">
             <div className="comment-image-container">
@@ -45,7 +66,7 @@ const Comment = ({
             <div className="comment-right-part">
                 <div className="comment-content">
                     <div className="comment-author">
-                        UserID { comment.MusicianID }</div>
+                    <Link to={`/profile/${comment.MusicianID}`}>{authorName}</Link></div>
                     <div>{ createdTime }</div>
                 </div>
                 {!isEditing && <div className="comment-text">{comment.Content}</div>}
@@ -103,7 +124,7 @@ const Comment = ({
                             activeComment={ activeComment }
                             setActiveComment={ setActiveComment }
                             updateComment={ updateComment }
-                            deleteComment={ deleteComment }/>
+                            deleteComment={ deleteComment } />
                         ))}
                     </div>
                 )}

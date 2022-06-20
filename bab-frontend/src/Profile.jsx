@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
 import { Post } from './Post';
 import {variables} from './Variables.js';
+import UserProfile from './components/UserProfile.js';
+import Navbar from './components/header/Navbar';
 
 export class Profile extends Component {
     /* Constructor for the component. Tracks the posts shown on the profile and whether the page's loading status */
@@ -10,9 +11,8 @@ export class Profile extends Component {
         this.state = { 
             posts:      [], 
             PostID:     0,          
-            MusicianID: this.props.musicianID,
+            MusicianID: UserProfile.getMusicianID(),
             Content:    "",
-
             modalTitle: "",
             loading:    true
         };
@@ -43,7 +43,6 @@ export class Profile extends Component {
         this.setState({
             modalTitle: "Create Post",
             PostID:     0,
-            MusicianID: 1,
             Content:    ""          
         });
     }
@@ -58,7 +57,7 @@ export class Profile extends Component {
             },
             body:JSON.stringify({   
                 CreatedTime: new Date(),                           
-                MusicianID: this.props.musicianID,
+                MusicianID: this.state.MusicianID,
                 Content:    this.state.Content
             })
         })
@@ -78,51 +77,60 @@ export class Profile extends Component {
             PostID,
             Content
         }=this.state;
-        return ( 
-            <div>
-                <Link to="/">Login</Link>
-                <h3> This is the Profile page </h3> 
-                <button type="button"
-                className="btn btn-primary m-2 float-end"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
-                onClick={()=>this.addClick()}>
-                    Create Post
-                </button>
-
-                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
-                    <div className="modal-dialog modal-lg modal-dialog-centered">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">{modalTitle}</h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                                ></button>
-                            </div> 
-
-                            <div className="input-group mb-3">
-                                <span className="input-group-text">Content</span>
-                                <input type="text" className="form-control"
-                                value={Content}
-                                onChange={this.changePostContent}/>
-                            </div>
-
-                            <div className="modal-body">               
-                                {PostID===0?
-                                <button type="button"
-                                className="btn btn-primary float-start"
-                                onClick={()=>this.createClick()}
-                                >Create</button>
-                                :null}
+        if (this.state.loading) {
+            return (
+                <div>
+                    <p>loading...</p>
+                </div>
+            );
+        }
+        else {
+            return ( 
+                <div>
+                    <Navbar/>
+                    <h3> This is the Profile page </h3> 
+                    <button type="button"
+                    className="btn btn-primary m-2 float-end"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    onClick={()=>this.addClick()}>
+                        Create Post
+                    </button>
+    
+                    <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
+                        <div className="modal-dialog modal-lg modal-dialog-centered">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">{modalTitle}</h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                    ></button>
+                                </div> 
+    
+                                <div className="input-group mb-3">
+                                    <span className="input-group-text">Content</span>
+                                    <input type="text" className="form-control"
+                                    value={Content}
+                                    onChange={this.changePostContent}/>
+                                </div>
+    
+                                <div className="modal-body">               
+                                    {PostID===0?
+                                    <button type="button"
+                                    className="btn btn-primary float-start"
+                                    onClick={()=>this.createClick()}
+                                    >Create</button>
+                                    :null}
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <ul>
+                        {this.state.posts.map((post, index) => 
+                        <li key={index}><Post content={post.Content} /></li>)}
+                    </ul>                   
                 </div>
-                <ul>
-                    {this.state.posts.map((post, index) => 
-                    <li key={index}><Post content={post.Content} /></li>)}
-                </ul>                   
-            </div>
-        )
+            )
+        }
     }
 }
 

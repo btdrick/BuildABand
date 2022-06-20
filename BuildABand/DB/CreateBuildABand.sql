@@ -1,5 +1,9 @@
 USE [master]
 GO
+
+DROP DATABASE BuildABand
+GO
+
 /****** Object:  Database [BuildABand]    Script Date: 18/06/2022 6:40:34 PM ******/
 CREATE DATABASE [BuildABand]
  CONTAINMENT = NONE
