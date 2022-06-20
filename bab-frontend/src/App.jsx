@@ -1,5 +1,4 @@
 import './style/App.css';
-import { Link } from "react-router-dom";
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navigate} from 'react-router-dom';
@@ -66,35 +65,63 @@ function App() {
 
   return (
     <>
-      <div style={{ textAlign: 'center' }}>
-        <h1>This is the landing page</h1>
+      <div style={{backgroundColor: '#3a3a3f'}}>
+          <img src={require('./style/images/Build-A-Band.png')} alt={'Build a band logo'}/>
+      </div>
+      
+      <div className='login-page' style={{ textAlign: 'center' }}>
+        <h1>Login</h1>
         {!isLoggedin ? 
         (
-          <>
-          <Link to="/newMusician">New Musician</Link>
+          <div>
 
-            <form action="">
-              <input
-                type="text"
-                onChange={(e) => setUsername(e.target.value)}
-                value={username}
-                placeholder="Username"
-              />
-              <div className="text-danger">{error.username}</div>
+            <ul className="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+              <li className="nav-item" role="presentation">
+                <a style={{backgroundColor: '#495c7c'}} className="nav-link active" id="tab-login" data-mdb-toggle="pill" href="#/" role="tab"
+                  aria-controls="pills-login" aria-selected="true">Login</a>
+              </li>
+              <li className="nav-item" role="presentation">
+                <a className="nav-link" id="tab-register" data-mdb-toggle="pill" href="#/newMusician" role="tab"
+                  aria-controls="pills-register" aria-selected="false">Register</a>
+              </li>
+            </ul>
 
-              <input
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                placeholder="Password"
-              />
-              <div className="text-danger">{error.password}</div>
-              <div className="text-danger">{error.badResponse}</div>
-              <button type="submit" onClick={login}>
-                Login
-              </button>
-            </form>
-          </>
+            <div className="tab-content">
+              <div className="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+
+                <form action="">
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      className="form-control"
+                      onChange={(e) => setUsername(e.target.value)}
+                      value={username}
+                      placeholder="Username"
+                    />
+                    <div className="text-danger">{error.username}</div>
+                  </div>
+
+                    <div className="form-group">
+                      <input
+                        type="password"
+                        className="form-control"
+                        onChange={(e) => setPassword(e.target.value)}
+                        value={password}
+                        placeholder="Password"
+                      />
+                      <div className="text-danger">{error.password}</div>
+                      <div className="text-danger">{error.badResponse}</div>
+                    </div>
+                    <br/>
+                    <button className="btn btn-dark btn-lg btn-block" type="submit" onClick={login} style={{backgroundColor: '#495c7c', border: 'none'}}>
+                      Login
+                    </button>
+                </form>
+              </div>
+
+            </div>
+
+          </div>
         ) : 
         (
           <>
