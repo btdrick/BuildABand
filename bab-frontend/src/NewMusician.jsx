@@ -208,9 +208,9 @@ class NewMusician extends Component {
       return <Navigate to='/' />
     }
     return (
-      <>
+      <div id="login-background">
         <div style={{backgroundColor: '#3a3a3f'}}>
-          <img src={require('./style/images/Build-A-Band.png')} alt={'Build a band logo'}/>
+          <img id="logo" src={require('./style/images/Build-A-Band.png')} alt={'Build a band logo'}/>
         </div>
 
         <div className='login-page'>
@@ -424,7 +424,7 @@ class NewMusician extends Component {
               </div>
           </div>
         </div>
-      </>
+      </div>
     );
   }
   

@@ -1,9 +1,13 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
-* {
+#login-background {
+    position: absolute;
+    overflow: auto;
     background-color: #cb9a9f;
+    width: 100%;
+    height: 100%;
 }
 
-img {
+#logo {
     width: 100px;
     height: 100px;
 }
