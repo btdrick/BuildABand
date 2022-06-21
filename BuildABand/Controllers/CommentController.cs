@@ -95,6 +95,44 @@ namespace BuildABand.Controllers
         }
 
         /// <summary>
+        /// Gets all comment likes for specified post
+        /// GET: api/comment/CommentID/like
+        /// </summary>
+        /// <param name="commentID"></param>
+        /// <returns>JsonResult table of comment likes</returns>
+        [HttpGet("{CommentID}/like")]
+        public JsonResult GetCommentLikes(int commentID)
+        {
+            if (commentID < 1)
+            {
+                throw new ArgumentException("CommentID must be greater than 0");
+            }
+
+            string selectStatement =
+            @"SELECT *
+            FROM dbo.CommentLike 
+            WHERE CommentID = @CommentID";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                {
+                    myCommand.Parameters.AddWithValue("@CommentID", commentID);
+                    dataReader = myCommand.ExecuteReader();
+                    resultsTable.Load(dataReader);
+                    dataReader.Close();
+                    connection.Close();
+                }
+            }
+
+            return new JsonResult(resultsTable);
+        }
+
+        /// <summary>
         /// Submits a comment for the current user 
         /// POST: api/comment
         /// </summary>

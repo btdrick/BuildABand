@@ -1,5 +1,7 @@
-import '../../index.css';
+import { useState, useEffect } from "react";
+import { variables } from '../../Variables.js';
 import CommentForm from "./CommentForm";
+import '../../index.css';
 
 /* Attributes */
 const Comment = ({ 
@@ -13,6 +15,90 @@ const Comment = ({
     setActiveComment, 
     deleteComment }) => {
     
+    /* Likes for comment */
+    const [likes, setLikes] = useState([]);
+    /* Amount of likes a comment has */
+    const [likesCount, setLikesCount] = useState(0);
+    
+    /* Makes api call to backend to get all comment likes */
+    const getLikes = async() => {
+        const response = await fetch(variables.API_URL+'comment/'+comment.CommentID+'/like');
+        const data = await response.json(); 
+        return data;
+    };
+
+    useEffect(() => {
+        getLikes().then((data) => {
+            setLikes(data);
+            setLikesCount(data.length);
+        });
+    }, [comment.MusicianID]);
+
+    /* Returns true if user has liked a comment before */
+    function hasLiked() {
+        const hasRow = likes.map(index => index.MusicianID === 1 && index.CommentID === comment.CommentID);
+        console.log("hasRow", hasRow);
+        return !hasRow.includes(true);
+    };
+
+    /* User cannot stack likes */
+    const canLike = hasLiked();
+
+    const likeComment = async(type) => {
+        switch(type) {
+            case 'Like':
+                /* Add a like */
+                fetch(variables.API_URL+'comment',{
+                    method:'POST',
+                    headers:{
+                        'Accept':'application/json',
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({   
+                        CommentID: comment.CommentID,
+                        MusicianID: 1,
+                        CreatedTime: new Date()
+                    })
+                })
+                .then(res=>res.json())
+                .then(()=>{ 
+                    /* Refresh likes */
+                    getLikes().then((data) => {
+                        setLikes(data);
+                        setLikesCount(data.length);
+                    });       
+                },(_error)=>{
+                    alert('An error has occurred with liking your comment');
+                })
+                break;
+            case 'Unlike':
+                /* Remove a like */
+                fetch(variables.API_URL+'comment/'+commentID,{
+                    method:'DELETE',
+                    headers:{
+                        'Accept':'application/json',
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({   
+                        CommentLikeID: commentLikeID
+                    })
+                })
+                .then(res=>res.json())
+                .then(()=>{ 
+                    /* Refresh likes */
+                    getLikes().then((data) => {
+                        setLikes(data);
+                        setLikesCount(data.length);
+                    });         
+                },(_error)=>{
+                    alert('An error has occurred with unliking your comment');
+                })
+                break;
+            default:
+                break;
+        }
+    };
+
     /* Only a logged-in user can reply to a comment */
     const canReply = Boolean(currentUserID);
     const isReplying = activeComment 
@@ -30,7 +116,7 @@ const Comment = ({
         new Date(comment.CreatedTime).toLocaleDateString() + " " 
         + new Date(comment.CreatedTime).toLocaleTimeString();
 
-    const likes = 0;
+    
     
     return(
         <div className="comment">
@@ -44,9 +130,19 @@ const Comment = ({
                     <div>{ createdTime }</div>
                 </div>
                 <div className="comment-text">{comment.Content}</div>
-                {(comment.Likes > 1) 
-                && <div className="comment-content">{ likes } Likes</div>}
+                {(likesCount >= 1) 
+                && <div className="comment-content">{ likesCount } Likes</div>}
                 <div className="comment-actions">
+                    {/* Like section */}
+                    {canLike ? (
+                        <div 
+                        className="comment-action" 
+                        onClick={() => likeComment({type: "like"})}>Like</div>
+                    ) : (
+                        <div 
+                        className="comment-action"
+                        onClick={() => likeComment({type: "unlike"})}>Unlike</div>
+                    )}
                     {/* Reply section */}
                     {canReply 
                     && (<div 
