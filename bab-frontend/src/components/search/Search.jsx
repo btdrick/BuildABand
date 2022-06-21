@@ -57,7 +57,7 @@ function Search({ placeholder, data }) {
             {filteredData.slice(0, 15).map((value, key) => {
             return (
                 <div className="data-item">
-                    <Link to={`/profile/${value.MusicianID}`}>{value.Fname + " " + value.Lname}</Link>
+                    <Link className="data-link" to={`/profile/${value.MusicianID}`}>{value.Fname + " " + value.Lname}</Link>
                     {UserProfile.setProfileID(value.MusicianID)}
                 </div>
             );
