@@ -3,6 +3,7 @@ import "./search.css";
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from "react-router-dom";
+import UserProfile from "../UserProfile";
 
 function Search({ placeholder, data }) {
     /* Search Results array */
@@ -57,6 +58,7 @@ function Search({ placeholder, data }) {
             return (
                 <div className="data-item">
                     <Link to={`/profile/${value.MusicianID}`}>{value.Fname + " " + value.Lname}</Link>
+                    {UserProfile.setProfileID(value.MusicianID)}
                 </div>
             );
             })}

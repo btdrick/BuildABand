@@ -12,7 +12,7 @@ export class Profile extends Component {
         this.state = { 
             posts:      [], 
             PostID:     0,          
-            MusicianID: UserProfile.getMusicianID(),
+            MusicianID: UserProfile.getProfileID(),
             Content:    "",
             modalTitle: "",
             loading:    true
