@@ -1,0 +1,8 @@
+#container {
+    margin-bottom: 2em;
+}
+
+#container .title {
+    text-align: center;
+    margin: 2em auto;
+}

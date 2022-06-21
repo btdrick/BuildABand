@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Post } from './Post';
-import Search from "./components/search/Search";
 import { variables } from './Variables.js';
 import UserProfile from './components/UserProfile.js';
 import Navbar from './components/header/Navbar';
+import './style/home.css';
 
 export class Home extends Component {
     /* Constructor for the component. Tracks the posts shown on the feed and whether the page's loading status */
@@ -90,23 +90,18 @@ export class Home extends Component {
             Content
         }=this.state;
         return ( 
-            <div>   
+            <div id="container">   
                 <Navbar/>          
-                <h3> This is the Home page </h3>
+                <h3 className="title"> Build-A-Band Home Feed </h3>
+                {/* Create post modal*/}
                 <button type="button"
-                className="btn btn-primary m-2"
+                className="btn btn-primary m-3"
                 data-bs-toggle="modal"
                 data-bs-target="#exampleModal"
                 onClick={()=>this.addClick()}>
                     Create Post
                 </button>
-
-                {/* Search bar to find other users */}
-                <Search 
-                placeholder="Search for a musician..." 
-                data={ this.state.musicians } />
-
-
+                <div className="container-lg">
                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                     <div className="modal-dialog modal-lg modal-dialog-centered">
                         <div className="modal-content">
@@ -139,8 +134,15 @@ export class Home extends Component {
                 <div>
                     <ul className="list-group" style={{listStyleType: 'none'}}>
                         {this.state.posts.map((post, index) => 
-                        <li key={index} className="list-group-item"><Post content={post.Content} postID={post.PostID} /></li>)}
+                        <li key={index} className="list-group-item">
+                            <Post 
+                            postID={post.PostID}
+                            createdTime={post.CreatedTime}
+                            content={post.Content}
+                            musicianID={post.MusicianID} />
+                            </li>)}
                     </ul>
+                </div>
                 </div>
             </div>
         )
