@@ -21,7 +21,7 @@ Test Report: https://docs.google.com/document/d/1_JhbqE1M40MQ-doQ0FhwSQXt94kRsav
 Iteration 2 Goal: 
 The app will fulfill remaining user stories from Iteration 1.
 The development team anticipates the implementation of 
-adminstrative priveleges for feed supervision. Build-A-Band
+adminstrative privileges for feed supervision. Build-A-Band
 will also be experimenting with the framework for its novel
 projects system and will seek to expand its networking features
 to include messaging and inviting users to projects.
