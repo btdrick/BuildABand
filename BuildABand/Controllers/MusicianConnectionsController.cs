@@ -32,6 +32,11 @@ namespace BuildABand.Controllers
         [HttpGet("{MusicianID}")]
         public JsonResult GetMusicianConnections(int MusicianID)
         {
+            if (MusicianID < 0)
+            {
+                throw new ArgumentException("Invalid connection request");
+            }
+
             try
             {
                 return new JsonResult(
@@ -43,5 +48,92 @@ namespace BuildABand.Controllers
                 return new JsonResult(ex.Message);
             }
         }
+
+        /// <summary>
+        ///   Post new connection 
+        ///   post: api/musicianconnections/fromMusicianID/toMusicianID
+        /// </summary>
+        /// <param name="fromMusicianID"></param>
+        /// <param name="toMusicianID"></param>
+        /// <returns></returns>
+        [HttpPost("{fromMusicianID}/{toMusicianID}")]
+        public JsonResult SendConnectionRequest(int fromMusicianID, int toMusicianID)
+        {
+            if (fromMusicianID < 0 || toMusicianID < 0)
+            {
+                throw new ArgumentException("Invalid musician");
+            }
+
+            try
+            {
+                this.connectionSource.SendConnectionRequest(fromMusicianID, toMusicianID);
+            }
+            catch (Exception ex)
+            {
+
+               return new JsonResult(ex.Message);
+            }
+           
+
+            return new JsonResult("Connection request sent");
+        }
+
+        /// <summary>
+        /// Accept pending connection 
+        /// Post api/musicianconnection/connectionRequestID
+        /// </summary>
+        /// <param name="connectionRequestID"></param>
+        /// <returns></returns>
+        [HttpPost("accept/{connectionRequestID}")]
+        public JsonResult AcceptConnectionRequest(int connectionRequestID)
+        {
+            if (connectionRequestID < 0)
+            {
+                throw new ArgumentException("Invalid connection request");
+            }
+
+            try
+            {
+                this.connectionSource.AcceptConnectionRequest(connectionRequestID);
+            }
+            catch (Exception ex)
+            {
+
+                return new JsonResult(ex.Message);
+            }
+
+            
+
+            return new JsonResult("You have a new connection!");
+        }
+
+        /// <summary>
+        /// Reject pending connection
+        /// Post api/musicianconnections/connectionRequestID
+        /// </summary>
+        /// <param name="connectionRequestID"></param>
+        /// <returns></returns>
+        [HttpPost("reject/{connectionRequestID}")]
+        public JsonResult RejectConnectionRequest(int connectionRequestID)
+        {
+            if (connectionRequestID < 0)
+            {
+                throw new ArgumentException("Invalid connection request");
+            }
+
+            try
+            {
+                this.connectionSource.RejectConnectionRequest(connectionRequestID);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message);
+
+            }
+           
+            return new JsonResult("Connection request removed.");
+        }
+
+
     }
 }
