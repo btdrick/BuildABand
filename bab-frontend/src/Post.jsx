@@ -20,16 +20,13 @@ const Post = (props) => {
         setState({
             authorInfo: data[0],
             authorName: data.Fname + " " + data.Lname,
-            loading: false,
         });
     };
     
     /* Once the page renders, this hook takes place */
     useEffect(() => {
-        //getAuthorInfo();
+        getAuthorInfo();
     })
-
-        if (state.loading) {
             return ( 
                 <div id="container">
                     {/* Card style post */}
@@ -49,10 +46,6 @@ const Post = (props) => {
                             
                     
             );
-        }  
-        else {
-            return(<>Still loading...</>)
-        }      
 }
 
 export default Post;
