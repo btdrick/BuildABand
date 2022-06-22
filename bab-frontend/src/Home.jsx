@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Post } from './Post';
+import Post from './Post';
 import { variables } from './Variables.js';
 import UserProfile from './components/UserProfile.js';
 import Navbar from './components/header/Navbar';
