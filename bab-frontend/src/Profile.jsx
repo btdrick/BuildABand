@@ -1,47 +1,44 @@
-import React, { Component } from 'react';
-import { Post } from './Post';
+import { React, useState, useEffect } from 'react';
+import Post from './Post';
 import {variables} from './Variables.js';
-import UserProfile from './components/UserProfile.js';
 import Navbar from './components/header/Navbar';
-import AddConnection from './components/connection/AddConnection.js'
+import AddConnection from './components/connection/AddConnection.js';
+import { useParams } from "react-router-dom";
 
-export class Profile extends Component {
-    /* Constructor for the component. Tracks the posts shown on the profile and whether the page's loading status */
-    constructor(props) {
-        super(props);
-        this.state = { 
-            posts:      [], 
-            PostID:     0,          
-            MusicianID: UserProfile.getProfileID(),
-            Content:    "",
-            modalTitle: "",
-            loading:    true
-        };
-    }
+function Profile() {
+    const [state, setState] = useState({
+        posts: [],
+        PostID:     0,          
+        MusicianID: 0,
+        Content:    "",
+        modalTitle: "",
+        loading:    true
+    })
+    const { id } = useParams();
 
     /* Once the page renders, this lifecycle method takes place */
-    componentDidMount(){
-        this.getUsersPosts();
-    }
+    useEffect(() => {
+        getUsersPosts();
+    })
     
     /* Makes api call to backend to get the user's posts */
-    async getUsersPosts() {
-        const response = await fetch(variables.API_URL+'post/'+ this.state.MusicianID);
+    const getUsersPosts = async () => {
+        const response = await fetch(variables.API_URL+'post/'+ id);
         const data = await response.json();
-        this.setState({
+        setState({
             posts: data,
             loading: false,
         });
     }
 
     /* Handles event of text entry for Post content */
-    changePostContent =(e)=>{
-        this.setState({Content:e.target.value});
+    const changePostContent =(e)=>{
+        setState({Content:e.target.value});
     }
 
     /* Handles onClick event for Add button */
-    addClick(){
-        this.setState({
+    const addClick = () => {
+        setState({
             modalTitle: "Create Post",
             PostID:     0,
             Content:    ""          
@@ -49,7 +46,7 @@ export class Profile extends Component {
     }
 
     /* Handles onClick event for Create button */
-    createClick(){
+    const createClick = () => {
         fetch(variables.API_URL+'post',{
             method:'POST',
             headers:{
@@ -58,27 +55,27 @@ export class Profile extends Component {
             },
             body:JSON.stringify({   
                 CreatedTime: new Date(),                           
-                MusicianID: this.state.MusicianID,
-                Content:    this.state.Content
+                MusicianID: state.MusicianID,
+                Content:    state.Content
             })
         })
         .then(res=>res.json())
         .then((result)=>{
             alert(result);
-            this.getUsersPosts();
+            getUsersPosts();
         },(_error)=>{
             alert('Post content cannot be blank');
         })
     }
 
     /* Renders the profile page's html. You can't pass entire object to child component */
-    render() {
+    
         const {     
             modalTitle,
             PostID,
             Content
-        }=this.state;
-        if (this.state.loading) {
+        }=state;
+        if (state.loading) {
             return (
                 <div>
                     <p>loading...</p>
@@ -94,7 +91,7 @@ export class Profile extends Component {
                     className="btn btn-primary m-2 float-end"
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
-                    onClick={()=>this.addClick()}>
+                    onClick={addClick}>
                         Create Post
                     </button>
     
@@ -111,14 +108,14 @@ export class Profile extends Component {
                                     <span className="input-group-text">Content</span>
                                     <input type="text" className="form-control"
                                     value={Content}
-                                    onChange={this.changePostContent}/>
+                                    onChange={changePostContent}/>
                                 </div>
     
                                 <div className="modal-body">               
                                     {PostID===0?
                                     <button type="button"
                                     className="btn btn-primary float-start"
-                                    onClick={()=>this.createClick()}
+                                    onClick={createClick}
                                     >Create</button>
                                     :null}
                                 </div>
@@ -126,15 +123,15 @@ export class Profile extends Component {
                         </div>
                     </div>
                     <ul>
-                        {this.state.posts.map((post, index) => 
+                        {state.posts.map((post, index) => 
                         <li key={index}><Post content={post.Content} /></li>)}
-                        <AddConnection followerID={this.state.MusicianID}/>    
+                        <AddConnection followerID={state.MusicianID}/>    
                     </ul>
                                
                 </div>
             )
         }
-    }
+    
 }
 
 export default Profile;
