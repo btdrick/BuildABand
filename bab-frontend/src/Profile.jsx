@@ -124,7 +124,11 @@ function Profile() {
                     </div>
                     <ul>
                         {state.posts.map((post, index) => 
-                        <li key={index}><Post content={post.Content} /></li>)}
+                        <li key={index}><Post 
+                            postID={ post.PostID }
+                            createdTime={ post.CreatedTime }
+                            content={ post.Content }
+                            musicianID={ post.MusicianID } /></li>)}
                         <AddConnection followerID={state.MusicianID}/>    
                     </ul>
                                
