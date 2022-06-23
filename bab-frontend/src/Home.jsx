@@ -132,7 +132,7 @@ export class Home extends Component {
                  
                  {/* List-group feed containing card-style group-items */}
                 <div>
-                    <ul className="list-group" style={{listStyleType: 'none'}}>
+                    <ul className="list-group">
                         {this.state.posts.map((post, index) => 
                         <li key={index} className="list-group-item">
                             <Post 
