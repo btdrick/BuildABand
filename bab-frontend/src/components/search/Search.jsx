@@ -56,9 +56,9 @@ function Search({ placeholder, data }) {
       {/* Search results */}
       {filteredData.length !== 0 && ( 
         <div className="data-result">
-          {filteredData.slice(0, 15).map((value, key) => {
+          {filteredData.slice(0, 5).map((value, index) => {
             return (
-              <div className="data-item">
+              <div key={index} className="data-item">
                 <Link className="data-link" to={`/profile/${value.MusicianID}`}>
                   {value.Fname + " " + value.Lname}
                 </Link>

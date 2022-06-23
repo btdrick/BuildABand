@@ -4,6 +4,7 @@ import {variables} from './Variables.js';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
 import { useParams } from "react-router-dom";
+import './style/home.css';
 
 function Profile() {
     const [state, setState] = useState({
@@ -69,7 +70,6 @@ function Profile() {
     }
 
     /* Renders the profile page's html. You can't pass entire object to child component */
-    
         const {     
             modalTitle,
             PostID,
@@ -84,17 +84,17 @@ function Profile() {
         }
         else {
             return ( 
-                <div>
+                <div id="container">
                     <Navbar/>
-                    <h3> This is the Profile page </h3> 
+                    <h3 className="title"> This is the Profile page </h3> 
                     <button type="button"
-                    className="btn btn-primary m-2 float-end"
+                    className="btn btn-primary m-3"
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={addClick}>
                         Create Post
                     </button>
-    
+                    <div className="container-lg">
                     <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                         <div className="modal-dialog modal-lg modal-dialog-centered">
                             <div className="modal-content">
@@ -122,16 +122,20 @@ function Profile() {
                             </div>
                         </div>
                     </div>
-                    <ul>
-                        {state.posts.map((post, index) => 
-                        <li key={index}><Post 
-                            postID={ post.PostID }
-                            createdTime={ post.CreatedTime }
-                            content={ post.Content }
-                            musicianID={ post.MusicianID } /></li>)}
-                        <AddConnection followerID={state.MusicianID}/>    
-                    </ul>
-                               
+                    <div>
+                        <ul className="list-group">
+                            {state.posts.map((post, index) => 
+                            <li key={index} className="list-group-item">
+                                <Post 
+                                postID={ post.PostID }
+                                createdTime={ post.CreatedTime }
+                                content={ post.Content }
+                                musicianID={ post.MusicianID } />
+                                </li>)}
+                            <AddConnection followerID={state.MusicianID}/>    
+                        </ul>
+                    </div>
+                    </div>
                 </div>
             )
         }
