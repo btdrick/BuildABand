@@ -8,6 +8,10 @@
     color: palevioletred;
 }
 
+.nav-link:focus {
+    color: palevioletred;
+}
+
 .navbar-dark a:hover {
     color: palevioletred;
     text-decoration: none;
