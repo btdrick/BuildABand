@@ -16,7 +16,6 @@ const Post = (props) => {
     const getAuthorInfo = async() => {
         const response = await fetch(variables.API_URL+'musician/'+ props.musicianID);
         const data = await response.json(); 
-        console.log(data)
         setState({
             authorInfo: data[0],
             authorName: data.Fname + " " + data.Lname,
