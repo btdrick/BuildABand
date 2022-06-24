@@ -57,12 +57,12 @@ namespace BuildABand.Controllers
         }
 
         /// <summary>
-        /// Gets all comments for specified post
-        /// GET: api/comment/CommentID
+        /// Gets specified comment
+        /// GET: api/comment/comment.CommentID
         /// </summary>
-        /// <param name="commentID"></param>
+        /// <param name="comment"></param>
         /// <returns>JsonResult table of comment</returns>
-        [HttpGet("{CommentID}")]
+        [HttpGet("{commentID}")]
         public JsonResult GetComment(int commentID)
         {
             if (commentID < 1)
@@ -158,8 +158,10 @@ namespace BuildABand.Controllers
                 throw new ArgumentException("Invalid PostID");
             }
 
-            string insertStatement = @"INSERT INTO dbo.Comment
-                           VALUES (@CreatedTime, @ParentID, @MusicianID, @PostID, @Content)";
+            string insertStatement = 
+            @"INSERT INTO dbo.Comment
+            VALUES (@CreatedTime, @ParentID, @MusicianID, @PostID, @Content)";
+
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
             SqlDataReader dataReader;
@@ -191,20 +193,62 @@ namespace BuildABand.Controllers
         }
 
         /// <summary>
+        /// Updates a comment
+        /// POST: api/comment/comment.CommentID
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <returns>JsonResult if updated successfully</returns>
+        [HttpPatch("{comment.CommentID}")]
+        public JsonResult UpdateComment(Comment comment)
+        {
+            if (comment is null)
+            {
+                throw new ArgumentException("Comment cannot be null");
+            }
+
+            string updateStatement = 
+            @"UPDATE dbo.Comment 
+            SET Content = @Content
+            WHERE CommentID = @CommentID";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand myCommand = new SqlCommand(updateStatement, connection))
+                {
+                    myCommand.Parameters.AddWithValue("@CommentID", comment.CommentID);
+                    myCommand.Parameters.AddWithValue("@Content", comment.Content);
+                    dataReader = myCommand.ExecuteReader();
+                    resultsTable.Load(dataReader);
+                    dataReader.Close();
+                    connection.Close();
+                }
+            }
+
+            return new JsonResult("Comment Updated Successfully");
+        }
+
+        /// <summary>
         /// Deletes a comment  
-        /// DELETE: api/comment/CommentID
+        /// DELETE: api/comment/comment.CommentID
         /// </summary>
         /// <param name="comment"></param>
         /// <returns>JsonResult if deleted successfully</returns>
-        [HttpDelete("{CommentID}")]
-        public JsonResult DeleteComment(int commentID)
+        [HttpDelete("{comment.CommentID}")]
+        public JsonResult DeleteComment(Comment comment)
         {
-            if (commentID < 1)
+            if (comment is null)
             {
-                throw new ArgumentException("Invalid CommentID");
+                throw new ArgumentException("Comment cannot be null");
             }
 
-            string deleteStatement = @"DELETE FROM dbo.Comment WHERE CommentID = @CommentID";
+            string deleteStatement = 
+            @"DELETE FROM dbo.Comment 
+            WHERE CommentID = @CommentID";
+
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
             SqlDataReader dataReader;
@@ -213,7 +257,7 @@ namespace BuildABand.Controllers
                 connection.Open();
                 using (SqlCommand myCommand = new SqlCommand(deleteStatement, connection))
                 {
-                    myCommand.Parameters.AddWithValue("@CommentID", commentID);
+                    myCommand.Parameters.AddWithValue("@CommentID", comment.CommentID);
                     dataReader = myCommand.ExecuteReader();
                     resultsTable.Load(dataReader);
                     dataReader.Close();

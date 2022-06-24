@@ -1,0 +1,18 @@
+.nav-link {
+    font-size: 2em;
+    color: lightpink;
+    border: none;
+}
+
+.nav-link:hover {
+    color: palevioletred;
+}
+
+.nav-link:focus {
+    color: palevioletred;
+}
+
+.navbar-dark a:hover {
+    color: palevioletred;
+    text-decoration: none;
+}

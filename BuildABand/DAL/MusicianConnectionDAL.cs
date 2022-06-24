@@ -15,6 +15,7 @@ namespace BuildABand.DAL
     public class MusicianConnectionDAL
     {
         private readonly IConfiguration _configuration;
+        private SqlTransaction transaction;
 
         /// <summary>
         /// Constructor to initialize configuration variable
@@ -68,6 +69,69 @@ namespace BuildABand.DAL
 
             }
             return musicianConnections;
+        }
+
+        /// <summary>
+        /// Removes user from connections table. This can also be used to disconnect a current connection.
+        /// </summary>
+        /// <param name="connectionRequestID"></param>
+        public void RejectConnectionRequest(int connectionRequestID)
+        {
+            string deleteStatement = "DELETE FROM Connection " +
+               "WHERE ConnectionID = @ConnectionID";
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand insertCommand = new SqlCommand(deleteStatement, connection))
+                {
+                    insertCommand.Parameters.AddWithValue("@ConnectionID", connectionRequestID);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Changes connection status
+        /// </summary>
+        /// <param name="connectionRequestID"></param>
+        public void AcceptConnectionRequest(int connectionRequestID)
+        {
+            string updateStatement = "UPDATE Connection " +
+                "SET connected = 1 " +
+                "WHERE ConnectionID = @ConnectionID";
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand insertCommand = new SqlCommand(updateStatement, connection))
+                {
+                    insertCommand.Parameters.AddWithValue("@ConnectionID", connectionRequestID);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds pending connection to connections table
+        /// </summary>
+        /// <param name="fromMusicianID"></param>
+        /// <param name="toMusicianID"></param>
+        public void SendConnectionRequest(int fromMusicianID, int toMusicianID)
+        {
+            string insertStatement = "INSERT INTO Connection " +
+                "VALUEs (@InitiatorID, @FollowerID, @CreatedTime, 0)";
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand insertCommand = new SqlCommand(insertStatement, connection))
+                {
+                   
+                    insertCommand.Parameters.AddWithValue("@InitiatorID", fromMusicianID);
+                    insertCommand.Parameters.AddWithValue("@FollowerID", toMusicianID);
+                    insertCommand.Parameters.AddWithValue("@CreatedTime", DateTime.Now);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

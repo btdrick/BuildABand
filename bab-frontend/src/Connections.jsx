@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 import { variables } from "./Variables";
+import UserProfile from "./components/UserProfile";
+import Navbar from './components/header/Navbar';
 
 class Connections extends Component{
     
@@ -12,7 +14,7 @@ class Connections extends Component{
 
     //Get connections
     componentDidMount(){
-        fetch(variables.API_URL + "musicianconnections/" + this.props.MusicianID)
+        fetch(variables.API_URL + "musicianconnections/" + UserProfile.getMusicianID())
             .then(res => res.json())
             .then(result => {
                 this.setState({
@@ -24,6 +26,7 @@ class Connections extends Component{
     render() {
       return(
           <div>
+            <Navbar/>
             <h1>Friends connections</h1>
             <table style={{width: "20%"}}>
                 <thead>

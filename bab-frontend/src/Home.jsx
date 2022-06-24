@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
-import { Post } from './Post';
-import {variables} from './Variables.js';
+import Post from './Post';
+import { variables } from './Variables.js';
+import UserProfile from './components/UserProfile.js';
+import Navbar from './components/header/Navbar';
+import './style/home.css';
 
 export class Home extends Component {
     /* Constructor for the component. Tracks the posts shown on the feed and whether the page's loading status */
@@ -9,10 +11,10 @@ export class Home extends Component {
         super(props);
         this.state = { 
             posts:      [], 
+            musicians:  [],
             PostID:     0,          
-            MusicianID: 0,
+            MusicianID: UserProfile.getMusicianID(),
             Content:    "",
-
             modalTitle: "",
             loading:    true
         };
@@ -21,6 +23,7 @@ export class Home extends Component {
     /* Once the page renders, this lifecycle method takes place */
     componentDidMount(){
         this.getPosts();
+        this.getMusicians();
     }
     
     /* Makes api call to backend to get all posts */
@@ -30,6 +33,15 @@ export class Home extends Component {
         this.setState({
             posts:  data,
             loading: false,
+        });
+    }
+
+    /* Makes api call to backend to get all Musicians */
+    async getMusicians() {
+        const response = await fetch(variables.API_URL+'musician');
+        const data = await response.json();
+        this.setState({
+            musicians: data
         });
     }
 
@@ -43,7 +55,6 @@ export class Home extends Component {
         this.setState({
             modalTitle: "Create Post",
             PostID:     0,
-            MusicianID: 1,
             Content:    ""          
         });
     }
@@ -79,20 +90,18 @@ export class Home extends Component {
             Content
         }=this.state;
         return ( 
-            <div>
-                <Link to="/">Login</Link>              
- 
-                <br/>
-                <Link to="/connections">View Connections</Link>              
-                <h3> This is the Home page </h3>
+            <div id="container">   
+                <Navbar/>          
+                <h3 className="title"> Build-A-Band Home Feed </h3>
+                {/* Create post modal*/}
                 <button type="button"
-                className="btn btn-primary m-2 float-end"
+                className="btn btn-primary m-3"
                 data-bs-toggle="modal"
                 data-bs-target="#exampleModal"
                 onClick={()=>this.addClick()}>
                     Create Post
                 </button>
-
+                <div className="container-lg">
                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                     <div className="modal-dialog modal-lg modal-dialog-centered">
                         <div className="modal-content">
@@ -123,10 +132,17 @@ export class Home extends Component {
                  
                  {/* List-group feed containing card-style group-items */}
                 <div>
-                    <ul className="list-group" style={{listStyleType: 'none'}}>
+                    <ul className="list-group">
                         {this.state.posts.map((post, index) => 
-                        <li key={index} className="list-group-item"><Post content={post.Content} postID={post.PostID} /></li>)}
+                        <li key={index} className="list-group-item">
+                            <Post 
+                            postID={post.PostID}
+                            createdTime={post.CreatedTime}
+                            content={post.Content}
+                            musicianID={post.MusicianID} />
+                            </li>)}
                     </ul>
+                </div>
                 </div>
             </div>
         )

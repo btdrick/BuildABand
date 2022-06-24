@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 import { variables } from '../../Variables.js';
+import { Link } from "react-router-dom";
 import CommentForm from "./CommentForm";
-import '../../index.css';
+import './comments.css';
+
 
 /* Attributes */
 const Comment = ({ 
     comment, 
     addComment, 
     replies, 
-    parentID = 
-    null, 
+    parentID = null, 
     currentUserID, 
     activeComment, 
     setActiveComment, 
+    updateComment,
     deleteComment }) => {
     
     /* Likes for comment */
@@ -27,13 +29,6 @@ const Comment = ({
         return data;
     };
 
-    useEffect(() => {
-        getLikes().then((data) => {
-            setLikes(data);
-            setLikesCount(data.length);
-        });
-    }, [comment.MusicianID]);
-
     /* Gets like by its ID */
     function getLike() {
         const like = likes.find(index => index.MusicianID === currentUserID && index.CommentID === comment.CommentID);
@@ -42,7 +37,6 @@ const Comment = ({
 
     /* Returns true if user has liked a comment before */
     function hasLiked() {
-        /*const hasRow = likes.map(index => index.MusicianID === currentUserID && index.CommentID === comment.CommentID);*/
         const hasRow = getLike();
         const hasLiked = (hasRow !== undefined);
 
@@ -103,6 +97,31 @@ const Comment = ({
         });
     };
 
+    /* Author of comment */
+    const [authorInfo, setAuthorInfo] = useState([]);
+
+    /* Sets state for comment author information */
+    useEffect(() => {
+        const getAuthorInfo = async() => {
+            const response = await fetch(variables.API_URL+'musician/'+comment.MusicianID);
+            const data = await response.json(); 
+            var author = data[0]
+            
+            return author;
+        };
+        getAuthorInfo().then((data) => {
+            setAuthorInfo(data);
+        }); 
+        
+         getLikes().then((data) => {
+            setLikes(data);
+            setLikesCount(data.length);
+        });
+    }, [comment.MusicianID]);
+
+    /* Name of comment author */
+    const authorName = authorInfo.Fname + " " + authorInfo.Lname;
+
     /* Only a logged-in user can reply to a comment */
     const canReply = Boolean(currentUserID);
     const isReplying = activeComment 
@@ -110,7 +129,13 @@ const Comment = ({
         && activeComment.CommentID === comment.CommentID;
     /* Ensures only one layer of replies */
     const replyID = parentID ? parentID : comment.CommentID;
-
+    
+    /* User can only edit their own comments */
+    const canEdit = currentUserID === comment.MusicianID;
+    const isEditing = activeComment 
+    && activeComment.type === "editing"
+    && activeComment.CommentID === comment.CommentID;
+    
     /* User can only delete their own comments (if it has no replies) */
     const canDelete = currentUserID === comment.MusicianID 
     && replies.length === 0;
@@ -120,22 +145,34 @@ const Comment = ({
         new Date(comment.CreatedTime).toLocaleDateString() + " " 
         + new Date(comment.CreatedTime).toLocaleTimeString();
 
-    
-    
     return(
-        <div className="comment">
+        <div key={ comment.ComentID } className="comment">
             <div className="comment-image-container">
                 <img src={ require("./user-icon.png") } alt="user icon" />
             </div>
             <div className="comment-right-part">
                 <div className="comment-content">
                     <div className="comment-author">
-                        UserID { comment.MusicianID }</div>
+                    <Link to={`/profile/${comment.MusicianID}`}>{authorName}</Link></div>
                     <div>{ createdTime }</div>
                 </div>
+                {/* Comment likes section */}
                 <div className="comment-text">{comment.Content}</div>
                 {(likesCount >= 1) 
                 && <div className="comment-content">{ likesCount } Likes</div>}
+                {!isEditing && <div className="comment-text">{comment.Content}</div>}     
+                {/* Edit comment form */}
+                {isEditing && (
+                <CommentForm
+                    submitLabel="Update"
+                    hasCancelButton
+                    initialText={comment.Content}
+                    handleSubmit={(text) => updateComment(text, comment)}
+                    handleCancel={() => {
+                    setActiveComment(null);
+                    }}
+                />)}
+
                 <div className="comment-actions">
                     {/* Like section */}
                     {canLike ? (
@@ -154,11 +191,18 @@ const Comment = ({
                     onClick={() => setActiveComment({CommentID: comment.CommentID, type: "replying"})}>
                     Reply
                     </div>)}
+                    {/* Edit section */}
+                    {canEdit
+                    && (<div
+                    className="comment-action"
+                    onClick={() => setActiveComment({ CommentID: comment.CommentID, type: "editing"})}>
+                    Edit 
+                    </div>)}
                     {/* Delete section */}
                     {canDelete 
                     && (<div
                     className="comment-action"
-                    onClick={() => deleteComment(comment.CommentID)}>
+                    onClick={() => deleteComment(comment)}>
                     Delete
                     </div>)}
                 </div>
@@ -181,7 +225,8 @@ const Comment = ({
                             currentUserID={ currentUserID }
                             activeComment={ activeComment }
                             setActiveComment={ setActiveComment }
-                            deleteComment={ deleteComment }/>
+                            updateComment={ updateComment }
+                            deleteComment={ deleteComment } />
                         ))}
                     </div>
                 )}

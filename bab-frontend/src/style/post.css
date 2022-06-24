@@ -1,0 +1,9 @@
+.card {
+    margin: 0 auto;
+    padding: 5px;
+    width: 100%;
+}
+
+#container .card-text {
+    margin-bottom: 1em;
+}
