@@ -136,6 +136,22 @@ CREATE TABLE [dbo].[Comment](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+/****** Object:  Table [dbo].[CommentLike]    Script Date: 6/20/2022 5:35:57 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CommentLike](
+	[CommentLikeID] [int] IDENTITY(1,1) NOT NULL,
+	[CommentID] [int] NOT NULL,
+	[MusicianID] [int] NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_CommentLike] PRIMARY KEY CLUSTERED 
+(
+	[CommentLikeID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
 /****** Object:  Table [dbo].[Connection]    Script Date: 18/06/2022 6:40:34 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -261,6 +277,13 @@ CREATE TABLE [dbo].[States](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+/****** Object:  Index [AK_CommentLike]    Script Date: 6/20/2022 5:35:57 PM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [AK_CommentLike] ON [dbo].[CommentLike]
+(
+	[CommentID] ASC,
+	[MusicianID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
 SET IDENTITY_INSERT [dbo].[Accounts] ON 
 
 INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (1, N'dnancy', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
@@ -279,6 +302,13 @@ INSERT [dbo].[Comment] ([CommentID], [CreatedTime], [ParentID], [MusicianID], [P
 INSERT [dbo].[Comment] ([CommentID], [CreatedTime], [ParentID], [MusicianID], [PostID], [Content]) VALUES (4, CAST(N'2022-05-20T00:05:00.000' AS DateTime), 3, 5, 2, N'I do have it on my playlist')
 INSERT [dbo].[Comment] ([CommentID], [CreatedTime], [ParentID], [MusicianID], [PostID], [Content]) VALUES (5, CAST(N'2022-05-20T00:05:00.000' AS DateTime), NULL, 1, 2, N'I total agree with you')
 SET IDENTITY_INSERT [dbo].[Comment] OFF
+GO
+SET IDENTITY_INSERT [dbo].[CommentLike] ON 
+
+INSERT [dbo].[CommentLike] ([CommentLikeID], [CommentID], [MusicianID], [CreatedTime]) VALUES (1, 1, 1, '2022-06-20 17:29:13.507')
+INSERT [dbo].[CommentLike] ([CommentLikeID], [CommentID], [MusicianID], [CreatedTime]) VALUES (2, 1, 2, '2022-06-20 17:29:13.507')
+INSERT [dbo].[CommentLike] ([CommentLikeID], [CommentID], [MusicianID], [CreatedTime]) VALUES (3, 1, 3, '2022-06-20 17:29:13.507')
+SET IDENTITY_INSERT [dbo].[CommentLike] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Connection] ON 
 
@@ -417,6 +447,16 @@ ALTER TABLE [dbo].[Comment]  WITH CHECK ADD  CONSTRAINT [FK_Comment_Post] FOREIG
 REFERENCES [dbo].[Post] ([PostID])
 GO
 ALTER TABLE [dbo].[Comment] CHECK CONSTRAINT [FK_Comment_Post]
+GO
+ALTER TABLE [dbo].[CommentLike]  WITH CHECK ADD  CONSTRAINT [FK_CommentLike_Accounts] FOREIGN KEY([MusicianID])
+REFERENCES [dbo].[Accounts] ([AccountID])
+GO
+ALTER TABLE [dbo].[CommentLike] CHECK CONSTRAINT [FK_CommentLike_Accounts]
+GO
+ALTER TABLE [dbo].[CommentLike]  WITH CHECK ADD  CONSTRAINT [FK_CommentLike_Comment] FOREIGN KEY([CommentID])
+REFERENCES [dbo].[Comment] ([CommentID])
+GO
+ALTER TABLE [dbo].[CommentLike] CHECK CONSTRAINT [FK_CommentLike_Comment]
 GO
 ALTER TABLE [dbo].[Connection]  WITH CHECK ADD  CONSTRAINT [FK_Connection_Musician_FollowerID] FOREIGN KEY([FollowerID])
 REFERENCES [dbo].[Musician] ([MusicianID])
