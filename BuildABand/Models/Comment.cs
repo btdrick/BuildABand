@@ -14,5 +14,6 @@ namespace BuildABand.Models
         public int MusicianID { get; set; }
         public int PostID { get; set; }
         public string Content { get; set; }
+        public int Likes { get; set; }
     }
 }
