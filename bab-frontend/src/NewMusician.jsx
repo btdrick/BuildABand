@@ -8,7 +8,9 @@ class NewMusician extends Component {
   constructor() {
     super();
     this.state = {
-      input: {},
+      input: {
+        
+      },
       errors: {},
       states: [],
       submitResult:""
@@ -16,6 +18,7 @@ class NewMusician extends Component {
   
      this.handleChange = this.handleChange.bind(this);
      this.handleSubmit= this.handleSubmit.bind(this);
+    
   }
    
   //Load states data by calling its api
@@ -203,6 +206,7 @@ class NewMusician extends Component {
       return isValid;
   }
 
+ 
   render() {
     if (this.state.submitResult === "New user created"){
       return <Navigate to='/' />
@@ -305,12 +309,14 @@ class NewMusician extends Component {
                     </div>
                     <div className="form-group">
                       <input
-                        type="Date"
+                        type="text"
                         name="dateOfBirth"
                         value={this.state.input.dateOfBirth}
                         onChange={this.handleChange}
                         className="form-control"
                         placeholder="Enter Date of Birth"
+                        onFocus={(e)=> e.target.type='date'}
+                        onBlur={(e)=>e.target.type='text'}
                         id="dateOfBirth" />
 
                       <div className="text-danger">{this.state.errors.dateOfBirth}</div>
