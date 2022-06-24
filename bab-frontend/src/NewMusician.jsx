@@ -8,9 +8,7 @@ class NewMusician extends Component {
   constructor() {
     super();
     this.state = {
-      input: {
-        
-      },
+      input: {},
       errors: {},
       states: [],
       submitResult:""
@@ -111,6 +109,8 @@ class NewMusician extends Component {
         errors["city"] = "Please enter your city.";
       }
 
+
+
       if (!input["fname"]) {
         isValid = false;
         errors["fname"] = "Please enter your First name.";
@@ -126,6 +126,14 @@ class NewMusician extends Component {
         if(input["username"].length < 6 || !re.test(input["username"])){
             isValid = false;
             errors["username"] = "Please enter valid username.";
+        }
+      }
+
+      if (typeof input["zipCode"] !=="undefined"){
+        const re = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+        if (!re.test(input["zipCode"])){
+          isValid =false;
+          errors["zipCode"] = "Please enter a valid zip code.";
         }
       }
   
@@ -145,20 +153,21 @@ class NewMusician extends Component {
         errors["stateCode"] = "Please select your state.";
       }
 
-      if (typeof input["zipCode"] !== "undefined"){
-         const pattern = new RegExp(/(^\d{5}$)|(^\d{5}-\d{4}$)/);
-        if (!pattern.test(input["zipcode"])){
+      if (typeof input["dateOfBirth"] !== "undefined") {
+        const date16YrsAgo = new Date();
+        date16YrsAgo.setFullYear(date16YrsAgo.getFullYear() - 16);
+        if (!((new Date(input["dateOfBirth"])) <= date16YrsAgo) ){
           isValid = false;
-          errors["zipCode"] = "Please enter valid Zip Code.";
+          errors["dateOfBirth"] = "Please enter date of birth equal or above 16 years";
         }
       }
-     
 
-
+      
       if (!input["dateOfBirth"]) {
         isValid = false;
         errors["dateOfBirth"] = "Please enter your date of birth.";
       }
+
 
       if (typeof input["email"] !== "undefined") {
         const pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
@@ -393,14 +402,12 @@ class NewMusician extends Component {
                       <div className="text-danger">{this.state.errors.city}</div>
                     </div>
                     <div className="form-group">
-                      <input
-                        type="text"
-                        name="zipCode"
-                        value={this.state.input.zipCode}
-                        onChange={this.handleChange}
-                        className="form-control"
-                        placeholder="Enter zipCode"
-                        id="zipCode" />
+                      <input type="text"
+                      name="zipCode"
+                      value={this.state.input.zipCode}
+                      onChange={this.handleChange} 
+                      className="form-control" 
+                      placeholder="Enter zipCode" id="zipCod"/>
 
                       <div className="text-danger">{this.state.errors.zipCode}</div>
                     </div>

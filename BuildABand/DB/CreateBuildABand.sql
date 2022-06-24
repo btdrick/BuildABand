@@ -183,7 +183,7 @@ CREATE TABLE [dbo].[Musician](
 	[DateOfBirth] [date] NOT NULL,
 	[Phone] [varchar](12) NOT NULL,
 	[Email] [varchar](200) NOT NULL,
-	[Instrument] [varchar](500) NOT NULL,
+	[Instrument] [varchar](500) NULL,
 	[Sex] [varchar](10) NOT NULL,
 	[Address1] [varchar](50) NOT NULL,
 	[Address2] [varchar](50) NULL,
