@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
-import { Post } from './Post';
+import Post from './Post';
 import {variables} from './Variables.js';
 
 export class Home extends Component {
@@ -125,7 +125,13 @@ export class Home extends Component {
                 <div>
                     <ul className="list-group" style={{listStyleType: 'none'}}>
                         {this.state.posts.map((post, index) => 
-                        <li key={index} className="list-group-item"><Post content={post.Content} postID={post.PostID} /></li>)}
+                        <li key={index} className="list-group-item">
+                        <Post 
+                        postID={post.PostID}
+                        createdTime={post.CreatedTime}
+                        content={post.Content}
+                        musicianID={post.MusicianID} />
+                        </li>)}
                     </ul>
                 </div>
             </div>

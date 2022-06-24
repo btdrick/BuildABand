@@ -58,6 +58,43 @@ namespace BuildABand.Controllers
             return new JsonResult(resultsTable);
         }
 
+        /// <summary>
+        /// Gets specified musician by id
+        /// GET: api/musician/MusicianID
+        /// </summary>
+        /// <returns>JsonResult table of musician</returns>
+        [HttpGet("{MusicianID}")]
+        public JsonResult GetMusician(int musicianID)
+        {
+            if (musicianID < 1)
+            {
+                throw new ArgumentException("MusicianID must be greater than 0");
+            }
+
+            string selectStatement =
+            @"SELECT * 
+            FROM dbo.Musician
+            WHERE MusicianID = @MusicianID";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                {
+                    myCommand.Parameters.AddWithValue("@MusicianID", musicianID);
+                    dataReader = myCommand.ExecuteReader();
+                    resultsTable.Load(dataReader);
+                    dataReader.Close();
+                    connection.Close();
+                }
+            }
+
+            return new JsonResult(resultsTable);
+        }
+
         // Post: api/musician
         // Post new musician
         [HttpPost]

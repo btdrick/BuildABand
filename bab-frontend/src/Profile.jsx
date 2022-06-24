@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
-import { Post } from './Post';
+import Post from './Post';
 import {variables} from './Variables.js';
 
 export class Profile extends Component {
