@@ -334,14 +334,14 @@ class NewMusician extends Component {
                       <div className="text-danger">{this.state.errors.phone}</div>
                     </div>
                     <div className="form-group">
-                      <input
-                        type="text"
-                        name="sex"
-                        value={this.state.input.sex}
-                        onChange={this.handleChange}
-                        className="form-control"
-                        placeholder="Enter sex"
-                        id="sex" />
+                     <select name="sex" id="sex"
+                      value={this.state.input.sex}
+                      onChange={this.handleChange}
+                      className="form-select">
+                      <option value=""> -- Select a Sex -- </option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                     </select>
 
                       <div className="text-danger">{this.state.errors.sex}</div>
                     </div>
