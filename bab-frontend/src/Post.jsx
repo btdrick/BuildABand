@@ -1,6 +1,8 @@
 import { React, useState, useEffect } from 'react';
 import { variables } from './Variables.js';
 import Comments from './components/comments/Comments';
+import UserProfile from './components/UserProfile';
+import './style/post.css';
 
 /* This is a child component to serveral other components, i.e. child component in Profile component */
 const Post = (props) => {

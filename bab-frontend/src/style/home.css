@@ -1,0 +1,12 @@
+#container {
+    margin-bottom: 2em;
+}
+
+#container .title {
+    text-align: center;
+    margin: 2em auto;
+}
+
+.list-group ul {
+    list-style: none;
+}

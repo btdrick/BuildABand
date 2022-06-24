@@ -8,6 +8,8 @@ const Comments = ({ currentUserID, currentPostID }) => {
     
     /* All comments from backend */
     const [backendComments, setBackendComments] = useState([]);
+    /* Amount of comments to show at a time */
+    const [visibleComments, setVisibleComments] = useState(5);
     /* Which comment is active */
     const [activeComment, setActiveComment] = useState(null);
     
@@ -16,6 +18,20 @@ const Comments = ({ currentUserID, currentPostID }) => {
     .filter(
         (backendComment) => backendComment.ParentID === null && backendComment.PostID === currentPostID);
     
+    /* Sets backend comments */
+    useEffect(() => {
+        getComments().then((data) => {
+            setBackendComments(data);
+        });
+    }, []);
+
+    /* Makes api call to backend to get all comments */
+    const getComments = async() => {
+        const response = await fetch(variables.API_URL+'comment');
+        const data = await response.json(); 
+        return data;
+    };
+
     /* Replies to comments */
     const getReplies = (commentID) =>
     backendComments
@@ -30,20 +46,16 @@ const Comments = ({ currentUserID, currentPostID }) => {
         createComment(text, parentID);
         setActiveComment(null);
     }
-    
-    /* Sets backend comments */
-     useEffect(() => {
-        getComments().then((data) => {
-            setBackendComments(data);
-        });
-    }, []);
 
-    /* Makes api call to backend to get all comments */
-    const getComments = async() => {
-        const response = await fetch(variables.API_URL+'comment');
-        const data = await response.json(); 
-        return data;
-    };
+    /* Increases amount of visible comments */
+    const showMoreComments = () => {
+        setVisibleComments(prevValue => prevValue + 5);
+    }
+
+    /* Decreases amoung of visible comments */
+    const showFewerComments = () => {
+        setVisibleComments(prevValue => prevValue - 5);
+    }
 
     /* Posts comment to database */
     const createComment = async(text, parentID) => {
@@ -62,34 +74,61 @@ const Comments = ({ currentUserID, currentPostID }) => {
             })
         })
         .then(res=>res.json())
-        .then(()=>{ 
+        .then((result)=>{ 
             /* Refresh backendComments */
             getComments().then((data) => {
                 setBackendComments(data);
-            })       
+            })
+            alert(result);       
         },(_error)=>{
             alert('An error has occurred with submitting your comment');
         })
     }
 
+    /* Update comment content */
+    const updateComment = async(text, comment) => {
+        fetch(variables.API_URL+'comment/'+comment.CommentID,{
+            method:'PATCH',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({   
+                CommentID:   comment.CommentID,
+                Content:     text
+            })
+        })
+        .then(res=>res.json())
+        .then((result)=>{ 
+            /* Refresh backendComments */
+            getComments().then((data) => {
+                setBackendComments(data);
+            });
+            setActiveComment(null); 
+            alert(result);                  
+        },(_error)=>{
+            alert('An error has occurred with updating your comment');
+        })
+    }
+
     /* Delete comment from database */
-    const deleteComment = async(commentID) => {
-        if (window.confirm("Are you sure you want to remove comment?")) {
-            fetch(variables.API_URL+'comment/'+commentID,{
+    const deleteComment = async(comment) => {
+        if (window.confirm("Are you sure you want to remove this comment?")) {
+            fetch(variables.API_URL+'comment/'+comment.CommentID,{
                 method:'DELETE',
                 headers:{
                     'Accept':'application/json',
                     'Content-Type':'application/json'
                 },
                 body:JSON.stringify({   
-                    CommentID: commentID
+                    CommentID: comment.CommentID
                 })
             })
             .then(res=>res.json())
             .then(()=>{ 
                 /* Update backendComments */
                 const updatedBackendComments = backendComments.filter(
-                    (backendComment) => backendComment.CommentID !== commentID
+                    (backendComment) => backendComment.CommentID !== comment.CommentID
                   );
                   setBackendComments(updatedBackendComments);         
             },(_error)=>{
@@ -105,7 +144,7 @@ const Comments = ({ currentUserID, currentPostID }) => {
             <CommentForm submitLabel="Write" handleSubmit={addComment} />
             <div className="comments-container">
                 {/* Map comments and their replies by parent */}
-                {rootComments.map(rootComment => (
+                {rootComments.slice(0, visibleComments).map(rootComment => (
                     <Comment 
                     key={ rootComment.CommentID } 
                     comment={ rootComment } 
@@ -114,9 +153,21 @@ const Comments = ({ currentUserID, currentPostID }) => {
                     currentUserID={ currentUserID }
                     activeComment={ activeComment }
                     setActiveComment={ setActiveComment }
-                    deleteComment={ deleteComment } />
+                    updateComment= { updateComment }
+                    deleteComment={ deleteComment }  />
                 ))}
             </div>
+            {(rootComments.length > 5) 
+            && (visibleComments < rootComments.length) 
+            && <button 
+                className="btn btn-secondary" 
+                onClick={showMoreComments}>Load next 5 comments</button>
+            }
+            {(visibleComments > 5)
+                && <button 
+                className="btn btn-secondary" 
+                onClick={showFewerComments}>Show fewer comments</button>
+            }
         </div>
     );
 };
