@@ -34,69 +34,73 @@ const Comment = ({
         });
     }, [comment.MusicianID]);
 
+    /* Gets like by its ID */
+    function getLike() {
+        const like = likes.find(index => index.MusicianID === currentUserID && index.CommentID === comment.CommentID);
+        return like;
+    }
+
     /* Returns true if user has liked a comment before */
     function hasLiked() {
-        const hasRow = likes.map(index => index.MusicianID === 1 && index.CommentID === comment.CommentID);
-        console.log("hasRow", hasRow);
-        return !hasRow.includes(true);
+        /*const hasRow = likes.map(index => index.MusicianID === currentUserID && index.CommentID === comment.CommentID);*/
+        const hasRow = getLike();
+        const hasLiked = (hasRow !== undefined);
+
+        return hasLiked;
     };
 
     /* User cannot stack likes */
     const canLike = hasLiked();
 
-    const likeComment = async(type) => {
-        switch(type) {
-            case 'Like':
-                /* Add a like */
-                fetch(variables.API_URL+'comment',{
-                    method:'POST',
-                    headers:{
-                        'Accept':'application/json',
-                        'Content-Type':'application/json'
-                    },
-                    body:JSON.stringify({   
-                        CommentID: comment.CommentID,
-                        MusicianID: 1,
-                        CreatedTime: new Date()
-                    })
-                })
-                .then(res=>res.json())
-                .then(()=>{ 
-                    /* Refresh likes */
-                    getLikes().then((data) => {
-                        setLikes(data);
-                        setLikesCount(data.length);
-                    });       
-                },(_error)=>{
-                    alert('An error has occurred with liking your comment');
-                })
-                break;
-            case 'Unlike':
-                /* Remove a like */
-                fetch(variables.API_URL+'comment/'+commentID,{
-                    method:'DELETE',
-                    headers:{
-                        'Accept':'application/json',
-                        'Content-Type':'application/json'
-                    },
-                    body:JSON.stringify({   
-                        CommentLikeID: commentLikeID
-                    })
-                })
-                .then(res=>res.json())
-                .then(()=>{ 
-                    /* Refresh likes */
-                    getLikes().then((data) => {
-                        setLikes(data);
-                        setLikesCount(data.length);
-                    });         
-                },(_error)=>{
-                    alert('An error has occurred with unliking your comment');
-                })
-                break;
-            default:
-                break;
-        }
+    /* Posts comment like to database */
+    const likeComment = async() => {
+        fetch(variables.API_URL+'comment/like',{
+            method:'POST',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({   
+                CommentID: comment.CommentID,
+                MusicianID: currentUserID,
+                CreatedTime: new Date()
+            })
+        })
+        .then(res=>res.json())
+        .then(()=>{ 
+            /* Refresh likes */
+            getLikes().then((data) => {
+                setLikes(data);
+                setLikesCount(data.length);
+            });       
+        },(_error)=>{
+            alert('An error has occurred with liking your comment');
+        });              
+    };
+
+    /* Removes comment like from database */
+    const unlikeComment = async() => {
+        let like = getLike();
+        fetch(variables.API_URL+'comment/like/'+like.CommentLikeID,{
+            method:'DELETE',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({   
+                CommentLikeID: comment.commentID
+            })
+        })
+        .then(res=>res.json())
+        .then(()=>{ 
+            /* Refresh likes */
+            getLikes().then((data) => {
+                setLikes(data);
+                setLikesCount(data.length);
+            });         
+        },(_error)=>{
+            alert('An error has occurred with unliking your comment');
+        });
     };
 
     /* Only a logged-in user can reply to a comment */
@@ -137,11 +141,11 @@ const Comment = ({
                     {canLike ? (
                         <div 
                         className="comment-action" 
-                        onClick={() => likeComment({type: "like"})}>Like</div>
+                        onClick={() => unlikeComment()}>Unike</div>
                     ) : (
                         <div 
                         className="comment-action"
-                        onClick={() => likeComment({type: "unlike"})}>Unlike</div>
+                        onClick={() => likeComment()}>Like</div>
                     )}
                     {/* Reply section */}
                     {canReply 

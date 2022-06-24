@@ -1,4 +1,5 @@
-﻿using BuildABand.Models;
+﻿using BuildABand.DAL;
+using BuildABand.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -16,6 +17,7 @@ namespace BuildABand.Controllers
     public class CommentLikeController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private CommentLikeDAL commentLikeDAL;
 
         /// <summary>
         /// 1-param constructor.
@@ -24,6 +26,7 @@ namespace BuildABand.Controllers
         public CommentLikeController(IConfiguration configuration)
         {
             _configuration = configuration;
+            this.commentLikeDAL = new CommentLikeDAL(configuration);
         }
 
         /// <summary>
@@ -63,7 +66,7 @@ namespace BuildABand.Controllers
         /// <param name="commentID"></param>
         /// <returns>JsonResult table of comment</returns>
         [HttpGet("{CommentLikeID}")]
-        public JsonResult GetComment(int commentLikeID)
+        public JsonResult GetCommentLike(int commentLikeID)
         {
             if (commentLikeID < 1)
             {
@@ -101,34 +104,43 @@ namespace BuildABand.Controllers
         /// <param name="newComment"></param>
         /// <returns>JsonResult if added successfully</returns>
         [HttpPost]
-        public JsonResult CreateComment(CommentLike newCommentLike)
+        public JsonResult LikeComment(CommentLike newCommentLike)
         {
-            if (newCommentLike is null)
+            if (this.commentLikeDAL.UserAlreadyLikedComment(newCommentLike))
             {
-                throw new ArgumentException("CommentLike cannot be null");
+                return new JsonResult("User has already liked this comment");
             }
 
-            string insertStatement = @"INSERT INTO dbo.CommentLike
-                           VALUES (@CommentID, @MusicianID, @CreatedTime)";
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            try
             {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(insertStatement, connection))
+                string insertStatement = 
+                @"INSERT INTO dbo.CommentLike " +
+                "VALUES (@CommentID, @MusicianID, @CreatedTime)";
+
+                DataTable resultsTable = new DataTable();
+                string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+                SqlDataReader dataReader;
+                using (SqlConnection connection = new SqlConnection(sqlDataSource))
                 {
-                    myCommand.Parameters.AddWithValue("@PostID", newCommentLike.CommentID);
-                    myCommand.Parameters.AddWithValue("@MusicianID", newCommentLike.MusicianID);
-                    myCommand.Parameters.AddWithValue("@CreatedTime", newCommentLike.CreatedTime);
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
+                    connection.Open();
+                    using (SqlCommand myCommand = new SqlCommand(insertStatement, connection))
+                    {
+                        myCommand.Parameters.AddWithValue("@CommentID", newCommentLike.CommentID);
+                        myCommand.Parameters.AddWithValue("@MusicianID", newCommentLike.MusicianID);
+                        myCommand.Parameters.AddWithValue("@CreatedTime", newCommentLike.CreatedTime);
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close();
+                    }
                 }
-            }
 
-            return new JsonResult("Comment Liked Successfully");
+                return new JsonResult("Comment Liked Successfully");
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
         }
 
         /// <summary>
@@ -140,12 +152,17 @@ namespace BuildABand.Controllers
         [HttpDelete("{CommentLikeID}")]
         public JsonResult DeleteComment(int commentLikeID)
         {
-            if (commentLikeID < 1)
+            if (!this.commentLikeDAL.CommentLikeExists(commentLikeID))
             {
-                throw new ArgumentException("Invalid CommentLikeID");
+                throw new ArgumentException("Error: comment like does not exist");
             }
 
-            string deleteStatement = @"DELETE FROM dbo.CommentLike WHERE CommentLikeID = @CommentLikeID";
+            string deleteStatement = 
+                @"DELETE FROM dbo.CommentLike " +
+                "WHERE CommentLikeID = @CommentLikeID " +
+                "DECLARE @lastID int " +
+                "SELECT @lastID = MAX(CommentLikeID) FROM dbo.CommentLike " +
+                "DBCC CHECKIDENT(CommentLike, RESEED, @lastID)";
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
             SqlDataReader dataReader;
