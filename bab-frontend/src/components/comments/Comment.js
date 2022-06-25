@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { variables } from '../../Variables.js';
 import { Link } from "react-router-dom";
 import CommentForm from "./CommentForm";
 import './comments.css';
-
 
 /* Attributes */
 const Comment = ({ 
@@ -23,11 +22,11 @@ const Comment = ({
     const [likesCount, setLikesCount] = useState(0);
     
     /* Makes api call to backend to get all comment likes */
-    const getLikes = async() => {
+    const getLikes = useCallback(async() => {
         const response = await fetch(variables.API_URL+'comment/'+comment.CommentID+'/like');
         const data = await response.json(); 
         return data;
-    };
+    }, [comment.CommentID]);
 
     /* Gets like by its ID */
     function getLike() {
@@ -41,7 +40,7 @@ const Comment = ({
         const hasLiked = (hasRow !== undefined);
 
         return hasLiked;
-    };
+    }
 
     /* User cannot stack likes */
     const canLike = hasLiked();
@@ -70,7 +69,7 @@ const Comment = ({
         },(_error)=>{
             alert('An error has occurred with liking your comment');
         });              
-    };
+    }
 
     /* Removes comment like from database */
     const unlikeComment = async() => {
@@ -95,7 +94,7 @@ const Comment = ({
         },(_error)=>{
             alert('An error has occurred with unliking your comment');
         });
-    };
+    }
 
     /* Author of comment */
     const [authorInfo, setAuthorInfo] = useState([]);
@@ -117,7 +116,7 @@ const Comment = ({
             setLikes(data);
             setLikesCount(data.length);
         });
-    }, [comment.MusicianID]);
+    }, [comment.MusicianID, getLikes]);
 
     /* Name of comment author */
     const authorName = authorInfo.Fname + " " + authorInfo.Lname;
@@ -156,11 +155,10 @@ const Comment = ({
                     <Link to={`/profile/${comment.MusicianID}`}>{authorName}</Link></div>
                     <div>{ createdTime }</div>
                 </div>
+                {!isEditing && <div className="comment-text">{comment.Content}</div>}
                 {/* Comment likes section */}
-                <div className="comment-text">{comment.Content}</div>
                 {(likesCount >= 1) 
                 && <div className="comment-content">{ likesCount } Likes</div>}
-                {!isEditing && <div className="comment-text">{comment.Content}</div>}     
                 {/* Edit comment form */}
                 {isEditing && (
                 <CommentForm
