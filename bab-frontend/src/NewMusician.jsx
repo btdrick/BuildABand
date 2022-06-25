@@ -16,6 +16,7 @@ class NewMusician extends Component {
   
      this.handleChange = this.handleChange.bind(this);
      this.handleSubmit= this.handleSubmit.bind(this);
+    
   }
    
   //Load states data by calling its api
@@ -108,6 +109,8 @@ class NewMusician extends Component {
         errors["city"] = "Please enter your city.";
       }
 
+
+
       if (!input["fname"]) {
         isValid = false;
         errors["fname"] = "Please enter your First name.";
@@ -123,6 +126,14 @@ class NewMusician extends Component {
         if(input["username"].length < 6 || !re.test(input["username"])){
             isValid = false;
             errors["username"] = "Please enter valid username.";
+        }
+      }
+
+      if (typeof input["zipCode"] !=="undefined"){
+        const re = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+        if (!re.test(input["zipCode"])){
+          isValid =false;
+          errors["zipCode"] = "Please enter a valid zip code.";
         }
       }
   
@@ -142,15 +153,24 @@ class NewMusician extends Component {
         errors["stateCode"] = "Please select your state.";
       }
 
+      if (typeof input["dateOfBirth"] !== "undefined") {
+        const date16YrsAgo = new Date();
+        date16YrsAgo.setFullYear(date16YrsAgo.getFullYear() - 16);
+        if (!((new Date(input["dateOfBirth"])) <= date16YrsAgo) ){
+          isValid = false;
+          errors["dateOfBirth"] = "Please enter date of birth equal or above 16 years";
+        }
+      }
 
+      
       if (!input["dateOfBirth"]) {
         isValid = false;
         errors["dateOfBirth"] = "Please enter your date of birth.";
       }
 
+
       if (typeof input["email"] !== "undefined") {
-          
-        var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+        const pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
         if (!pattern.test(input["email"])) {
           isValid = false;
           errors["email"] = "Please enter valid email address.";
@@ -203,6 +223,7 @@ class NewMusician extends Component {
       return isValid;
   }
 
+ 
   render() {
     if (this.state.submitResult === "New user created"){
       return <Navigate to='/' />
@@ -305,12 +326,14 @@ class NewMusician extends Component {
                     </div>
                     <div className="form-group">
                       <input
-                        type="Date"
+                        type="text"
                         name="dateOfBirth"
                         value={this.state.input.dateOfBirth}
                         onChange={this.handleChange}
                         className="form-control"
                         placeholder="Enter Date of Birth"
+                        onFocus={(e)=> e.target.type='date'}
+                        onBlur={(e)=>e.target.type='text'}
                         id="dateOfBirth" />
 
                       <div className="text-danger">{this.state.errors.dateOfBirth}</div>
@@ -328,14 +351,14 @@ class NewMusician extends Component {
                       <div className="text-danger">{this.state.errors.phone}</div>
                     </div>
                     <div className="form-group">
-                      <input
-                        type="text"
-                        name="sex"
-                        value={this.state.input.sex}
-                        onChange={this.handleChange}
-                        className="form-control"
-                        placeholder="Enter sex"
-                        id="sex" />
+                     <select name="sex" id="sex"
+                      value={this.state.input.sex}
+                      onChange={this.handleChange}
+                      className="form-select">
+                      <option value=""> -- Select a Sex -- </option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                     </select>
 
                       <div className="text-danger">{this.state.errors.sex}</div>
                     </div>
@@ -379,14 +402,12 @@ class NewMusician extends Component {
                       <div className="text-danger">{this.state.errors.city}</div>
                     </div>
                     <div className="form-group">
-                      <input
-                        type="text"
-                        name="zipCode"
-                        value={this.state.input.zipCode}
-                        onChange={this.handleChange}
-                        className="form-control"
-                        placeholder="Enter zipCode"
-                        id="zipCode" />
+                      <input type="text"
+                      name="zipCode"
+                      value={this.state.input.zipCode}
+                      onChange={this.handleChange} 
+                      className="form-control" 
+                      placeholder="Enter zipCode" id="zipCod"/>
 
                       <div className="text-danger">{this.state.errors.zipCode}</div>
                     </div>

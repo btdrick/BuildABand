@@ -43,7 +43,10 @@ namespace BuildABand.DAL
                         insertCommand.Parameters.AddWithValue("@DateOfBirth", musician.DateOfbirth);
                         insertCommand.Parameters.AddWithValue("@Phone", musician.Phone);
                         insertCommand.Parameters.AddWithValue("@Email", musician.Email);
-                        insertCommand.Parameters.AddWithValue("@Instrument", musician.Instrument); 
+                        if (string.IsNullOrEmpty(musician.Instrument))
+                             insertCommand.Parameters.AddWithValue("@Instrument", DBNull.Value);
+                        else
+                            insertCommand.Parameters.AddWithValue("@Instrument", musician.Instrument); 
                         insertCommand.Parameters.AddWithValue("@Sex", musician.Sex);
                         insertCommand.Parameters.AddWithValue("@Address1", musician.Address1);
                         if (string.IsNullOrEmpty(musician.Address2))
