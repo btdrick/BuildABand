@@ -4,20 +4,27 @@ import { useParams } from "react-router-dom";
 import Post from './components/post/Post.js';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
+import UserProfile from './components/UserProfile.js';
 import './style/home.css';
 
 function Profile() {
     const [state, setState] = useState({
-        posts: [],
-        PostID:     0,          
+        posts: [],         
         MusicianID: 0,
-        Content:    "",
-        modalTitle: "",
         loading:    true
     });
 
     /* Profile's owner */
     const { id } = useParams();
+    /* Current session user ID */
+    const currentUser = UserProfile.getMusicianID();
+    /* User can only create a post on their own profile */
+    const canCreatePost = parseInt(id) === currentUser;
+
+    /* Create post modal attributes */
+    const [modalTitle, setModalTitle] = useState("");
+    const [content, setContent] = useState("");
+    const [postID, setPostID] = useState(0);
     
     /* Makes api call to backend to get the user's posts */
     const getUsersPosts = useCallback(async () => {
@@ -36,16 +43,14 @@ function Profile() {
 
     /* Handles event of text entry for Post content */
     const changePostContent =(e)=>{
-        setState({Content:e.target.value});
+        setContent(e.target.value)
     };
 
     /* Handles onClick event for Add button */
     const addClick = () => {
-        setState({
-            modalTitle: "Create Post",
-            PostID:     0,
-            Content:    ""          
-        });
+        setModalTitle("Create Post");
+        setPostID(0);
+        setContent("");
     };
 
     /* Handles onClick event for Create button */
@@ -58,8 +63,8 @@ function Profile() {
             },
             body:JSON.stringify({   
                 CreatedTime: new Date(),                           
-                MusicianID: state.MusicianID,
-                Content:    state.Content
+                MusicianID: currentUser,
+                Content:    content
             })
         })
         .then(res=>res.json())
@@ -72,11 +77,6 @@ function Profile() {
     };
 
     /* Renders the profile page's html. You can't pass entire object to child component */
-        const {     
-            modalTitle,
-            PostID,
-            Content
-        }=state;
         if (state.loading) {
             return (
                 <div>
@@ -89,13 +89,15 @@ function Profile() {
                 <div id="container">
                     <Navbar/>
                     <h3 className="title"> This is the Profile page </h3> 
-                    <button type="button"
+                    {/* Create post modal*/}
+                    {canCreatePost
+                    && <button type="button"
                     className="btn btn-primary m-3"
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={addClick}>
                         Create Post
-                    </button>
+                    </button>}
                     <div className="container-lg">
                     <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                         <div className="modal-dialog modal-lg modal-dialog-centered">
@@ -109,12 +111,12 @@ function Profile() {
                                 <div className="input-group mb-3">
                                     <span className="input-group-text">Content</span>
                                     <input type="text" className="form-control"
-                                    value={Content}
+                                    value={content}
                                     onChange={changePostContent}/>
                                 </div>
     
                                 <div className="modal-body">               
-                                    {PostID===0?
+                                    {postID===0?
                                     <button type="button"
                                     className="btn btn-primary float-start"
                                     onClick={createClick}
