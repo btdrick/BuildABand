@@ -51,7 +51,7 @@ export class Home extends Component {
     };
 
     /* Handles onClick event for Add button */
-    addClick(){
+    addClick() {
         this.setState({
             modalTitle: "Create Post",
             PostID:     0,

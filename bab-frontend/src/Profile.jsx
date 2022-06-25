@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import Post from './components/post/Post.js';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
+import UserProfile from './components/UserProfile.js';
 import './style/home.css';
 
 function Profile() {
@@ -18,6 +19,8 @@ function Profile() {
 
     /* Profile's owner */
     const { id } = useParams();
+    const currentUser = UserProfile.getMusicianID();
+    const canCreatePost = parseInt(id) === currentUser;
     
     /* Makes api call to backend to get the user's posts */
     const getUsersPosts = useCallback(async () => {
@@ -58,7 +61,7 @@ function Profile() {
             },
             body:JSON.stringify({   
                 CreatedTime: new Date(),                           
-                MusicianID: state.MusicianID,
+                MusicianID: currentUser,
                 Content:    state.Content
             })
         })
@@ -89,13 +92,15 @@ function Profile() {
                 <div id="container">
                     <Navbar/>
                     <h3 className="title"> This is the Profile page </h3> 
-                    <button type="button"
+                    {/* Create post modal*/}
+                    {canCreatePost
+                    && <button type="button"
                     className="btn btn-primary m-3"
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={addClick}>
                         Create Post
-                    </button>
+                    </button>}
                     <div className="container-lg">
                     <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
                         <div className="modal-dialog modal-lg modal-dialog-centered">
