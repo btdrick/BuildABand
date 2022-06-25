@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Post from './Post';
+import Post from './components/post/Post.js';
 import { variables } from './Variables.js';
 import UserProfile from './components/UserProfile.js';
 import Navbar from './components/header/Navbar';
@@ -136,10 +136,10 @@ export class Home extends Component {
                         {this.state.posts.map((post, index) => 
                         <li key={index} className="list-group-item">
                             <Post 
-                            postID={post.PostID}
-                            createdTime={post.CreatedTime}
-                            content={post.Content}
-                            musicianID={post.MusicianID} />
+                            PostID={post.PostID}
+                            CreatedTime={post.CreatedTime}
+                            Content={post.Content}
+                            MusicianID={post.MusicianID} />
                             </li>)}
                     </ul>
                 </div>

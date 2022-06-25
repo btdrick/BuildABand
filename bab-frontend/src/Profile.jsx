@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from 'react';
-import Post from './Post';
+import Post from './components/post/Post.js';
 import {variables} from './Variables.js';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
@@ -127,10 +127,10 @@ function Profile() {
                             {state.posts.map((post, index) => 
                             <li key={index} className="list-group-item">
                                 <Post 
-                                postID={ post.PostID }
-                                createdTime={ post.CreatedTime }
-                                content={ post.Content }
-                                musicianID={ post.MusicianID } />
+                                PostID={ post.PostID }
+                                CreatedTime={ post.CreatedTime }
+                                Content={ post.Content }
+                                MusicianID={ post.MusicianID } />
                                 </li>)}
                             <AddConnection followerID={state.MusicianID}/>    
                         </ul>
