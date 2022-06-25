@@ -132,7 +132,7 @@ function Profile() {
                                 content={ post.Content }
                                 musicianID={ post.MusicianID } />
                                 </li>)}
-                            <AddConnection followerID={state.MusicianID}/>    
+                            <AddConnection followerID={id}/>    
                         </ul>
                     </div>
                     </div>
