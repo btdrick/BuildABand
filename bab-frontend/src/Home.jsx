@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Post from './components/post/Post.js';
 import { variables } from './Variables.js';
+import Post from './components/post/Post.js';
 import UserProfile from './components/UserProfile.js';
 import Navbar from './components/header/Navbar';
 import './style/home.css';
@@ -18,13 +18,13 @@ export class Home extends Component {
             modalTitle: "",
             loading:    true
         };
-    }
+    };
 
     /* Once the page renders, this lifecycle method takes place */
     componentDidMount(){
         this.getPosts();
         this.getMusicians();
-    }
+    };
     
     /* Makes api call to backend to get all posts */
     async getPosts() {
@@ -34,7 +34,7 @@ export class Home extends Component {
             posts:  data,
             loading: false,
         });
-    }
+    };
 
     /* Makes api call to backend to get all Musicians */
     async getMusicians() {
@@ -43,12 +43,12 @@ export class Home extends Component {
         this.setState({
             musicians: data
         });
-    }
+    };
 
     /* Handles event of text entry for Post content */
     changePostContent =(e)=>{
         this.setState({Content:e.target.value});
-    }
+    };
 
     /* Handles onClick event for Add button */
     addClick(){
@@ -57,7 +57,7 @@ export class Home extends Component {
             PostID:     0,
             Content:    ""          
         });
-    }
+    };
 
     /* Handles onClick event for Create button */
     createClick(){
@@ -79,8 +79,8 @@ export class Home extends Component {
             this.getPosts();
         },(_error)=>{
             alert('Post content cannot be blank');
-        })
-    }
+        });
+    };
 
     /* HTML for the Build-A-Band Main feed */
     render() {
@@ -136,10 +136,10 @@ export class Home extends Component {
                         {this.state.posts.map((post, index) => 
                         <li key={index} className="list-group-item">
                             <Post 
-                            PostID={post.PostID}
-                            CreatedTime={post.CreatedTime}
-                            Content={post.Content}
-                            MusicianID={post.MusicianID} />
+                            PostID={ post.PostID }
+                            CreatedTime={ post.CreatedTime }
+                            Content={ post.Content }
+                            MusicianID={ post.MusicianID } />
                             </li>)}
                     </ul>
                 </div>

@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useCallback } from 'react';
 import { variables } from '../../Variables.js';
 import Comments from '../comments/Comments';
 import UserProfile from '../UserProfile';
@@ -16,11 +16,12 @@ const Post = (props) => {
     const[authorInfo, setAuthorInfo] = useState([]);
 
     /* Makes api call to backend to get all post likes */
-    const getLikes = async() => {
+    const getLikes = useCallback(async () => {
         const response = await fetch(variables.API_URL+'post/'+props.PostID+'/like');
         const data = await response.json(); 
+
         return data;
-    };
+    }, [props.PostID]);
 
     /* Once the page renders, this hook takes place */
     useEffect(() => {
@@ -36,11 +37,11 @@ const Post = (props) => {
             setAuthorInfo(data);
         });
 
-        getLikes().then((data) => {
+        getLikes().then(data => {
             setLikes(data);
             setLikesCount(data.length);
         });
-    }, [props.musicianID]);
+    }, [props.MusicianID, getLikes]);
 
     /* Author of post */
     const authorName = authorInfo.Fname + " " + authorInfo.Lname;
@@ -74,12 +75,12 @@ const Post = (props) => {
             })
         })
         .then(res=>res.json())
-        .then(()=>{ 
+        .then((result)=>{ 
             /* Refresh likes */
             getLikes().then((data) => {
                 setLikes(data);
                 setLikesCount(data.length);
-            });       
+            });      
         },(_error)=>{
             alert('An error has occurred with liking your post');
         });              
@@ -113,14 +114,19 @@ const Post = (props) => {
     /* User cannot stack likes */
     const canLike = hasLiked();
 
+    /* Format comment time displayed */
+    const createdTime = 
+        new Date(props.CreatedTime).toLocaleDateString() + " " 
+        + new Date(props.CreatedTime).toLocaleTimeString();
+
     return ( 
         <div id="container">
             {/* Card style post */}
             <div className="card text-white bg-dark mb-3">
                 <div className="card-body">
                     <h5 className="card-title"> { authorName } said: </h5>
-                    <p className="card-text"> { props.content } </p>
-                    <cite title="Created Time">{ props.createdTime }</cite>
+                    <p className="card-text"> { props.Content } </p>
+                    <cite title="Created Time">{ createdTime }</cite>
                 </div>
                 {/* Like section */}
                 {canLike ? (
@@ -141,7 +147,7 @@ const Post = (props) => {
                 && <div className="card-footer">{likesCount} Likes</div>}
             </div>
             {/* Render comments for current post */}
-            <Comments currentUserID={UserProfile.getMusicianID()} currentPostID={ props.postID } />
+            <Comments currentUserID={UserProfile.getMusicianID()} currentPostID={ props.PostID } />
         </div>      
     );
 }

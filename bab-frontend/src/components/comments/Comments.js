@@ -45,17 +45,17 @@ const Comments = ({ currentUserID, currentPostID }) => {
     const addComment = (text, parentID) => {
         createComment(text, parentID);
         setActiveComment(null);
-    }
+    };
 
     /* Increases amount of visible comments */
     const showMoreComments = () => {
         setVisibleComments(prevValue => prevValue + 5);
-    }
+    };
 
     /* Decreases amoung of visible comments */
     const showFewerComments = () => {
         setVisibleComments(prevValue => prevValue - 5);
-    }
+    };
 
     /* Posts comment to database */
     const createComment = async(text, parentID) => {
@@ -82,8 +82,8 @@ const Comments = ({ currentUserID, currentPostID }) => {
             alert(result);       
         },(_error)=>{
             alert('An error has occurred with submitting your comment');
-        })
-    }
+        });
+    };
 
     /* Update comment content */
     const updateComment = async(text, comment) => {
@@ -108,8 +108,8 @@ const Comments = ({ currentUserID, currentPostID }) => {
             alert(result);                  
         },(_error)=>{
             alert('An error has occurred with updating your comment');
-        })
-    }
+        });
+    };
 
     /* Delete comment from database */
     const deleteComment = async(comment) => {
@@ -133,9 +133,9 @@ const Comments = ({ currentUserID, currentPostID }) => {
                   setBackendComments(updatedBackendComments);         
             },(_error)=>{
                 alert('An error has occurred with deleting your comment');
-            })
-        }
-    }
+            });
+        };
+    };
 
     return ( 
         <div className="comments">
