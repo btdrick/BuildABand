@@ -1,8 +1,10 @@
 import { React, useState, useEffect } from 'react';
 import Post from './Post';
+import AudioPlayer from './components/audio/AudioPlayer';
 import {variables} from './Variables.js';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
+import UserProfile from './components/UserProfile.js';
 import { useParams } from "react-router-dom";
 import './style/home.css';
 
@@ -10,7 +12,7 @@ function Profile() {
     const [state, setState] = useState({
         posts: [],
         PostID:     0,          
-        MusicianID: 0,
+        MusicianID: UserProfile.getProfileID(),
         Content:    "",
         modalTitle: "",
         loading:    true
@@ -87,6 +89,7 @@ function Profile() {
                 <div id="container">
                     <Navbar/>
                     <h3 className="title"> This is the Profile page </h3> 
+                    <AudioPlayer />
                     <button type="button"
                     className="btn btn-primary m-3"
                     data-bs-toggle="modal"
