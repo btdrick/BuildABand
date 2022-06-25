@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Post from './Post';
 import AudioPlayer from './components/audio/AudioPlayer';
 import {variables} from './Variables.js';
@@ -12,7 +12,7 @@ function Profile() {
     const [state, setState] = useState({
         posts: [],
         PostID:     0,          
-        MusicianID: UserProfile.getProfileID(),
+        MusicianID: UserProfile.getProfileID,
         Content:    "",
         modalTitle: "",
         loading:    true
