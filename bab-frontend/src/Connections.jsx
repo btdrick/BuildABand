@@ -8,7 +8,8 @@ class Connections extends Component{
     constructor(props){
         super(props);
         this.state = {
-            connections: []
+            pendingConn: [],
+            connectedConn: []
         };
     }
 
@@ -18,17 +19,20 @@ class Connections extends Component{
             .then(res => res.json())
             .then(result => {
                 this.setState({
-                    connections:result
+                    pendingConn:result.filter(conn => !conn.Connected),
+                    connectedConn:result.filter(conn => conn.Connected)
                 });
             })
     }
 
     render() {
+        
       return(
           <div>
             <Navbar/>
-            <h1>Friends connections</h1>
-            <table style={{width: "20%"}}>
+            <div>
+              <h2>Connected Friends</h2>
+               <table style={{width: "20%"}}>
                 <thead>
                     <tr>
                         <th>
@@ -41,15 +45,50 @@ class Connections extends Component{
                 </thead>
                 <tbody>
                     {
-                    this.state.connections.map(conn =>
+                    this.state.connectedConn.map(conn => 
                         <tr key={conn.ConnectionID}>
                             <td> {conn.FollowerNames}</td>
-                            <td> {conn.Connected? "Connected": "Not Connected"}</td>
-                        </tr>
+                            <td> {conn.Connected? "connected" : "pending"}</td>
+                            
+                        </tr> 
                         )
                     }
                 </tbody>
-            </table>
+              </table>   
+            </div>
+            <div className="pt-4">
+            <h2>Pending Friends Request</h2>
+               <table style={{width: "20%"}}>
+                <thead>
+                    <tr>
+                        <th>
+                            Musician Name
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                    this.state.pendingConn.map(conn => 
+                        <tr key={conn.ConnectionID}>
+                            <td> {conn.FollowerNames}</td>
+                            <td> {conn.Connected? "connected" : "pending"}</td>
+                            <td>
+                                <button>
+                                    Accept
+                                </button>
+                            </td>
+                        </tr> 
+                        )
+                    }
+                </tbody>
+              </table>  
+
+            </div>
+           
+           
           </div>  
         )  
     }
