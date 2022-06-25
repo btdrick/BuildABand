@@ -199,7 +199,7 @@ CREATE TABLE [dbo].[Musician](
 	[DateOfBirth] [date] NOT NULL,
 	[Phone] [varchar](12) NOT NULL,
 	[Email] [varchar](200) NOT NULL,
-	[Instrument] [varchar](500) NULL,
+	[Instrument] [varchar](500) NOT NULL,
 	[Sex] [varchar](10) NOT NULL,
 	[Address1] [varchar](50) NOT NULL,
 	[Address2] [varchar](50) NULL,
@@ -227,6 +227,22 @@ CREATE TABLE [dbo].[Post](
  CONSTRAINT [PK_PostID] PRIMARY KEY CLUSTERED 
 (
 	[PostID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[PostLike]    Script Date: 6/24/2022 5:23:43 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PostLike](
+	[PostLikeID] [int] IDENTITY(1,1) NOT NULL,
+	[PostID] [int] NOT NULL,
+	[MusicianID] [int] NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_PostLike] PRIMARY KEY CLUSTERED 
+(
+	[PostLikeID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -340,6 +356,14 @@ SET IDENTITY_INSERT [dbo].[Post] ON
 INSERT [dbo].[Post] ([PostID], [CreatedTime], [MusicianID], [Content]) VALUES (1, CAST(N'2022-05-20T00:00:00.000' AS DateTime), 1, N'Welcome everyone to Build-a-band')
 INSERT [dbo].[Post] ([PostID], [CreatedTime], [MusicianID], [Content]) VALUES (2, CAST(N'2022-05-21T00:00:00.000' AS DateTime), 2, N'I think FAR OUT album by police  is a need to listen to')
 SET IDENTITY_INSERT [dbo].[Post] OFF
+GO
+SET IDENTITY_INSERT [dbo].[PostLike] ON 
+
+INSERT [dbo].[PostLike] ([PostLikeID], [PostID], [MusicianID], [CreatedTime]) VALUES (1, 1, 1, CAST(N'2022-05-20T00:00:00.000' AS DateTime))
+INSERT [dbo].[PostLike] ([PostLikeID], [PostID], [MusicianID], [CreatedTime]) VALUES (2, 1, 2, CAST(N'2022-05-21T00:00:00.000' AS DateTime))
+INSERT [dbo].[PostLike] ([PostLikeID], [PostID], [MusicianID], [CreatedTime]) VALUES (3, 1, 3, CAST(N'2022-05-21T00:00:00.000' AS DateTime))
+
+SET IDENTITY_INSERT [dbo].[PostLike] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Project] ON 
 
@@ -492,6 +516,16 @@ ALTER TABLE [dbo].[Post]  WITH CHECK ADD  CONSTRAINT [FK_Post_Musician] FOREIGN 
 REFERENCES [dbo].[Musician] ([MusicianID])
 GO
 ALTER TABLE [dbo].[Post] CHECK CONSTRAINT [FK_Post_Musician]
+GO
+ALTER TABLE [dbo].[PostLike]  WITH CHECK ADD  CONSTRAINT [FK_PostLike_Accounts] FOREIGN KEY([MusicianID])
+REFERENCES [dbo].[Accounts] ([AccountID])
+GO
+ALTER TABLE [dbo].[PostLike] CHECK CONSTRAINT [FK_PostLike_Accounts]
+GO
+ALTER TABLE [dbo].[PostLike]  WITH CHECK ADD  CONSTRAINT [FK_PostLike_PostLike] FOREIGN KEY([PostID])
+REFERENCES [dbo].[Post] ([PostID])
+GO
+ALTER TABLE [dbo].[PostLike] CHECK CONSTRAINT [FK_PostLike_PostLike]
 GO
 ALTER TABLE [dbo].[Project]  WITH CHECK ADD  CONSTRAINT [FK_Project_Musician] FOREIGN KEY([OwnerID])
 REFERENCES [dbo].[Musician] ([MusicianID])

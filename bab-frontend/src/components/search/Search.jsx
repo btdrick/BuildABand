@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import "./search.css";
+import { Link } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
-import { Link } from "react-router-dom";
 import UserProfile from "../UserProfile";
+import "./search.css";
 
 function Search({ placeholder, data }) {
   /* Search Results array */

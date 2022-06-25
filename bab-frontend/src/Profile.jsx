@@ -1,9 +1,9 @@
-import { React, useState, useEffect } from 'react';
-import Post from './Post';
+import { React, useState, useEffect, useCallback } from 'react';
 import {variables} from './Variables.js';
+import { useParams } from "react-router-dom";
+import Post from './components/post/Post.js';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
-import { useParams } from "react-router-dom";
 import './style/home.css';
 
 function Profile() {
@@ -14,28 +14,30 @@ function Profile() {
         Content:    "",
         modalTitle: "",
         loading:    true
-    })
-    const { id } = useParams();
+    });
 
-    /* Once the page renders, this lifecycle method takes place */
-    useEffect(() => {
-        getUsersPosts();
-    })
+    /* Profile's owner */
+    const { id } = useParams();
     
     /* Makes api call to backend to get the user's posts */
-    const getUsersPosts = async () => {
+    const getUsersPosts = useCallback(async () => {
         const response = await fetch(variables.API_URL+'post/'+ id);
         const data = await response.json();
         setState({
             posts: data,
             loading: false,
         });
-    }
+    }, [id]);
+
+    /* Once the page renders, this lifecycle method takes place */
+    useEffect(() => {
+        getUsersPosts();
+    }, [getUsersPosts]);
 
     /* Handles event of text entry for Post content */
     const changePostContent =(e)=>{
         setState({Content:e.target.value});
-    }
+    };
 
     /* Handles onClick event for Add button */
     const addClick = () => {
@@ -44,7 +46,7 @@ function Profile() {
             PostID:     0,
             Content:    ""          
         });
-    }
+    };
 
     /* Handles onClick event for Create button */
     const createClick = () => {
@@ -66,8 +68,8 @@ function Profile() {
             getUsersPosts();
         },(_error)=>{
             alert('Post content cannot be blank');
-        })
-    }
+        });
+    };
 
     /* Renders the profile page's html. You can't pass entire object to child component */
         const {     
@@ -125,12 +127,12 @@ function Profile() {
                     <div>
                         <ul className="list-group">
                             {state.posts.map((post, index) => 
-                            <li key={index} className="list-group-item">
+                            <li key={index} className="list-group-item">                               
                                 <Post 
-                                postID={ post.PostID }
-                                createdTime={ post.CreatedTime }
-                                content={ post.Content }
-                                musicianID={ post.MusicianID } />
+                                PostID={ post.PostID }
+                                CreatedTime={ post.CreatedTime }
+                                Content={ post.Content }
+                                MusicianID={ post.MusicianID } />
                                 </li>)}
                             <AddConnection followerID={state.MusicianID}/>    
                         </ul>

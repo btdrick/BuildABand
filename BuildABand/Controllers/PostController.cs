@@ -38,7 +38,7 @@ namespace BuildABand.Controllers
         public JsonResult GetPosts()
         {
             string selectStatement = 
-            @"SELECT PostID, MusicianID, Content
+            @"SELECT *
             FROM dbo.Post";
 
             DataTable resultsTable = new DataTable();
@@ -88,6 +88,44 @@ namespace BuildABand.Controllers
                 using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
                 {
                     myCommand.Parameters.AddWithValue("@id", id);
+                    dataReader = myCommand.ExecuteReader();
+                    resultsTable.Load(dataReader);
+                    dataReader.Close();
+                    connection.Close();
+                }
+            }
+
+            return new JsonResult(resultsTable);
+        }
+
+        /// <summary>
+        /// Gets all post likes for specified post
+        /// GET: api/post/PostID/like
+        /// </summary>
+        /// <param name="postID"></param>
+        /// <returns>JsonResult table of post likes</returns>
+        [HttpGet("{PostID}/like")]
+        public JsonResult GetPostLikes(int postID)
+        {
+            if (postID < 1)
+            {
+                throw new ArgumentException("PostID must be greater than 0");
+            }
+
+            string selectStatement =
+            @"SELECT *
+            FROM dbo.PostLike 
+            WHERE PostID = @PostID";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                {
+                    myCommand.Parameters.AddWithValue("@PostID", postID);
                     dataReader = myCommand.ExecuteReader();
                     resultsTable.Load(dataReader);
                     dataReader.Close();
