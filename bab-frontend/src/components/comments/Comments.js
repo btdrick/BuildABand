@@ -70,7 +70,8 @@ const Comments = ({ currentUserID, currentPostID }) => {
                 ParentID:    parentID,                           
                 MusicianID:  currentUserID,
                 PostID:      currentPostID,
-                Content:     text
+                Content:     text,
+                Likes: 0
             })
         })
         .then(res=>res.json())
