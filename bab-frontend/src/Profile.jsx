@@ -16,6 +16,7 @@ function Profile() {
         loading:    true
     });
 
+    /* Profile's owner */
     const { id } = useParams();
     
     /* Makes api call to backend to get the user's posts */

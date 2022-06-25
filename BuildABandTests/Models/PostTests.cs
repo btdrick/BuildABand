@@ -32,7 +32,6 @@ namespace BuildABandTests.Models
             _post.PostID = 0;
             _post.MusicianID = 0;
             _post.CreatedTime = DateTime.MinValue;
-            _post.Likes = 0;
         }
 
         /// <summary>
@@ -46,7 +45,6 @@ namespace BuildABandTests.Models
             Assert.AreEqual(0, _post.PostID);
             Assert.AreEqual(0, _post.MusicianID);
             Assert.AreEqual(DateTime.MinValue, _post.CreatedTime);
-            Assert.AreEqual(0, _post.Likes);
         }
 
         /// <summary>
@@ -60,17 +58,11 @@ namespace BuildABandTests.Models
             _post.PostID++;
             _post.MusicianID++;
             _post.CreatedTime = DateTime.Parse("2022-06-11");
-            _post.Likes++;
 
             Assert.AreEqual("Test", _post.Content);
             Assert.AreEqual(1, _post.PostID);
             Assert.AreEqual(1, _post.MusicianID);
             Assert.AreEqual(DateTime.Parse("2022-06-11"), _post.CreatedTime);
-            Assert.AreEqual(1, _post.Likes);
-
-            /* Unlike a post */
-            _post.Likes--;
-            Assert.AreEqual(0, _post.Likes);
         }
     }
 }

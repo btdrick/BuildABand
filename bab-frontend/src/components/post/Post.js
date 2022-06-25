@@ -50,7 +50,7 @@ const Post = (props) => {
     function getLike() {
         const like = likes.find(index => index.MusicianID === currentUserID && index.PostID === props.PostID);
         return like;
-    };
+    }
 
     /* Returns true if user has liked a post before */
     function hasLiked() {
@@ -58,7 +58,7 @@ const Post = (props) => {
         const hasLiked = (hasRow !== undefined);
 
         return hasLiked;
-    };
+    }
 
     /* Posts post like to database */
     const likePost = async() => {
@@ -84,7 +84,7 @@ const Post = (props) => {
         },(_error)=>{
             alert('An error has occurred with liking your post');
         });              
-    };
+    }
 
     /* Removes post like from database */
     const unlikePost = async() => {
@@ -109,7 +109,7 @@ const Post = (props) => {
         },(_error)=>{
             alert('An error has occurred with unliking your post');
         });
-    };
+    }
 
     /* User cannot stack likes */
     const canLike = hasLiked();
@@ -147,7 +147,9 @@ const Post = (props) => {
                 && <div className="card-footer">{likesCount} Likes</div>}
             </div>
             {/* Render comments for current post */}
-            <Comments currentUserID={UserProfile.getMusicianID()} currentPostID={ props.PostID } />
+            <Comments 
+            currentUserID={ UserProfile.getMusicianID() } 
+            currentPostID={ props.PostID } />
         </div>      
     );
 }
