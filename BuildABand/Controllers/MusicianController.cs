@@ -107,9 +107,9 @@ namespace BuildABand.Controllers
             {
                 this.userSource.RegisterNewUser(user);
             }
-           catch (Exception)
+           catch (Exception ex)
             {
-               return new JsonResult("Username already exist");
+               return new JsonResult(ex.Message);
             }
 
             return new JsonResult("New user created");
