@@ -15,6 +15,20 @@ class Connections extends Component{
 
     //Get connections
     componentDidMount(){
+        this.getConnection();
+    }
+
+    acceptConnection = (event) => {
+        console.log(event.target.value);
+        const connectionID = event.target.value;
+        fetch( variables.API_URL +"musicianconnections/accept/" + connectionID,{
+            method:"POST"})
+            .then(res=> (res.json()))
+            .then(result => alert(result))
+            this.getConnection();
+    }
+
+    getConnection(){
         fetch(variables.API_URL + "musicianconnections/" + UserProfile.getMusicianID())
             .then(res => res.json())
             .then(result => {
@@ -23,7 +37,11 @@ class Connections extends Component{
                     connectedConn:result.filter(conn => conn.Connected)
                 });
             })
+
     }
+    
+
+ 
 
     render() {
         
@@ -76,7 +94,8 @@ class Connections extends Component{
                             <td> {conn.FollowerNames}</td>
                             <td> {conn.Connected? "connected" : "pending"}</td>
                             <td>
-                                <button>
+                                <button value={conn.ConnectionID} 
+                                    onClick={this.acceptConnection}>
                                     Accept
                                 </button>
                             </td>
@@ -93,8 +112,8 @@ class Connections extends Component{
         )  
     }
         
-
-
 }
+
+
 
 export default Connections;
