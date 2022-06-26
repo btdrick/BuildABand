@@ -9,17 +9,17 @@ class Connections extends Component{
         super(props);
         this.state = {
             pendingConn: [],
-            connectedConn: []
+            connectedConn: [],
         };
     }
 
     //Get connections
     componentDidMount(){
+       
         this.getConnection();
     }
 
     acceptConnection = (event) => {
-        console.log(event.target.value);
         const connectionID = event.target.value;
         fetch( variables.API_URL +"musicianconnections/accept/" + connectionID,{
             method:"POST"})
@@ -31,17 +31,15 @@ class Connections extends Component{
     getConnection(){
         fetch(variables.API_URL + "musicianconnections/" + UserProfile.getMusicianID())
             .then(res => res.json())
-            .then(result => {
+            .then(result => { 
                 this.setState({
-                    pendingConn:result.filter(conn => !conn.Connected),
-                    connectedConn:result.filter(conn => conn.Connected)
+                    pendingConn:result.filter(conn => !conn.Connected  && conn.FollowerID === UserProfile.getMusicianID()),
+                    connectedConn:result
                 });
             })
 
     }
-    
 
- 
 
     render() {
         
@@ -49,7 +47,7 @@ class Connections extends Component{
           <div>
             <Navbar/>
             <div>
-              <h2>Connected Friends</h2>
+              <h2>Connection Status</h2>
                <table style={{width: "20%"}}>
                 <thead>
                     <tr>
@@ -99,6 +97,7 @@ class Connections extends Component{
                                     Accept
                                 </button>
                             </td>
+                           
                         </tr> 
                         )
                     }
