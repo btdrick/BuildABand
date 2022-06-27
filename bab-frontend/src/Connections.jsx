@@ -11,6 +11,9 @@ class Connections extends Component {
             pendingConn: [],
             connectedConn: [],
         };
+
+        this.rejectConnection = this.rejectConnection.bind(this);
+        this.disconnect = this.disconnect.bind(this);
     }
 
     //Get connections
@@ -45,7 +48,15 @@ class Connections extends Component {
 
     }
 
-    rejectConnection = (event) => {
+    disconnect(event) {
+        let isDisconnect = window.confirm("Confirm disconnection?");
+        if (isDisconnect){
+            this.rejectConnection(event);
+        }
+        
+    }
+
+    rejectConnection(event) {
         const connectionID = event.target.value;
         fetch(variables.API_URL + "musicianconnections/reject/" + connectionID, {
             method: "POST"
@@ -84,7 +95,7 @@ class Connections extends Component {
                                         <td>{conn.Connected? 
                                             (
                                              <button value={conn.ConnectionID} 
-                                                    onClick={this.rejectConnection}>
+                                                    onClick={this.disconnect}>
                                                     Disconnect
                                             </button> ) : null }   
                                         </td>                
