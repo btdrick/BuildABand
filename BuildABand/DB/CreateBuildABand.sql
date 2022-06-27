@@ -208,6 +208,7 @@ CREATE TABLE [dbo].[Musician](
 	[AccountID] [int] NOT NULL,
 	[StateCode] [char](2) NOT NULL,
 	[AvaterFilename] [varchar](200) NULL,
+	[IsAdmin] [tinyint] NOT NULL,
  CONSTRAINT [PK_MusicianID] PRIMARY KEY CLUSTERED 
 (
 	[MusicianID] ASC
@@ -343,12 +344,12 @@ SET IDENTITY_INSERT [dbo].[Message] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Musician] ON 
 
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (1, N'Davolio', N'Nancy', CAST(N'1968-12-08' AS Date), N'206-555-9857', N'dnacy@test.com', N'Drum', N'Female', N'507 - 20th Ave.', NULL, N'Seattle', N'98122', 1, N'WA', NULL)
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (2, N'Fuller', N'Andrew', CAST(N'1952-02-19' AS Date), N'206-555-9482', N'fandrew@test.com', N'Piano', N'Male', N'908 W. Capital Way', N'by Zip way', N'Tacoma', N'98401', 2, N'WA', NULL)
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (3, N'Leverling', N'Janet', CAST(N'1963-08-30' AS Date), N'206-555-3412', N'ljanet@test.com', N'Bass Guitar', N'Female', N'722 Moss Bay Blvd.', NULL, N'Kirkland', N'98033', 3, N'WA', NULL)
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (4, N'Peacock', N'Margaret', CAST(N'1958-09-19' AS Date), N'206-555-8122', N'pmargaret@test.com', N'Lead Guitar', N'Female', N'4110 Old Redmond Rd.', NULL, N'Redmond', N'98052', 4, N'WA', NULL)
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (5, N'Buchanan', N'Steven', CAST(N'1955-03-04' AS Date), N'715-554-8480', N'bsteven@test.com', N'Drum', N'Male', N'14 Garrett Hill', N'SW1 8JR', N'Clint', N'87892', 5, N'NJ', NULL)
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (6, N'Suyama', N'Michael', CAST(N'1963-07-02' AS Date), N'715-557-7730', N'smichael@test.com', N'Trumpet', N'Male', N'331 Park Ave S', NULL, N'New York', N'86692', 6, N'NY', NULL)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename], [IsAdmin]) VALUES (1, N'Davolio', N'Nancy', CAST(N'1968-12-08' AS Date), N'206-555-9857', N'dnacy@test.com', N'Drum', N'Female', N'507 - 20th Ave.', NULL, N'Seattle', N'98122', 1, N'WA', NULL, 1)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename], [IsAdmin]) VALUES (2, N'Fuller', N'Andrew', CAST(N'1952-02-19' AS Date), N'206-555-9482', N'fandrew@test.com', N'Piano', N'Male', N'908 W. Capital Way', N'by Zip way', N'Tacoma', N'98401', 2, N'WA', NULL, 0)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename], [IsAdmin]) VALUES (3, N'Leverling', N'Janet', CAST(N'1963-08-30' AS Date), N'206-555-3412', N'ljanet@test.com', N'Bass Guitar', N'Female', N'722 Moss Bay Blvd.', NULL, N'Kirkland', N'98033', 3, N'WA', NULL, 0)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename], [IsAdmin]) VALUES (4, N'Peacock', N'Margaret', CAST(N'1958-09-19' AS Date), N'206-555-8122', N'pmargaret@test.com', N'Lead Guitar', N'Female', N'4110 Old Redmond Rd.', NULL, N'Redmond', N'98052', 4, N'WA', NULL, 0)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename], [IsAdmin]) VALUES (5, N'Buchanan', N'Steven', CAST(N'1955-03-04' AS Date), N'715-554-8480', N'bsteven@test.com', N'Drum', N'Male', N'14 Garrett Hill', N'SW1 8JR', N'Clint', N'87892', 5, N'NJ', NULL, 0)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename], [IsAdmin]) VALUES (6, N'Suyama', N'Michael', CAST(N'1963-07-02' AS Date), N'715-557-7730', N'smichael@test.com', N'Trumpet', N'Male', N'331 Park Ave S', NULL, N'New York', N'86692', 6, N'NY', NULL, 0)
 SET IDENTITY_INSERT [dbo].[Musician] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Post] ON 
