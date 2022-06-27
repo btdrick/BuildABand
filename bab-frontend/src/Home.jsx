@@ -9,6 +9,7 @@ export class Home extends Component {
     /* Constructor for the component. Tracks the posts shown on the feed and whether the page's loading status */
     constructor(props) {
         super(props);
+        this.handler = this.handler.bind(this);
         this.state = { 
             posts:      [], 
             musicians:  [],
@@ -19,6 +20,11 @@ export class Home extends Component {
             loading:    true
         };
     };
+
+    /* Allows child to update the posts */
+    handler() {
+        this.getPosts();
+    }
 
     /* Once the page renders, this lifecycle method takes place */
     componentDidMount(){
@@ -76,7 +82,6 @@ export class Home extends Component {
         .then(res=>res.json())
         .then((result)=>{
             alert(result);
-            this.getPosts();
         },(_error)=>{
             alert('Post content cannot be blank');
         });
@@ -97,8 +102,8 @@ export class Home extends Component {
             })
             .then(res=>res.json())
             .then((result)=>{ 
-                alert(result);   
-                this.getPosts();                 
+                alert(result);  
+                this.handler();
             },(_error)=>{
                 alert('An error has occurred with deleting your post');
             });
@@ -163,7 +168,8 @@ export class Home extends Component {
                             CreatedTime={ post.CreatedTime }
                             Content={ post.Content }
                             MusicianID={ post.MusicianID }
-                            deletePost={ this.deletePost } />
+                            deletePost={ this.deletePost } 
+                            handler={ this.handler }/>
                             </li>)}
                     </ul>
                 </div>
