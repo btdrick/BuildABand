@@ -76,6 +76,29 @@ function Profile() {
         });
     };
 
+    /* Removes post and its affiliated likes, comments from database */
+    const deletePost = (postID) => {
+        if (window.confirm("Are you sure you want to remove this post and its affiliated comments?")) {
+            fetch(variables.API_URL+'post/'+postID,{
+                method:'DELETE',
+                headers:{
+                    'Accept':'application/json',
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({   
+                    PostID: postID
+                })
+            })
+            .then(res=>res.json())
+            .then((result)=>{ 
+                alert(result);  
+                getUsersPosts();
+            },(_error)=>{
+                alert('An error has occurred with deleting your post');
+            });
+        }
+    }
+
     /* Renders the profile page's html. You can't pass entire object to child component */
         if (state.loading) {
             return (
@@ -134,7 +157,9 @@ function Profile() {
                                 PostID={ post.PostID }
                                 CreatedTime={ post.CreatedTime }
                                 Content={ post.Content }
-                                MusicianID={ post.MusicianID } />
+                                MusicianID={ post.MusicianID } 
+                                getUserPosts={ getUsersPosts }
+                                deletePost={ deletePost } />
                                 </li>)}
                             <AddConnection followerID={state.MusicianID}/>    
                         </ul>
