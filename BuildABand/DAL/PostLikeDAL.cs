@@ -31,9 +31,10 @@ namespace BuildABand.DAL
         {
             try
             {
-                string selectStatement =
-                @"SELECT *
-                FROM dbo.PostLike";
+                string selectStatement = @"
+                SELECT *
+                FROM dbo.PostLike
+                ";
 
                 DataTable resultsTable = new DataTable();
                 string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -72,10 +73,11 @@ namespace BuildABand.DAL
 
             try
             {
-                string selectStatement =
-            @"SELECT *
-            FROM dbo.PostLike 
-            WHERE PostLikeID = @PostLikeID";
+                string selectStatement = @"
+                SELECT *
+                FROM dbo.PostLike 
+                WHERE PostLikeID = @PostLikeID
+                ";
 
                 DataTable resultsTable = new DataTable();
                 string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -115,9 +117,10 @@ namespace BuildABand.DAL
 
             try
             {
-                string insertStatement =
-                @"INSERT INTO dbo.PostLike " +
-                "VALUES (@PostID, @MusicianID, @CreatedTime)";
+                string insertStatement = @"
+                INSERT INTO dbo.PostLike
+                VALUES (@PostID, @MusicianID, @CreatedTime)
+                ";
 
                 DataTable resultsTable = new DataTable();
                 string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -159,12 +162,15 @@ namespace BuildABand.DAL
 
             try
             {
-                string deleteStatement =
-                @"DELETE FROM dbo.PostLike " +
-                "WHERE PostLikeID = @PostLikeID " +
-                "DECLARE @lastID int " +
-                "SELECT @lastID = MAX(PostLikeID) FROM dbo.PostLike " +
-                "DBCC CHECKIDENT(PostLike, RESEED, @lastID)";
+                string deleteStatement = @"
+                DELETE FROM dbo.PostLike
+                WHERE PostLikeID = @PostLikeID
+
+                DECLARE @lastID int
+                SELECT @lastID = MAX(PostLikeID) FROM dbo.PostLike
+                DBCC CHECKIDENT(PostLike, RESEED, @lastID)
+                ";
+
                 DataTable resultsTable = new DataTable();
                 string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
                 SqlDataReader dataReader;
@@ -203,11 +209,12 @@ namespace BuildABand.DAL
 
             try
             {
-                string selectStatement =
-                    "SELECT COUNT(*) " +
-                    "FROM dbo.PostLike " +
-                    "WHERE PostID = @PostID " +
-                    "AND MusicianID = @MusicianID";
+                string selectStatement = @"
+                SELECT COUNT(*)
+                FROM dbo.PostLike
+                WHERE PostID = @PostID
+                AND MusicianID = @MusicianID
+                ";
 
                 using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
                 {
@@ -242,10 +249,11 @@ namespace BuildABand.DAL
 
             try
             {
-                string selectStatement =
-                    "SELECT COUNT(*) " +
-                    "FROM dbo.PostLike " +
-                    "WHERE PostLikeID = @PostLikeID";
+                string selectStatement = @"
+                SELECT COUNT(*)
+                FROM dbo.PostLike
+                WHERE PostLikeID = @PostLikeID
+                ";
 
                 using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
                 {

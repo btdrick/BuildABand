@@ -82,6 +82,29 @@ export class Home extends Component {
         });
     };
 
+    /* Removes post and its affiliated likes, comments from database */
+    async deletePost(postID) {
+        if (window.confirm("Are you sure you want to remove this post and its affiliated comments?")) {
+            fetch(variables.API_URL+'post/'+postID,{
+                method:'DELETE',
+                headers:{
+                    'Accept':'application/json',
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({   
+                    PostID: postID
+                })
+            })
+            .then(res=>res.json())
+            .then((result)=>{ 
+                alert(result);   
+                this.getPosts();                 
+            },(_error)=>{
+                alert('An error has occurred with deleting your post');
+            });
+        }
+    }
+
     /* HTML for the Build-A-Band Main feed */
     render() {
         const {     
@@ -139,7 +162,8 @@ export class Home extends Component {
                             PostID={ post.PostID }
                             CreatedTime={ post.CreatedTime }
                             Content={ post.Content }
-                            MusicianID={ post.MusicianID } />
+                            MusicianID={ post.MusicianID }
+                            deletePost={ this.deletePost } />
                             </li>)}
                     </ul>
                 </div>
