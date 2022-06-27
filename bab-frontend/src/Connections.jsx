@@ -56,6 +56,7 @@ class Connections extends Component {
 
 
     render() {
+       
 
         return (
             <div>
@@ -80,7 +81,14 @@ class Connections extends Component {
                                         <td> {conn.FollowerID === UserProfile.getMusicianID()?
                                             conn.InitiatorNames : conn.FollowerNames}</td>
                                         <td> {conn.Connected ? "connected" : "pending"}</td>
-
+                                        <td>{conn.Connected? 
+                                            (
+                                             <button value={conn.ConnectionID} 
+                                                    onClick={this.rejectConnection}>
+                                                    Disconnect
+                                            </button> ) : null }   
+                                        </td>                
+                              
                                     </tr>
                                 )
                             }
