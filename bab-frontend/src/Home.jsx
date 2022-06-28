@@ -9,6 +9,7 @@ export class Home extends Component {
     /* Constructor for the component. Tracks the posts shown on the feed and whether the page's loading status */
     constructor(props) {
         super(props);
+        this.handler = this.handler.bind(this);
         this.state = { 
             posts:      [], 
             musicians:  [],
@@ -19,6 +20,11 @@ export class Home extends Component {
             loading:    true
         };
     };
+
+    /* Allows child to update the posts */
+    handler() {
+        this.getPosts();
+    }
 
     /* Once the page renders, this lifecycle method takes place */
     componentDidMount(){
@@ -76,11 +82,33 @@ export class Home extends Component {
         .then(res=>res.json())
         .then((result)=>{
             alert(result);
-            this.getPosts();
         },(_error)=>{
             alert('Post content cannot be blank');
         });
     };
+
+    /* Removes post and its affiliated likes, comments from database */
+    async deletePost(postID) {
+        if (window.confirm("Are you sure you want to remove this post and its affiliated comments?")) {
+            fetch(variables.API_URL+'post/'+postID,{
+                method:'DELETE',
+                headers:{
+                    'Accept':'application/json',
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({   
+                    PostID: postID
+                })
+            })
+            .then(res=>res.json())
+            .then((result)=>{ 
+                alert(result);  
+                this.handler();
+            },(_error)=>{
+                alert('An error has occurred with deleting your post');
+            });
+        }
+    }
 
     /* HTML for the Build-A-Band Main feed */
     render() {
@@ -139,7 +167,9 @@ export class Home extends Component {
                             PostID={ post.PostID }
                             CreatedTime={ post.CreatedTime }
                             Content={ post.Content }
-                            MusicianID={ post.MusicianID } />
+                            MusicianID={ post.MusicianID }
+                            deletePost={ this.deletePost } 
+                            handler={ this.handler }/>
                             </li>)}
                     </ul>
                 </div>
