@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { variables } from '../../Variables.js';
 import { Link } from "react-router-dom";
 import CommentForm from "./CommentForm";
+import UserProfile from '../UserProfile';
 import './comments.css';
 
 /* Attributes */
@@ -136,8 +137,8 @@ const Comment = ({
     && activeComment.CommentID === comment.CommentID;
     
     /* User can only delete their own comments (if it has no replies) */
-    const canDelete = currentUserID === comment.MusicianID 
-    && replies.length === 0;
+    const canDelete = (currentUserID === comment.MusicianID 
+    && replies.length === 0) || UserProfile.getIsAdmin() === true;
 
     /* Format comment time displayed */
     const createdTime = 

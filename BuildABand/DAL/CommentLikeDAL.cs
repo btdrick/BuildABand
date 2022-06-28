@@ -108,7 +108,6 @@ namespace BuildABand.DAL
         /// </summary>
         /// <param name="newCommentLike"></param>
         /// <returns>JsonResult with create status</returns>
-        /// <returns></returns>
         public JsonResult LikeComment(CommentLike newCommentLike)
         {
             if (this.UserAlreadyLikedComment(newCommentLike))
