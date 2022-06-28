@@ -11,12 +11,14 @@ namespace BuildABand.Controllers
     /// <summary>
     /// This class serves as the controller
     /// for data related to Post table in DB.
+    /// It is a mediator between the front-end 
+    /// and data access layer for Post media.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class PostController : ControllerBase
     {
-        private readonly PostDBDAL postDBDAL;
+        private readonly PostDAL postDAL;
         private readonly IConfiguration _configuration;
 
         /// <summary>
@@ -26,7 +28,7 @@ namespace BuildABand.Controllers
         public PostController(IConfiguration configuration)
         {
             _configuration = configuration;
-            this.postDBDAL = new PostDBDAL(_configuration);
+            this.postDAL = new PostDAL(_configuration);
         }
 
         /// <summary>
@@ -66,7 +68,7 @@ namespace BuildABand.Controllers
         /// <param name="id"></param>
         /// <returns>JsonResult table of user's posts</returns>
         [HttpGet("{id}")]
-        public JsonResult GetPosts(int id)
+        public JsonResult GetPostByID(int id)
         {
             if (id < 1)
             {
@@ -105,7 +107,7 @@ namespace BuildABand.Controllers
         /// <param name="postID"></param>
         /// <returns>JsonResult table of post likes</returns>
         [HttpGet("{PostID}/like")]
-        public JsonResult GetPostLikes(int postID)
+        public JsonResult GetPostLikesByPostID(int postID)
         {
             if (postID < 1)
             {
@@ -143,7 +145,7 @@ namespace BuildABand.Controllers
         /// <param name="newPost"></param>
         /// <returns>JsonResult if added successfully</returns>
         [HttpPost]
-        public JsonResult Post(Post newPost)
+        public JsonResult CreatePost(Post newPost)
         {
             if (String.IsNullOrWhiteSpace(newPost.Content))
             {
@@ -185,7 +187,7 @@ namespace BuildABand.Controllers
         /// <param name="postID"></param>
         /// <returns>JsonResult table of post's comments</returns>
         [HttpGet("{postID}/comments")]
-        public JsonResult GetPostComments(int postID)
+        public JsonResult GetPostCommentsByPostID(int postID)
         {
             if (postID < 1)
             {
@@ -214,6 +216,18 @@ namespace BuildABand.Controllers
             }
 
             return new JsonResult(resultsTable);
+        }
+
+        /// <summary>
+        /// Deletes specified post
+        /// DELETE: api/post/PostID
+        /// </summary>
+        /// <param name="postID"></param>
+        /// <returns>JsonResult if deleted successfully</returns>
+        [HttpDelete("{PostID}")]
+        public JsonResult DeletePostByID(int postID)
+        {
+            return this.postDAL.DeletePostByID(postID);
         }
     }
 }

@@ -113,6 +113,8 @@ const Post = (props) => {
 
     /* User cannot stack likes */
     const canLike = hasLiked();
+    /* User cannot delete others' post */
+    const canDelete = props.MusicianID === currentUserID;
 
     /* Format comment time displayed */
     const createdTime = 
@@ -128,7 +130,7 @@ const Post = (props) => {
                     <p className="card-text"> { props.Content } </p>
                     <cite title="Created Time">{ createdTime }</cite>
                 </div>
-                {/* Like section */}
+                {/* Like post section */}
                 {canLike ? (
                         <button       
                         type="button"                 
@@ -142,7 +144,14 @@ const Post = (props) => {
                         style={{margin: 0.2 + 'em'}}
                         onClick={() => likePost()}> Like </button>
                     )}
-                
+                {/* Delete post section */}
+                {canDelete
+                && <button
+                    type="button"
+                    className="btn btn-danger"
+                    style={{margin: 0.2 + 'em'}}
+                    onClick={() => props.deletePost(props.PostID)}> Delete </button>}
+                {/* Likes count section */}
                 {(likesCount >= 1)
                 && <div className="card-footer">{likesCount} Likes</div>}
             </div>

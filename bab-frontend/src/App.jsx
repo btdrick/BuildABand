@@ -10,6 +10,7 @@ function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [musicianID, setMusicianID] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [isAuthenticated, setAuthentication] = useState(false);
   const [error, setError] = useState({username: '', password: '', badResponse: ''});
@@ -47,9 +48,11 @@ function App() {
         return;
       }  
       const data = await response.json();
-      setMusicianID(data);
+      setMusicianID(data[0]);
+      setIsAdmin(data[1]);
       setAuthentication(true);
-      UserProfile.setMusicianID(data);
+      UserProfile.setMusicianID(data[0]);
+      UserProfile.setIsAdmin(data[1]);
   }
  
   useEffect(() => {
@@ -59,9 +62,10 @@ function App() {
         setPassword('');
         setAuthentication(false);
         setMusicianID(0);
+        setIsAdmin(false);
         setError({username: '', password: '', badResponse: ''});
     }
-  }, [isAuthenticated, isLoggedin, musicianID, password, username])
+  }, [isAuthenticated, isLoggedin, musicianID, password, username, isAdmin])
 
   return (
     <div id="login-background">
