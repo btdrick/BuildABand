@@ -25,7 +25,7 @@ namespace BuildABand.Controllers
         {
             string selectStatement =
             @"
-            SELECT Username, Password, MusicianID, IsAdmin
+            SELECT Username, Password, MusicianID, is_Admin
             FROM dbo.Accounts a 
             JOIN dbo.Musician m 
                 ON a.AccountID = m.AccountID
@@ -58,7 +58,7 @@ namespace BuildABand.Controllers
 
             if (dbPassword == PasswordHash.GetSha256Hash(password))
             {
-                int[] data = { row.Field<int>("MusicianID"), row.Field<byte>("IsAdmin") };
+                int[] data = { row.Field<int>("MusicianID"), row.Field<byte>("is_Admin") };
                 return Ok(data);
             }
             else
