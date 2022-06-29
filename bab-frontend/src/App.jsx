@@ -70,7 +70,7 @@ function App() {
   return (
     <div id="login-background">
       <div style={{backgroundColor: '#3a3a3f'}}>
-          <img id="logo" src={require('./style/images/Build-A-Band.png')} alt={'Build a band logo'}/>
+          <img id="logo-home" src={require('./style/images/Build-A-Band.png')} alt={'Build a band logo'}/>
       </div>
       
       <div className='login-page' style={{ textAlign: 'center' }}>
@@ -78,7 +78,6 @@ function App() {
         {!isLoggedin ? 
         (
           <div>
-
             <ul className="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
               <li className="nav-item" role="presentation">
                 <a style={{backgroundColor: '#495c7c'}} className="nav-link active" id="tab-login" data-mdb-toggle="pill" href="#/" role="tab"
