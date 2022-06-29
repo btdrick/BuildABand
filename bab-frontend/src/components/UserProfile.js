@@ -19,7 +19,7 @@ var UserProfile = (function() {
    };
 
    var getIsAdmin = function() {
-    return sessionStorage.isAdmin;
+    return sessionStorage.isAdmin === 'true';
    }
 
    /* Set isAdmin value based on value */
