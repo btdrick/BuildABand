@@ -8,9 +8,10 @@ namespace BuildABand.Models
     public class Conversation
     {
         public int ConversationID { get; set; }
-        public int MusicianID { get; set; }
+        public int SenderID { get; set; }
+        public int ReceiverID { get; set; }
         public DateTime CreatedTime { get; set; }
 
-        public string Type { get; set; }
+        
     }
 }
