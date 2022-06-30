@@ -1,13 +1,13 @@
 import React from 'react';
 import {Navigate} from 'react-router-dom';
 import { variables } from '../../Variables';
+import SearchBar from "../../components/searchBar/SearchBar";
 import UserProfile from '../../components/UserProfile.js';
-import Search from "../../components/search/Search";
 import Dropdown from 'react-bootstrap/Dropdown';
-import Nav from 'react-bootstrap/Nav'
-import Card from 'react-bootstrap/Card'
+import Nav from 'react-bootstrap/Nav';
+import Card from 'react-bootstrap/Card';
+import LogoutIcon from '@mui/icons-material/Logout';
 import "./navbar.css";
-
 
 export class Navbar extends React.Component {
     constructor() {
@@ -15,6 +15,7 @@ export class Navbar extends React.Component {
         this.state = {
           musicianID: UserProfile.getMusicianID(),
           musicians: [],
+          currentMusicianInfo: [],
           isLoggedOut: false,
         };
         this.logout = this.logout.bind(this);
@@ -22,6 +23,7 @@ export class Navbar extends React.Component {
 
     componentDidMount(){
         this.getMusicians();
+        this.getCurrentMusicianInfo();
     }
 
     /* Makes api call to backend to get all Musicians */
@@ -33,6 +35,15 @@ export class Navbar extends React.Component {
         });
     }
 
+    /* Makes api call to backend to get current musician info */
+    async getCurrentMusicianInfo() {
+        const response = await fetch(variables.API_URL+'musician/'+this.state.musicianID);
+        const data = await response.json();
+        this.setState({
+            currentMusicianInfo: data[0]
+        });
+    }
+
     logout() {
         if (window.confirm("Are you sure you want to logout?")) {
         UserProfile.clearSession();
@@ -40,22 +51,25 @@ export class Navbar extends React.Component {
         }
     };
 
-    render() {
-        
+    render() {       
             if (!this.state.isLoggedOut) {
                 return (
                 <header>
                     {/* Navigation bar for logged-in user*/}
-                    <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark"> 
+                    <nav className="navbar fixed-top navbar-expand-lg bg-dark navbar-dark"> 
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">                
                             <a className="navbar-brand" href="#/home">
-                                <img id="logo" src={require('../../style/images/Build-A-Band.png')} alt={'Build a band logo'}/>
+                                <img id="logo" src={require('../../style/images/bab.png')} alt={'Build a band logo'}/>
                             </a>
+                            <SearchBar 
+                            placeholder={"Search for a musician..."}
+                            data={this.state.musicians} 
+                            />
                             {/* Search a user */}
-                            <Search 
+                            {/*<Search 
                             className="nav-search"
                             placeholder="Search for a musician..." 
-                            data={ this.state.musicians } />
+                            data={ this.state.musicians } />*/}
                             {/* Nav links */}
                             <Nav className="ms-auto" defaultActiveKey="/home">
                                 <Nav.Item>
@@ -79,11 +93,15 @@ export class Navbar extends React.Component {
                                     <Card body>
                                         <img id="avatar" src={require('../comments/user-icon.png')} alt={'User icon'}
                                         style={{float: 'left', marginRight: 1 + 'em'}}/>
-                                        <Card.Title>John Doe</Card.Title>
-                                        <Card.Subtitle className="mb-2 text-muted">Guitar</Card.Subtitle>
+                                        <Card.Title>
+                                            {this.state.currentMusicianInfo.Fname + " " + this.state.currentMusicianInfo.Lname}
+                                        </Card.Title>
+                                        <Card.Subtitle className="mb-2 text-muted">
+                                            {this.state.currentMusicianInfo.Instrument}
+                                        </Card.Subtitle>
                                     </Card>
                                     <Dropdown.Item href={`#/profile/${UserProfile.getMusicianID()}`}>Profile</Dropdown.Item>
-                                    <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
+                                    <Dropdown.Item onClick={this.logout}>Logout<LogoutIcon style={{marginLeft: 5 + 'px'}}/></Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
