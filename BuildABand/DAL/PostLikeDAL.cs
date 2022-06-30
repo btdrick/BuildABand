@@ -168,6 +168,9 @@ namespace BuildABand.DAL
 
                 DECLARE @lastID int
                 SELECT @lastID = MAX(PostLikeID) FROM dbo.PostLike
+                IF @lastID IS NULL
+                DBCC CHECKIDENT(PostLike, RESEED, 0)
+                ELSE
                 DBCC CHECKIDENT(PostLike, RESEED, @lastID)
                 ";
 
