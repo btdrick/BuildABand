@@ -17,18 +17,18 @@ namespace BuildABand.DAL
             _configuration = configuration;
         }
 
-        public List<Message> GetMessageByMusicianID(int MusicianID)
+        public List<Message> GetMessageByConversationID(int ConversationID)
         {
             List<Message> messages = new List<Message>();
             string selectStatement = "SELECT * FROM Message " +
-                "WHERE SenderID = @MusicianID";
+                "WHERE ConversationID = @ConversationID";
 
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
                 using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
                 {
-                    selectCommand.Parameters.AddWithValue("MusicianID", MusicianID);
+                    selectCommand.Parameters.AddWithValue("@ConversationID", ConversationID);
                     using (SqlDataReader reader = selectCommand.ExecuteReader())
                     {
                         while (reader.Read())
@@ -36,9 +36,10 @@ namespace BuildABand.DAL
                             Message message = new Message()
                             {
                                 MessageID = (int)reader["MessageID"],
-                                CreatedTime = (DateTime)reader["createdTime"],
+                                ConversationID = (int)reader["ConversationID"],
+                                CreatedTime = (DateTime)reader["CreatedTime"],
                                 SenderID = (int)reader["SenderID"],
-                                Text = reader["ReceiverID"].ToString()
+                                Text = reader["Text"].ToString()
 
                             };
                             messages.Add(message);
@@ -55,7 +56,7 @@ namespace BuildABand.DAL
 
         public void AddMessage(Message message)
         {
-            string insertStatement = "INSERT INTO Conversation " +
+            string insertStatement = "INSERT INTO Message " +
                "VALUEs (@ConversationID, @CreatedTime, @SenderID, @Text)";
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
