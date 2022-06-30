@@ -21,7 +21,7 @@ namespace BuildABand.DAL
         {
             List<Conversation> conversations = new List<Conversation>();
             string selectStatement = "SELECT * FROM Conversation " +
-                "WHERE MusicianID = @MusicianID";
+                "WHERE SenderID = @MusicianID OR ReceiverID = @MusicianID";
 
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
@@ -35,8 +35,8 @@ namespace BuildABand.DAL
                         {
                             Conversation conversation = new Conversation()
                             {
-                                ConversationID = (int)reader["ConnectionID"],
-                                CreatedTime = (DateTime)reader["createdTime"],
+                                ConversationID = (int)reader["ConversationID"],
+                                CreatedTime = (DateTime)reader["CreatedTime"],
                                 SenderID = (int)reader["SenderID"],
                                 ReceiverID = (int)reader["ReceiverID"]
 
@@ -56,7 +56,7 @@ namespace BuildABand.DAL
         {
             List<Conversation> conversations = new List<Conversation>();
             string selectStatement = "SELECT * FROM Conversation " +
-                "WHERE MusicianID = @SenderID AND  MusicianID = @ReceiverID ";
+                "WHERE SenderID = @SenderID AND  ReceiverID = @ReceiverID ";
 
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
@@ -71,8 +71,8 @@ namespace BuildABand.DAL
                         {
                             Conversation conversation = new Conversation()
                             {
-                                ConversationID = (int)reader["ConnectionID"],
-                                CreatedTime = (DateTime)reader["createdTime"],
+                                ConversationID = (int)reader["ConversationID"],
+                                CreatedTime = (DateTime)reader["CreatedTime"],
                                 SenderID = (int)reader["SenderID"],
                                 ReceiverID = (int)reader["ReceiverID"]
 
@@ -91,7 +91,7 @@ namespace BuildABand.DAL
         public void AddConversation(int SenderID, int ReceiverID)
         {
             string insertStatement = "INSERT INTO Conversation " +
-               "VALUEs (@SenderID, @ReceiverID, @CreatedTime)";
+               "VALUES (@SenderID, @ReceiverID, @CreatedTime)";
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
@@ -99,8 +99,8 @@ namespace BuildABand.DAL
                 {
 
                     insertCommand.Parameters.AddWithValue("@SenderID", SenderID);
-                    insertCommand.Parameters.AddWithValue("@FollowerID", ReceiverID);
-                    insertCommand.Parameters.AddWithValue("@ReceiverID", DateTime.Now);
+                    insertCommand.Parameters.AddWithValue("@ReceiverID", ReceiverID);
+                    insertCommand.Parameters.AddWithValue("@CreatedTime", DateTime.Now);
                     insertCommand.ExecuteNonQuery();
                 }
             }
