@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using BuildABand.DAL;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -12,34 +13,22 @@ namespace BuildABand.Controllers
     [ApiController]
     public class AudioController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
         private readonly string connectionString;
+        private MusicDAL musicDal;
 
         public AudioController(IConfiguration configuration)
         {
-            // Retrieve the connection string for use with the application. The storage
-            // connection string is stored in an environment variable on the machine
-            // running the application called AZURE_STORAGE_CONNECTION_STRING. If the
-            // environment variable is created after the application is launched in a
-            // console or with Visual Studio, the shell or application needs to be closed
-            // and reloaded to take the environment variable into account.
             connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
-
-            _configuration = configuration;
+            musicDal = new MusicDAL(configuration);
         }
 
-        //todo: put audio files in backend Audio folder
-        // used data annotations: https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations?view=net-6.0
         [HttpPost]
         [Consumes("application/octet-stream")]
-        public async Task postBlobAsync([FromQuery][Required][MinLength(3)] string filename)
+        public async Task postBlobAsync([FromQuery][Required][MinLength(3)] string fileName, [Required] int musicianID)
         {
-            //var guid = Guid.NewGuid();
-
-            //await MusicDAL.addUserFileNameToAzureFileNameMapping(guid, userFileName);
-
-            //add to sql table
-            await uploadBlobAsync(filename, Request.Body);
+            var guid = Guid.NewGuid();
+            await musicDal.addUserFileNameToAzureFileNameMapping(guid, fileName, musicianID);
+            await uploadBlobAsync(fileName, Request.Body);
         }
 
         //todo: upload blob to azure
@@ -53,10 +42,16 @@ namespace BuildABand.Controllers
             await blobClient.UploadAsync(content, overwrite: true);
         }
 
-        [HttpGet("info")]
-        public JsonResult getFileInfo([FromQuery] int memberID)
+        [HttpGet("fileInfo")]
+        public async Task<JsonResult> getFileInfoAsync([FromQuery] int musicianID)
         {
-            return null;
+            if (musicianID < 1)
+            {
+                throw new ArgumentException("Musician ID must be 1 or greater");
+            }
+
+            var results = await musicDal.getFileInfo(musicianID);
+            return results;
         }
 
         [HttpGet("blob")]
@@ -67,7 +62,7 @@ namespace BuildABand.Controllers
             BlobClient blobClient = containerClient.GetBlobClient(azureFileName);
 
             var result = await blobClient.DownloadStreamingAsync();
-            return new FileStreamResult(result.Value.Content, "application/octet-stream"); // assuming wave format
+            return new FileStreamResult(result.Value.Content, "application/octet-stream");
         }
     }
 }
