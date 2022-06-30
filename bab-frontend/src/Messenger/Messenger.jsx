@@ -8,7 +8,9 @@ import UserProfile from "../components/UserProfile";
 import { useEffect, useState } from "react"
 
 export default function Messenger(){
+    const [currentChat, setCurrentChat] = useState(null);
     const [conversations, setConversations] = useState([]);
+    const [messages, setMessages] = useState([]);
     const MusicianID =  UserProfile.getMusicianID();
 
     useEffect(()=> {
@@ -21,6 +23,17 @@ export default function Messenger(){
 
     },[MusicianID]);
 
+    useEffect(()=> {
+        const getMessages =async()=> {
+            const res = await fetch(variables.API_URL+'message/'+ currentChat.ConversationID);
+            const data = await res.json();
+            setMessages(data);
+            console.log(data)
+        }
+
+        getMessages();
+
+    },[currentChat])
  
     return(
         <>
@@ -29,40 +42,28 @@ export default function Messenger(){
             <div className="chatMenu">
                 <div className="chatMenuWrapper">
                     <input placeholder="Search for friends" className="chatMenuInput" />
-                    {conversations.map((c) => (
-                        <Conversation conversation={c}/>
-                    ))}  
+                        {conversations.map((c) => (
+                            <div onClick={()=> setCurrentChat(c)}>
+                            <Conversation conversation={c}/>
+                            </div>
+                        ))}    
                 </div>
             </div>
             <div className="chatBox">
                <div className="chatBoxWrapper">
+                {
+                    currentChat?
+                <>
                 <div className="chatBoxTop">
-                    <Message />
-                    <Message own={true} />
-                    <Message />
-                    <Message />
-                    <Message own={true} />
-                    <Message />
-                    <Message />
-                    <Message />
-                    <Message own={true} />
-                    <Message />
-                    <Message />
-                    <Message own={true} />
-                    <Message />
-                    <Message />
-                    <Message />
-                    <Message own={true} />
-                    <Message />
-                    <Message />
-                    <Message own={true} />
-                    <Message />
-                    <Message />
+                  {messages.map(m=>(
+                    <Message message={m} own={m.SenderID=== MusicianID} />
+                  ))
+                  } 
                 </div>
                 <div className="chatBoxBottom">
                     <textarea className="chatMessageInput" placeholder="Write something"></textarea>
                     <button className="chatSubmitButton">Send</button>
-                </div>
+                </div> </>: <span className="noConversationText"> Open a conversation to start a chart </span>}
               </div>      
             </div>
             <div className="chatOnline">

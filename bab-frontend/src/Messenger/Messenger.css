@@ -21,10 +21,20 @@
     
 }
 
+.noConversationText{
+    position: absolute;
+    top: 10%;
+    font-size: 50px;
+    color: ;
+}
+
 .chatBoxWrapper{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
+    color:rgb(224,220,220);
+    cursor: default;
 
 }
 
