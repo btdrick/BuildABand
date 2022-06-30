@@ -72,7 +72,7 @@ const Feed = ({ getPosts, canCreatePost }) => {
             });
         }
     }
-
+        
     /* Increases amount of visible posts */
     const showMorePosts = () => {
         setVisiblePosts(prevValue => prevValue + 5);
