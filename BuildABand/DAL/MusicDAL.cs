@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace BuildABand.DAL
 {
@@ -16,28 +15,50 @@ namespace BuildABand.DAL
             _configuration = configuration;
         }
 
-        public void addUserFileNameToAzureFileNameMapping(Guid guid, string fileName, int musicianID)
+        public int addUserFileNameToAzureFileNameMapping(Guid guid, string fileName, int musicianID)
         {
+            int audioID = 0;
             string insertStatement =
-            @"INSERT INTO Music";
+            @"INSERT INTO dbo.Music VALUES (@guid, @fileName, @musicianID)";
 
+            string selectStatemet = @"SELECT ID FROM dbo.Music WHERE azure_file_name = @guid";
+
+            DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
             SqlDataReader dataReader;
             using (SqlConnection connection = new SqlConnection(sqlDataSource))
             {
                 connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(insertStatement, connection))
+                try
                 {
-                    myCommand.Parameters.AddWithValue("@guid", guid);
-                    myCommand.Parameters.AddWithValue("@fileName", fileName);
-                    myCommand.Parameters.AddWithValue("@musicianID", musicianID);
+                    using (SqlCommand myCommand = new SqlCommand(insertStatement, connection))
+                    {
+                        myCommand.Parameters.AddWithValue("@guid", guid);
+                        myCommand.Parameters.AddWithValue("@fileName", fileName);
+                        myCommand.Parameters.AddWithValue("@musicianID", musicianID);
 
-                    dataReader = myCommand.ExecuteReader();
-                    //results.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                    }
+
+                    using (SqlCommand myCommand = new SqlCommand(selectStatemet, connection))
+                    {
+                        myCommand.Parameters.AddWithValue("@guid", guid);
+
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        audioID = (int)myCommand.ExecuteScalar();
+                        dataReader.Close();
+                        connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
                 }
             }
+            return audioID;
         }
 
         public JsonResult getFileInfo(int musicianID)
@@ -53,14 +74,21 @@ namespace BuildABand.DAL
             using (SqlConnection connection = new SqlConnection(sqlDataSource))
             {
                 connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                try
                 {
-                    myCommand.Parameters.AddWithValue("@id", musicianID);
+                    using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        myCommand.Parameters.AddWithValue("@id", musicianID);
 
-                    dataReader = myCommand.ExecuteReader();
-                    results.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
+                        dataReader = myCommand.ExecuteReader();
+                        results.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
                 }
             }
             return new JsonResult(results);

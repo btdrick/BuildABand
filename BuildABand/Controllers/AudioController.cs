@@ -24,11 +24,12 @@ namespace BuildABand.Controllers
 
         [HttpPost]
         [Consumes("application/octet-stream")]
-        public async Task postBlobAsync([FromQuery][Required][MinLength(3)] string fileName, [Required] int musicianID)
+        public async Task<int> postBlobAsync([FromQuery][Required][MinLength(3)] string fileName, [Required] int musicianID)
         {
             var guid = Guid.NewGuid();
-            musicDal.addUserFileNameToAzureFileNameMapping(guid, fileName, musicianID);
-            await uploadBlobAsync(fileName, Request.Body);
+            var audioID = musicDal.addUserFileNameToAzureFileNameMapping(guid, fileName, musicianID);
+            await uploadBlobAsync(guid.ToString(), Request.Body);
+            return audioID;
         }
 
         //todo: upload blob to azure
