@@ -11,12 +11,14 @@ namespace BuildABand.Controllers
     /// <summary>
     /// This class serves as the controller
     /// for data related to Post table in DB.
+    /// It is a mediator between the front-end 
+    /// and data access layer for Post media.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class PostController : ControllerBase
     {
-        private readonly PostDBDAL postDBDAL;
+        private readonly PostDAL postDAL;
         private readonly IConfiguration _configuration;
 
         /// <summary>
@@ -26,7 +28,7 @@ namespace BuildABand.Controllers
         public PostController(IConfiguration configuration)
         {
             _configuration = configuration;
-            this.postDBDAL = new PostDBDAL(_configuration);
+            this.postDAL = new PostDAL(_configuration);
         }
 
         /// <summary>
@@ -35,28 +37,9 @@ namespace BuildABand.Controllers
         /// </summary>
         /// <returns>JsonResult table of all posts</returns>
         [HttpGet]
-        public JsonResult GetPosts()
+        public JsonResult GetAllPosts()
         {
-            string selectStatement = 
-            @"SELECT *
-            FROM dbo.Post";
-
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
-            {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
-                {
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
-                }
-            }
-
-            return new JsonResult(resultsTable);
+            return this.postDAL.GetAllPosts();
         }
 
         /// <summary>
@@ -66,7 +49,7 @@ namespace BuildABand.Controllers
         /// <param name="id"></param>
         /// <returns>JsonResult table of user's posts</returns>
         [HttpGet("{id}")]
-        public JsonResult GetPosts(int id)
+        public JsonResult GetPostByID(int id)
         {
             if (id < 1)
             {
@@ -105,35 +88,9 @@ namespace BuildABand.Controllers
         /// <param name="postID"></param>
         /// <returns>JsonResult table of post likes</returns>
         [HttpGet("{PostID}/like")]
-        public JsonResult GetPostLikes(int postID)
+        public JsonResult GetPostLikesByPostID(int postID)
         {
-            if (postID < 1)
-            {
-                throw new ArgumentException("PostID must be greater than 0");
-            }
-
-            string selectStatement =
-            @"SELECT *
-            FROM dbo.PostLike 
-            WHERE PostID = @PostID";
-
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
-            {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
-                {
-                    myCommand.Parameters.AddWithValue("@PostID", postID);
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
-                }
-            }
-
-            return new JsonResult(resultsTable);
+            return this.postDAL.GetPostLikesByPostID(postID);
         }
 
         /// <summary>
@@ -143,39 +100,9 @@ namespace BuildABand.Controllers
         /// <param name="newPost"></param>
         /// <returns>JsonResult if added successfully</returns>
         [HttpPost]
-        public JsonResult Post(Post newPost)
+        public JsonResult CreatePost(Post newPost)
         {
-            if (String.IsNullOrWhiteSpace(newPost.Content))
-            {
-                throw new ArgumentException("Post cannot be empty");
-            }
-            if (newPost.MusicianID < 1)
-            {
-                throw new ArgumentException("Invalid MusicianID");
-            }
-
-            string insertStatement = @"INSERT INTO dbo.Post
-                           VALUES (@CreatedTime, @MusicianID, @Content)";
-
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
-            {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(insertStatement, connection))
-                {
-                    myCommand.Parameters.AddWithValue("@CreatedTime", newPost.CreatedTime);
-                    myCommand.Parameters.AddWithValue("@MusicianID", newPost.MusicianID);
-                    myCommand.Parameters.AddWithValue("@Content", newPost.Content);
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
-                }
-            }
-
-            return new JsonResult("Post Added Successfully");
+            return this.postDAL.CreatePost(newPost);
         }
 
         /// <summary>
@@ -185,35 +112,21 @@ namespace BuildABand.Controllers
         /// <param name="postID"></param>
         /// <returns>JsonResult table of post's comments</returns>
         [HttpGet("{postID}/comments")]
-        public JsonResult GetPostComments(int postID)
+        public JsonResult GetPostCommentsByPostID(int postID)
         {
-            if (postID < 1)
-            {
-                throw new ArgumentException("PostID must be greater than 0");
-            }
+            return this.postDAL.GetPostCommentsByPostID(postID);
+        }
 
-            string selectStatement =
-            @"SELECT *
-            FROM dbo.Comment 
-            WHERE PostID = @PostID";
-
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
-            {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
-                {
-                    myCommand.Parameters.AddWithValue("@PostID", postID);
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
-                }
-            }
-
-            return new JsonResult(resultsTable);
+        /// <summary>
+        /// Deletes specified post
+        /// DELETE: api/post/PostID
+        /// </summary>
+        /// <param name="postID"></param>
+        /// <returns>JsonResult if deleted successfully</returns>
+        [HttpDelete("{PostID}")]
+        public JsonResult DeletePostByID(int postID)
+        {
+            return this.postDAL.DeletePostByID(postID);
         }
     }
 }

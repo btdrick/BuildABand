@@ -31,9 +31,10 @@ namespace BuildABand.DAL
         {
             try
             {
-                string selectStatement =
-                @"SELECT *
-                FROM dbo.CommentLike";
+                string selectStatement = @"
+                SELECT *
+                FROM dbo.CommentLike
+                ";
 
                 DataTable resultsTable = new DataTable();
                 string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -72,10 +73,11 @@ namespace BuildABand.DAL
 
             try
             {
-                string selectStatement =
-                @"SELECT *
+                string selectStatement = @"
+                SELECT *
                 FROM dbo.CommentLike 
-                WHERE CommentLikeID = @CommentLikeID";
+                WHERE CommentLikeID = @CommentLikeID
+                ";
 
                 DataTable resultsTable = new DataTable();
                 string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -106,7 +108,6 @@ namespace BuildABand.DAL
         /// </summary>
         /// <param name="newCommentLike"></param>
         /// <returns>JsonResult with create status</returns>
-        /// <returns></returns>
         public JsonResult LikeComment(CommentLike newCommentLike)
         {
             if (this.UserAlreadyLikedComment(newCommentLike))
@@ -116,9 +117,10 @@ namespace BuildABand.DAL
 
             try
             {
-                string insertStatement =
-                @"INSERT INTO dbo.CommentLike " +
-                "VALUES (@CommentID, @MusicianID, @CreatedTime)";
+                string insertStatement = @"
+                INSERT INTO dbo.CommentLike
+                VALUES (@CommentID, @MusicianID, @CreatedTime)
+                ";
 
                 DataTable resultsTable = new DataTable();
                 string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -160,12 +162,14 @@ namespace BuildABand.DAL
 
             try
             {
-                string deleteStatement =
-                @"DELETE FROM dbo.CommentLike " +
-                "WHERE CommentLikeID = @CommentLikeID " +
-                "DECLARE @lastID int " +
-                "SELECT @lastID = MAX(CommentLikeID) FROM dbo.CommentLike " +
-                "DBCC CHECKIDENT(CommentLike, RESEED, @lastID)";
+                string deleteStatement = @"
+                DELETE FROM dbo.CommentLike
+                WHERE CommentLikeID = @CommentLikeID
+                DECLARE @lastID int
+                SELECT @lastID = MAX(CommentLikeID) FROM dbo.CommentLike
+                DBCC CHECKIDENT(CommentLike, RESEED, @lastID)
+                ";
+
                 DataTable resultsTable = new DataTable();
                 string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
                 SqlDataReader dataReader;
@@ -204,11 +208,12 @@ namespace BuildABand.DAL
 
             try
             {
-                string selectStatement = 
-                    "SELECT COUNT(*) " +
-                    "FROM dbo.CommentLike " +
-                    "WHERE CommentID = @CommentID " +
-                    "AND MusicianID = @MusicianID";
+                string selectStatement = @"
+                SELECT COUNT(*)
+                FROM dbo.CommentLike
+                WHERE CommentID = @CommentID
+                AND MusicianID = @MusicianID
+                ";
 
                 using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
                 {
@@ -243,10 +248,11 @@ namespace BuildABand.DAL
 
             try
             {
-                string selectStatement =
-                    "SELECT COUNT(*) " +
-                    "FROM dbo.CommentLike " +
-                    "WHERE CommentLikeID = @CommentLikeID";
+                string selectStatement = @"
+                SELECT COUNT(*)
+                FROM dbo.CommentLike
+                WHERE CommentLikeID = @CommentLikeID
+                ";
 
                 using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
                 {

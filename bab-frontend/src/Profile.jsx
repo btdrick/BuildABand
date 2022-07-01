@@ -1,9 +1,7 @@
-import { React, useState, useEffect } from 'react';
-import Post from './Post';
-import AudioPlayer from './components/audio/AudioPlayer';
+import { React, useState, useEffect, useCallback } from 'react';
 import {variables} from './Variables.js';
 import { useParams } from "react-router-dom";
-import Post from './components/post/Post.js';
+import Feed from './components/feed/Feed.js';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
 import UserProfile from './components/UserProfile.js';
@@ -11,76 +9,15 @@ import { useParams } from "react-router-dom";
 import './style/home.css';
 
 function Profile() {
-    const [state, setState] = useState({
-        posts: [],
-        PostID:     0,          
-        MusicianID: UserProfile.getProfileID(),
-        Content:    "",
-        modalTitle: "",
-        loading:    true
-    });
-
     /* Profile's owner */
     const { id } = useParams();
-    /* Current session user ID */
-    const currentUser = UserProfile.getMusicianID();
-    /* User can only create a post on their own profile */
-    const canCreatePost = parseInt(id) === currentUser;
 
-    /* Create post modal attributes */
-    const [modalTitle, setModalTitle] = useState("");
-    const [content, setContent] = useState("");
-    const [postID, setPostID] = useState(0);
-    
     /* Makes api call to backend to get the user's posts */
     const getUsersPosts = useCallback(async () => {
         const response = await fetch(variables.API_URL+'post/'+ id);
         const data = await response.json();
-        setState({
-            posts: data,
-            loading: false,
-        });
+        return data;
     }, [id]);
-
-    /* Once the page renders, this lifecycle method takes place */
-    useEffect(() => {
-        getUsersPosts();
-    }, [getUsersPosts]);
-
-    /* Handles event of text entry for Post content */
-    const changePostContent =(e)=>{
-        setContent(e.target.value)
-    };
-
-    /* Handles onClick event for Add button */
-    const addClick = () => {
-        setModalTitle("Create Post");
-        setPostID(0);
-        setContent("");
-    };
-
-    /* Handles onClick event for Create button */
-    const createClick = () => {
-        fetch(variables.API_URL+'post',{
-            method:'POST',
-            headers:{
-                'Accept':'application/json',
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({   
-                CreatedTime: new Date(),                           
-                MusicianID: currentUser,
-                Content:    content
-            })
-        })
-        .then(res=>res.json())
-        .then((result)=>{
-            alert(result);
-            getUsersPosts();
-        },(_error)=>{
-            alert('Post content cannot be blank');
-        });
-    };
 
     /* Renders the profile page's html. You can't pass entire object to child component */
         if (state.loading) {
@@ -95,8 +32,9 @@ function Profile() {
                 <div id="container">
                     <Navbar/>
                     <h3 className="title"> This is the Profile page </h3> 
-                    <AudioPlayer />
-                    <button type="button"
+                    {/* Create post modal*/}
+                    {canCreatePost
+                    && <button type="button"
                     className="btn btn-primary m-3"
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
