@@ -9,7 +9,7 @@ export class Home extends Component {
     async getAllPosts() {
         const response = await fetch(variables.API_URL+'post');
         const data = await response.json();
-        return data;
+        return data.reverse();
     };
 
     /* HTML for the Build-A-Band Main feed */
@@ -20,7 +20,8 @@ export class Home extends Component {
                 <h3 className="title"> Build-A-Band Home Feed </h3>
                 <div className="container-lg">
                     <Feed getPosts={ this.getAllPosts } 
-                    canCreatePost={ true } />
+                    canCreatePost={ true } 
+                    canFilterPosts={ true }/>
                 </div>
             </div>
         )
