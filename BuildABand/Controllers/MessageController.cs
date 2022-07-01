@@ -66,7 +66,7 @@ namespace BuildABand.Controllers
                 return new JsonResult(ex.Message);
             }
 
-            return new JsonResult("New Message created");
+            return new JsonResult(message);
         }
     }
 }

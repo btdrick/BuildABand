@@ -7,11 +7,13 @@ import ChatOnline from "../components/chatOnline/ChatOnline"
 import UserProfile from "../components/UserProfile";
 import { useEffect, useState } from "react"
 
+
 export default function Messenger(){
     const [currentChat, setCurrentChat] = useState(null);
     const [conversations, setConversations] = useState([]);
     const [messages, setMessages] = useState([]);
     const MusicianID =  UserProfile.getMusicianID();
+    const [newMessage, setNewMessage] = useState("");
 
     useEffect(()=> {
       const getConversations = async ()=> {
@@ -28,12 +30,34 @@ export default function Messenger(){
             const res = await fetch(variables.API_URL+'message/'+ currentChat.ConversationID);
             const data = await res.json();
             setMessages(data);
-            console.log(data)
+            
         }
 
         getMessages();
 
     },[currentChat])
+
+    const handleSubmit = async(e) => {
+        e.preventDefault();
+       
+        const res = await fetch (variables.API_URL+'message/', {
+                            method: 'POST',
+                            headers:{
+                                'Accept':'application/json',
+                                'Content-Type': 'application/json'
+                            }, 
+                            body:JSON.stringify({
+                                SenderID:MusicianID,
+                                Text: newMessage,
+                                ConversationID:currentChat.ConversationID, 
+                            })
+                         })
+         const data = await res.json();
+        console.log(data);
+        setMessages([...messages, data]);
+        setNewMessage("");
+
+    }
  
     return(
         <>
@@ -56,13 +80,17 @@ export default function Messenger(){
                 <>
                 <div className="chatBoxTop">
                   {messages.map(m=>(
-                    <Message message={m} own={m.SenderID=== MusicianID} />
+                    <Message message={m} own={m.SenderID === MusicianID} />
                   ))
                   } 
                 </div>
                 <div className="chatBoxBottom">
-                    <textarea className="chatMessageInput" placeholder="Write something"></textarea>
-                    <button className="chatSubmitButton">Send</button>
+                    <textarea className="chatMessageInput" 
+                    placeholder="Write something"
+                    onChange={(e)=>setNewMessage(e.target.value)}
+                    value={newMessage}>
+                    </textarea>
+                    <button className="chatSubmitButton" onClick={handleSubmit}>Send</button>
                 </div> </>: <span className="noConversationText"> Open a conversation to start a chart </span>}
               </div>      
             </div>
