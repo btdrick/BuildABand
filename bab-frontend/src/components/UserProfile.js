@@ -41,8 +41,8 @@ var UserProfile = (function() {
        setProfileID: setProfileID,
        getMusicianID: getMusicianID,
        setMusicianID: setMusicianID,
-       setIsAdmin : setIsAdmin,
-       getIsAdmin : getIsAdmin,
+       setIsAdmin: setIsAdmin,
+       getIsAdmin: getIsAdmin,
        clearSession: clearSession
    }
  

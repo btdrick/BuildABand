@@ -1,8 +1,13 @@
+
 #container {
-    margin-bottom: 2em;
+    margin: 2em auto;
 }
 
 #container .title {
     text-align: center;
+}
+
+.list-group ul {
+    list-style: none;
     margin: 2em auto;
 }
