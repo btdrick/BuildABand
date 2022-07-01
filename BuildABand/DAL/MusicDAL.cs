@@ -16,7 +16,7 @@ namespace BuildABand.DAL
             _configuration = configuration;
         }
 
-        public Task addUserFileNameToAzureFileNameMapping(Guid guid, string fileName, int musicianID)
+        public void addUserFileNameToAzureFileNameMapping(Guid guid, string fileName, int musicianID)
         {
             string insertStatement =
             @"INSERT INTO Music";
@@ -38,8 +38,6 @@ namespace BuildABand.DAL
                     connection.Close();
                 }
             }
-
-            throw new NotImplementedException();
         }
 
         public JsonResult getFileInfo(int musicianID)

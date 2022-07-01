@@ -27,7 +27,7 @@ namespace BuildABand.Controllers
         public async Task postBlobAsync([FromQuery][Required][MinLength(3)] string fileName, [Required] int musicianID)
         {
             var guid = Guid.NewGuid();
-            await musicDal.addUserFileNameToAzureFileNameMapping(guid, fileName, musicianID);
+            musicDal.addUserFileNameToAzureFileNameMapping(guid, fileName, musicianID);
             await uploadBlobAsync(fileName, Request.Body);
         }
 
@@ -43,14 +43,14 @@ namespace BuildABand.Controllers
         }
 
         [HttpGet("fileInfo")]
-        public async Task<JsonResult> getFileInfoAsync([FromQuery] int musicianID)
+        public JsonResult getFileInfo([FromQuery] int musicianID)
         {
             if (musicianID < 1)
             {
                 throw new ArgumentException("Musician ID must be 1 or greater");
             }
 
-            var results = await musicDal.getFileInfo(musicianID);
+            var results = musicDal.getFileInfo(musicianID);
             return results;
         }
 
