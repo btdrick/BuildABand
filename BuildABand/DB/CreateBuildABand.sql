@@ -303,9 +303,10 @@ CREATE UNIQUE NONCLUSTERED INDEX [AK_CommentLike] ON [dbo].[CommentLike]
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
 CREATE TABLE Music( 
-   ID INT NOT NULL, 
+   ID INT IDENTITY(1,1) NOT NULL, 
    azure_file_name uniqueidentifier NOT NULL, 
-   file_name varchar(45) NOT NULL,      
+   file_name varchar(45) NOT NULL,    
+   MusicianID INT NOT NULL,
    PRIMARY KEY (ID));
 GO
 SET IDENTITY_INSERT [dbo].[Accounts] ON 
@@ -523,10 +524,12 @@ GO
 ALTER TABLE [dbo].[Post]  WITH CHECK ADD  CONSTRAINT [FK_Post_Musician] FOREIGN KEY([MusicianID])
 REFERENCES [dbo].[Musician] ([MusicianID])
 GO
+ALTER TABLE [dbo].[Post] CHECK CONSTRAINT [FK_Post_Musician]
+GO
 ALTER TABLE [dbo].[Post]  WITH CHECK ADD  CONSTRAINT [FK_Post_AudioID] FOREIGN KEY([AudioID])
 REFERENCES [dbo].[Music] ([ID])
 GO
-ALTER TABLE [dbo].[Post] CHECK CONSTRAINT [FK_Post_Musician]
+ALTER TABLE [dbo].[Post] CHECK CONSTRAINT [FK_Post_AudioID] 
 GO
 ALTER TABLE [dbo].[PostLike]  WITH CHECK ADD  CONSTRAINT [FK_PostLike_Accounts] FOREIGN KEY([MusicianID])
 REFERENCES [dbo].[Accounts] ([AccountID])
@@ -552,6 +555,11 @@ ALTER TABLE [dbo].[Project_Workon]  WITH CHECK ADD  CONSTRAINT [FK_Project_Worko
 REFERENCES [dbo].[Project] ([ProjectID])
 GO
 ALTER TABLE [dbo].[Project_Workon] CHECK CONSTRAINT [FK_Project_Workon_Project]
+GO
+ALTER TABLE [dbo].[Music]  WITH CHECK ADD  CONSTRAINT [FK_Music_Musician] FOREIGN KEY([MusicianID])
+REFERENCES [dbo].[Musician] ([MusicianID])
+GO
+ALTER TABLE [dbo].[Music] CHECK CONSTRAINT [FK_Music_Musician]
 GO
 /****** Object:  StoredProcedure [dbo].[createUser]    Script Date: 18/06/2022 6:40:34 PM ******/
 SET ANSI_NULLS ON

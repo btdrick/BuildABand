@@ -26,7 +26,8 @@ namespace BuildABand.DAL
         {
             string selectStatement =
             @"SELECT *
-            FROM dbo.Post";
+            FROM dbo.Post
+            JOIN dbo.Music ON dbo.Post.AudioID = dbo.Music.ID";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -117,10 +118,14 @@ namespace BuildABand.DAL
             {
                 throw new ArgumentException("Invalid MusicianID");
             }
+            if (newPost.AudioID < 1)
+            {
+                throw new ArgumentException("Invalid AudioID");
+            }
 
             string insertStatement = @"
             INSERT INTO dbo.Post
-            VALUES (@CreatedTime, @MusicianID, @Content)
+            VALUES (@CreatedTime, @MusicianID, @Content, @AudioID)
             ";
 
             DataTable resultsTable = new DataTable();
@@ -136,6 +141,7 @@ namespace BuildABand.DAL
                         myCommand.Parameters.AddWithValue("@CreatedTime", newPost.CreatedTime);
                         myCommand.Parameters.AddWithValue("@MusicianID", newPost.MusicianID);
                         myCommand.Parameters.AddWithValue("@Content", newPost.Content);
+                        myCommand.Parameters.AddWithValue("@AudioID", newPost.AudioID);
                         dataReader = myCommand.ExecuteReader();
                         resultsTable.Load(dataReader);
                         dataReader.Close();
