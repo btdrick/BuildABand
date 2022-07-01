@@ -3,9 +3,10 @@ import { variables } from '../../Variables.js';
 import Post from '../post/Post.js';
 import CreatePost from '../../modals/CreatePost';
 import UserProfile from '../UserProfile.js';
+import FeedFilterSwitch from './FeedFilterSwitch';
 import './feed.css';
 
-const Feed = ({ getPosts, canCreatePost }) => {
+const Feed = ({ getPosts, canCreatePost, canFilterPosts }) => {
     /* All comments from backend */
     const [backendPosts, setBackendPosts] = useState([]);
     /* Amount of posts to show at a time */
@@ -20,6 +21,16 @@ const Feed = ({ getPosts, canCreatePost }) => {
             setLoading(false);
         });
     }, [getPosts]);
+
+    /* Increases amount of visible posts */
+    const showMorePosts = () => {
+        setVisiblePosts(prevValue => prevValue + 5);
+    };
+
+    /* Decreases amoung of visible posts */
+    const showFewerPosts = () => {
+        setVisiblePosts(prevValue => prevValue - 5);
+    };
 
     /* Handles onClick event for Create button */
     const createPost = (content) => {
@@ -72,20 +83,23 @@ const Feed = ({ getPosts, canCreatePost }) => {
             });
         }
     }
-        
-    /* Increases amount of visible posts */
-    const showMorePosts = () => {
-        setVisiblePosts(prevValue => prevValue + 5);
-    };
 
-    /* Decreases amoung of visible posts */
-    const showFewerPosts = () => {
-        setVisiblePosts(prevValue => prevValue - 5);
-    };
+    /* Makes an api call to get all of the current user's connections */
+    const getUserConnections = async() => {
+        const response = await fetch(variables.API_URL+'musicianconnections/'+UserProfile.getMusicianID());
+        const data = await response.json();
+        return data;
+    }
         
     if (!loading) {
         return (
             <div>
+                {/* Toggle to filter feed */}
+                {canFilterPosts === true &&
+                <FeedFilterSwitch 
+                getConnections={ getUserConnections }
+                getBackendPosts={ getPosts }
+                setBackendPosts={ setBackendPosts }/>}
                 {/* Post creation modal */}
                 <CreatePost canCreatePost={ canCreatePost } 
                 handleSubmit={ createPost } />
