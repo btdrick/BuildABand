@@ -225,6 +225,7 @@ CREATE TABLE [dbo].[Post](
 	[CreatedTime] [datetime] NOT NULL,
 	[MusicianID] [int] NOT NULL,
 	[Content] [varchar](100) NOT NULL,
+	[AudioID] INT,
  CONSTRAINT [PK_PostID] PRIMARY KEY CLUSTERED 
 (
 	[PostID] ASC
@@ -300,6 +301,12 @@ CREATE UNIQUE NONCLUSTERED INDEX [AK_CommentLike] ON [dbo].[CommentLike]
 	[CommentID] ASC,
 	[MusicianID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+CREATE TABLE Music( 
+   ID INT NOT NULL, 
+   azure_file_name uniqueidentifier NOT NULL, 
+   file_name varchar(45) NOT NULL,      
+   PRIMARY KEY (ID));
 GO
 SET IDENTITY_INSERT [dbo].[Accounts] ON 
 
@@ -515,6 +522,9 @@ ALTER TABLE [dbo].[Musician] CHECK CONSTRAINT [FK_Musician_States]
 GO
 ALTER TABLE [dbo].[Post]  WITH CHECK ADD  CONSTRAINT [FK_Post_Musician] FOREIGN KEY([MusicianID])
 REFERENCES [dbo].[Musician] ([MusicianID])
+GO
+ALTER TABLE [dbo].[Post]  WITH CHECK ADD  CONSTRAINT [FK_Post_AudioID] FOREIGN KEY([AudioID])
+REFERENCES [dbo].[Music] ([ID])
 GO
 ALTER TABLE [dbo].[Post] CHECK CONSTRAINT [FK_Post_Musician]
 GO
