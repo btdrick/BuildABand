@@ -5,7 +5,7 @@ import Message from "../components/message/Message"
 import { variables } from '../Variables.js';
 import ChatOnline from "../components/chatOnline/ChatOnline"
 import UserProfile from "../components/UserProfile";
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 
 export default function Messenger(){
@@ -14,6 +14,7 @@ export default function Messenger(){
     const [messages, setMessages] = useState([]);
     const MusicianID =  UserProfile.getMusicianID();
     const [newMessage, setNewMessage] = useState("");
+    const scrollRef = useRef();
 
     useEffect(()=> {
       const getConversations = async ()=> {
@@ -58,6 +59,11 @@ export default function Messenger(){
         setNewMessage("");
 
     }
+
+    
+    useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
  
     return(
         <>
@@ -80,7 +86,10 @@ export default function Messenger(){
                 <>
                 <div className="chatBoxTop">
                   {messages.map(m=>(
-                    <Message message={m} own={m.SenderID === MusicianID} />
+                    <div ref={scrollRef}>
+                       <Message message={m} own={m.SenderID === MusicianID} /> 
+                    </div>
+                    
                   ))
                   } 
                 </div>
