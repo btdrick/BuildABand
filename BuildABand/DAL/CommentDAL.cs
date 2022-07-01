@@ -103,6 +103,12 @@ namespace BuildABand.DAL
             return new JsonResult(resultsTable);
         }
 
+        /// <summary>
+        /// Get comment likes 
+        /// associated with commentID
+        /// </summary>
+        /// <param name="commentID"></param>
+        /// <returns>Table of comment likes</returns>
         public JsonResult GetCommentLikes(int commentID)
         {
             if (!this.CommentExists(commentID))

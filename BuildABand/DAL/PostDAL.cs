@@ -18,6 +18,184 @@ namespace BuildABand.DAL
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Gets all posts.
+        /// </summary>
+        /// <returns>Table of posts</returns>
+        public JsonResult GetAllPosts()
+        {
+            string selectStatement =
+            @"SELECT *
+            FROM dbo.Post";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult(resultsTable);
+        }
+
+        /// <summary>
+        /// Get post likes 
+        /// associated with postID
+        /// </summary>
+        /// <param name="postID"></param>
+        /// <returns>Table of post likes</returns>
+        public JsonResult GetPostLikesByPostID(int postID)
+        {
+            if (!this.PostExists(postID))
+            {
+                throw new ArgumentException("Error: post does not exist");
+            }
+
+            string selectStatement = @"
+            SELECT *
+            FROM dbo.PostLike 
+            WHERE PostID = @PostID
+            ";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        myCommand.Parameters.AddWithValue("@PostID", postID);
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult(resultsTable);
+        }
+
+        /// <summary>
+        /// Adds new Post row to the table
+        /// </summary>
+        /// <param name="newPost"></param>
+        /// <returns>JsonResult with create status</returns>
+        public JsonResult CreatePost(Post newPost)
+        {
+            if (newPost is null)
+            {
+                throw new ArgumentException("Post cannot be null");
+            }
+            if (String.IsNullOrWhiteSpace(newPost.Content))
+            {
+                throw new ArgumentException("Post cannot be empty");
+            }
+            if (newPost.MusicianID < 1)
+            {
+                throw new ArgumentException("Invalid MusicianID");
+            }
+
+            string insertStatement = @"
+            INSERT INTO dbo.Post
+            VALUES (@CreatedTime, @MusicianID, @Content)
+            ";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand myCommand = new SqlCommand(insertStatement, connection))
+                    {
+                        myCommand.Parameters.AddWithValue("@CreatedTime", newPost.CreatedTime);
+                        myCommand.Parameters.AddWithValue("@MusicianID", newPost.MusicianID);
+                        myCommand.Parameters.AddWithValue("@Content", newPost.Content);
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult("Post Added Successfully");
+        }
+
+        /// <summary>
+        /// Gets comments associated
+        /// with postID
+        /// </summary>
+        /// <param name="postID"></param>
+        /// <returns>Table of post's comments</returns>
+        public JsonResult GetPostCommentsByPostID(int postID)
+        {
+            if (!this.PostExists(postID)) 
+            {
+                throw new ArgumentException("Error: post does not exist");
+            }
+
+            string selectStatement = @"
+            SELECT *
+            FROM dbo.Comment 
+            WHERE PostID = @PostID
+            ";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        myCommand.Parameters.AddWithValue("@PostID", postID);
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult(resultsTable);
+        }
+
         public List<Post> GetPostByMusicianID(int musicianID)
         {
             List<Post> posts = new List<Post>();
@@ -151,16 +329,18 @@ namespace BuildABand.DAL
                 throw new ArgumentException("Error: post ID must be greater than 0");
             }
 
-            try
-            {
-                string selectStatement =
-                    "SELECT COUNT(*) " +
-                    "FROM dbo.Post " +
-                    "WHERE PostID = @PostID";
+            
+            string selectStatement = @"
+            SELECT COUNT(*)
+            FROM dbo.Post
+            WHERE PostID = @PostID
+            ";
 
-                using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                try
                 {
-                    connection.Open();
                     using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
                     {
                         selectCommand.Parameters.AddWithValue("@PostID", postID);
@@ -169,10 +349,10 @@ namespace BuildABand.DAL
                         return postExists;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException(ex.Message);
+                catch (Exception ex)
+                {
+                    throw new ArgumentException(ex.Message);
+                }
             }
         }
     }
