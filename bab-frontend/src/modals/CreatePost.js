@@ -3,7 +3,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-const CreatePost= ({ canCreatePost, handleSubmit }) => {
+const CreatePost = ({ canCreatePost, handleSubmit }) => {
     /* Create post modal attributes */
     const [modalTitle, setModalTitle] = useState("");
     const [content, setContent] = useState("");
@@ -36,10 +36,10 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
                 type="button"
                 className="btn m-3"
                 data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
+                data-bs-target="#createPostModal"
                 onClick={addClick}>Create Post</Button>}
             {/* Create post modal */}
-            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
+            <div className="modal fade" id="createPostModal" tabIndex="-1" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
