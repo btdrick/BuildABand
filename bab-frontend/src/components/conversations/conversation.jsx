@@ -1,13 +1,16 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { variables } from '../../Variables.js'
+import { variables } from '../../Variables.js';
+import UserProfile from "../UserProfile";
 import "./conversation.css"
 
 export default function Conversation({conversation}){
   const [musician, setMusician] = useState([]);
+  const MusicianID =  UserProfile.getMusicianID();
 
   useEffect(() =>{
-    const friendID = conversation.ReceiverID;
+    const friendID = conversation.ReceiverID === MusicianID? conversation.SenderID : conversation.ReceiverID;
+    console.log(friendID);
 
     const getMusician = async ()=> {
       const res = await fetch(variables.API_URL+'musician/'+ friendID);
@@ -17,7 +20,7 @@ export default function Conversation({conversation}){
 
     getMusician()
    
-
+    
   }, [conversation.ReceiverID]);
 
  
