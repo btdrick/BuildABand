@@ -14,6 +14,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
     const [fileInfo, setFileInfo] = useState({});
     const file = useRef();
 
+    /* Only submits post after audio file is uploaded */
     useEffect(() => { 
         console.log("audio id"+audioID+typeof(audioID))
         if(audioID !== 0){
