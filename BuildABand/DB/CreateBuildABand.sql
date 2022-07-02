@@ -96,6 +96,7 @@ CREATE TABLE [dbo].[Accounts](
 	[Username] [varchar](50) NOT NULL,
 	[Password] [varchar](50) NOT NULL,
 	[is_Active] [tinyint] NOT NULL,
+	[is_Admin] [tinyint] NOT NULL,
  CONSTRAINT [PK_AccountID] PRIMARY KEY CLUSTERED 
 (
 	[AccountID] ASC
@@ -199,14 +200,14 @@ CREATE TABLE [dbo].[Musician](
 	[DateOfBirth] [date] NOT NULL,
 	[Phone] [varchar](12) NOT NULL,
 	[Email] [varchar](200) NOT NULL,
-	[Instrument] [varchar](500) NULL,
+	[Instrument] [varchar](500) NOT NULL,
 	[Sex] [varchar](10) NOT NULL,
 	[Address1] [varchar](50) NOT NULL,
 	[Address2] [varchar](50) NULL,
 	[City] [varchar](50) NOT NULL,
+	[StateCode] [char](2) NOT NULL,
 	[ZipCode] [varchar](20) NOT NULL,
 	[AccountID] [int] NOT NULL,
-	[StateCode] [char](2) NOT NULL,
 	[AvaterFilename] [varchar](200) NULL,
  CONSTRAINT [PK_MusicianID] PRIMARY KEY CLUSTERED 
 (
@@ -224,9 +225,26 @@ CREATE TABLE [dbo].[Post](
 	[CreatedTime] [datetime] NOT NULL,
 	[MusicianID] [int] NOT NULL,
 	[Content] [varchar](100) NOT NULL,
+	[AudioID] INT,
  CONSTRAINT [PK_PostID] PRIMARY KEY CLUSTERED 
 (
 	[PostID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[PostLike]    Script Date: 6/24/2022 5:23:43 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PostLike](
+	[PostLikeID] [int] IDENTITY(1,1) NOT NULL,
+	[PostID] [int] NOT NULL,
+	[MusicianID] [int] NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_PostLike] PRIMARY KEY CLUSTERED 
+(
+	[PostLikeID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -284,14 +302,21 @@ CREATE UNIQUE NONCLUSTERED INDEX [AK_CommentLike] ON [dbo].[CommentLike]
 	[MusicianID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
+CREATE TABLE Music( 
+   ID INT IDENTITY(1,1) NOT NULL, 
+   azure_file_name uniqueidentifier NOT NULL, 
+   file_name varchar(45) NOT NULL,    
+   MusicianID INT NOT NULL,
+   PRIMARY KEY (ID));
+GO
 SET IDENTITY_INSERT [dbo].[Accounts] ON 
 
-INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (1, N'dnancy', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
-INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (2, N'fandrew', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
-INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (3, N'ljanet', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
-INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (4, N'pmargaret', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
-INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (5, N'bsteven', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
-INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active]) VALUES (6, N'smichael', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1)
+INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active], [is_Admin]) VALUES (1, N'dnancy', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1, 1)
+INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active], [is_Admin]) VALUES (2, N'fandrew', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1, 0)
+INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active], [is_Admin]) VALUES (3, N'ljanet', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1, 0)
+INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active], [is_Admin]) VALUES (4, N'pmargaret', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1, 0)
+INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active], [is_Admin]) VALUES (5, N'bsteven', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1, 0)
+INSERT [dbo].[Accounts] ([AccountID], [Username], [Password], [is_Active], [is_Admin]) VALUES (6, N'smichael', N'g0pwm6JTTr4+4Tl/1Pe9KIsqzB0goI1shi3NmbbwRAA=', 1, 0)
 SET IDENTITY_INSERT [dbo].[Accounts] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Comment] ON 
@@ -327,12 +352,12 @@ SET IDENTITY_INSERT [dbo].[Message] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Musician] ON 
 
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (1, N'Davolio', N'Nancy', CAST(N'1968-12-08' AS Date), N'206-555-9857', N'dnacy@test.com', N'Drum', N'Female', N'507 - 20th Ave.', NULL, N'Seattle', N'98122', 1, N'WA', NULL)
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (2, N'Fuller', N'Andrew', CAST(N'1952-02-19' AS Date), N'206-555-9482', N'fandrew@test.com', N'Piano', N'Male', N'908 W. Capital Way', N'by Zip way', N'Tacoma', N'98401', 2, N'WA', NULL)
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (3, N'Leverling', N'Janet', CAST(N'1963-08-30' AS Date), N'206-555-3412', N'ljanet@test.com', N'Bass Guitar', N'Female', N'722 Moss Bay Blvd.', NULL, N'Kirkland', N'98033', 3, N'WA', NULL)
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (4, N'Peacock', N'Margaret', CAST(N'1958-09-19' AS Date), N'206-555-8122', N'pmargaret@test.com', N'Lead Guitar', N'Female', N'4110 Old Redmond Rd.', NULL, N'Redmond', N'98052', 4, N'WA', NULL)
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (5, N'Buchanan', N'Steven', CAST(N'1955-03-04' AS Date), N'715-554-8480', N'bsteven@test.com', N'Drum', N'Male', N'14 Garrett Hill', N'SW1 8JR', N'Clint', N'87892', 5, N'NJ', NULL)
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [ZipCode], [AccountID], [StateCode], [AvaterFilename]) VALUES (6, N'Suyama', N'Michael', CAST(N'1963-07-02' AS Date), N'715-557-7730', N'smichael@test.com', N'Trumpet', N'Male', N'331 Park Ave S', NULL, N'New York', N'86692', 6, N'NY', NULL)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [StateCode], [ZipCode], [AccountID], [AvaterFilename]) VALUES (1, N'Davolio', N'Nancy', CAST(N'1968-12-08' AS Date), N'206-555-9857', N'dnacy@test.com', N'Drum', N'Female', N'507 - 20th Ave.', NULL, N'Seattle',  N'WA', N'98122', 1, NULL)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [StateCode], [ZipCode], [AccountID], [AvaterFilename]) VALUES (2, N'Fuller', N'Andrew', CAST(N'1952-02-19' AS Date), N'206-555-9482', N'fandrew@test.com', N'Piano', N'Male', N'908 W. Capital Way', N'by Zip way', N'Tacoma', N'WA', N'98401', 2, NULL)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [StateCode], [ZipCode], [AccountID], [AvaterFilename]) VALUES (3, N'Leverling', N'Janet', CAST(N'1963-08-30' AS Date), N'206-555-3412', N'ljanet@test.com', N'Bass Guitar', N'Female', N'722 Moss Bay Blvd.', NULL, N'Kirkland', N'WA', N'98033', 3, NULL)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [StateCode], [ZipCode], [AccountID], [AvaterFilename]) VALUES (4, N'Peacock', N'Margaret', CAST(N'1958-09-19' AS Date), N'206-555-8122', N'pmargaret@test.com', N'Lead Guitar', N'Female', N'4110 Old Redmond Rd.', NULL, N'Redmond', N'WA', N'98052', 4, NULL)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [StateCode], [ZipCode], [AccountID], [AvaterFilename]) VALUES (5, N'Buchanan', N'Steven', CAST(N'1955-03-04' AS Date), N'715-554-8480', N'bsteven@test.com', N'Drum', N'Male', N'14 Garrett Hill', N'SW1 8JR', N'Clint', N'NJ', N'87892', 5, NULL)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [StateCode], [ZipCode], [AccountID], [AvaterFilename]) VALUES (6, N'Suyama', N'Michael', CAST(N'1963-07-02' AS Date), N'715-557-7730', N'smichael@test.com', N'Trumpet', N'Male', N'331 Park Ave S', NULL, N'New York', N'NY', N'86692', 6, NULL)
 SET IDENTITY_INSERT [dbo].[Musician] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Post] ON 
@@ -340,6 +365,14 @@ SET IDENTITY_INSERT [dbo].[Post] ON
 INSERT [dbo].[Post] ([PostID], [CreatedTime], [MusicianID], [Content]) VALUES (1, CAST(N'2022-05-20T00:00:00.000' AS DateTime), 1, N'Welcome everyone to Build-a-band')
 INSERT [dbo].[Post] ([PostID], [CreatedTime], [MusicianID], [Content]) VALUES (2, CAST(N'2022-05-21T00:00:00.000' AS DateTime), 2, N'I think FAR OUT album by police  is a need to listen to')
 SET IDENTITY_INSERT [dbo].[Post] OFF
+GO
+SET IDENTITY_INSERT [dbo].[PostLike] ON 
+
+INSERT [dbo].[PostLike] ([PostLikeID], [PostID], [MusicianID], [CreatedTime]) VALUES (1, 1, 1, CAST(N'2022-05-20T00:00:00.000' AS DateTime))
+INSERT [dbo].[PostLike] ([PostLikeID], [PostID], [MusicianID], [CreatedTime]) VALUES (2, 1, 2, CAST(N'2022-05-21T00:00:00.000' AS DateTime))
+INSERT [dbo].[PostLike] ([PostLikeID], [PostID], [MusicianID], [CreatedTime]) VALUES (3, 1, 3, CAST(N'2022-05-21T00:00:00.000' AS DateTime))
+
+SET IDENTITY_INSERT [dbo].[PostLike] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Project] ON 
 
@@ -493,6 +526,21 @@ REFERENCES [dbo].[Musician] ([MusicianID])
 GO
 ALTER TABLE [dbo].[Post] CHECK CONSTRAINT [FK_Post_Musician]
 GO
+ALTER TABLE [dbo].[Post]  WITH CHECK ADD  CONSTRAINT [FK_Post_AudioID] FOREIGN KEY([AudioID])
+REFERENCES [dbo].[Music] ([ID])
+GO
+ALTER TABLE [dbo].[Post] CHECK CONSTRAINT [FK_Post_AudioID] 
+GO
+ALTER TABLE [dbo].[PostLike]  WITH CHECK ADD  CONSTRAINT [FK_PostLike_Accounts] FOREIGN KEY([MusicianID])
+REFERENCES [dbo].[Accounts] ([AccountID])
+GO
+ALTER TABLE [dbo].[PostLike] CHECK CONSTRAINT [FK_PostLike_Accounts]
+GO
+ALTER TABLE [dbo].[PostLike]  WITH CHECK ADD  CONSTRAINT [FK_PostLike_PostLike] FOREIGN KEY([PostID])
+REFERENCES [dbo].[Post] ([PostID])
+GO
+ALTER TABLE [dbo].[PostLike] CHECK CONSTRAINT [FK_PostLike_PostLike]
+GO
 ALTER TABLE [dbo].[Project]  WITH CHECK ADD  CONSTRAINT [FK_Project_Musician] FOREIGN KEY([OwnerID])
 REFERENCES [dbo].[Musician] ([MusicianID])
 GO
@@ -507,6 +555,11 @@ ALTER TABLE [dbo].[Project_Workon]  WITH CHECK ADD  CONSTRAINT [FK_Project_Worko
 REFERENCES [dbo].[Project] ([ProjectID])
 GO
 ALTER TABLE [dbo].[Project_Workon] CHECK CONSTRAINT [FK_Project_Workon_Project]
+GO
+ALTER TABLE [dbo].[Music]  WITH CHECK ADD  CONSTRAINT [FK_Music_Musician] FOREIGN KEY([MusicianID])
+REFERENCES [dbo].[Musician] ([MusicianID])
+GO
+ALTER TABLE [dbo].[Music] CHECK CONSTRAINT [FK_Music_Musician]
 GO
 /****** Object:  StoredProcedure [dbo].[createUser]    Script Date: 18/06/2022 6:40:34 PM ******/
 SET ANSI_NULLS ON
@@ -527,8 +580,8 @@ Create Procedure [dbo].[createUser]
 	@Address1 varchar(50),
 	@Address2 varchar(50),
 	@City varchar(20),
-	@ZipCode varchar(20),
 	@StateCode char(2),
+	@ZipCode varchar(20),
 	@AvaterFilename varchar(200)
 )
 
@@ -536,12 +589,12 @@ AS
 
 BEGIN
 INSERT INTO Accounts
-VALUES(@Username, @Password, 1)
+VALUES(@Username, @Password, 1, 0)
 
 
 INSERT INTO Musician
 VALUES(@Fname, @Lname, @DateOfBirth, @Phone, @Email, @Instrument, @Sex,
-       @Address1, @Address2, @City, @Zipcode,  @@IDENTITY, @StateCode, 
+       @Address1, @Address2, @City, @StateCode, @Zipcode,  @@IDENTITY, 
        @AvaterFilename)
 END
 GO

@@ -1,9 +1,7 @@
-﻿using BuildABand.Models;
+﻿using BuildABand.DAL;
+using BuildABand.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace BuildABand.Controllers
 {
@@ -15,7 +13,7 @@ namespace BuildABand.Controllers
     [ApiController]
     public class CommentController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        private CommentDAL commentDAL;
 
         /// <summary>
         /// 1-param constructor.
@@ -23,7 +21,7 @@ namespace BuildABand.Controllers
         /// <param name="configuration"></param>
         public CommentController(IConfiguration configuration)
         {
-            _configuration = configuration;
+            this.commentDAL = new CommentDAL(configuration);
         }
 
         /// <summary>
@@ -34,26 +32,7 @@ namespace BuildABand.Controllers
         [HttpGet]
         public JsonResult GetComments()
         {
-            string selectStatement =
-            @"SELECT *
-            FROM dbo.Comment";
-
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
-            {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
-                {
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
-                }
-            }
-
-            return new JsonResult(resultsTable);
+            return this.commentDAL.GetComments();
         }
 
         /// <summary>
@@ -63,35 +42,9 @@ namespace BuildABand.Controllers
         /// <param name="comment"></param>
         /// <returns>JsonResult table of comment</returns>
         [HttpGet("{commentID}")]
-        public JsonResult GetComment(int commentID)
+        public JsonResult GetCommentByID(int commentID)
         {
-            if (commentID < 1)
-            {
-                throw new ArgumentException("CommentID must be greater than 0");
-            }
-
-            string selectStatement =
-            @"SELECT *
-            FROM dbo.Comment 
-            WHERE CommentID = @CommentID";
-
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
-            {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
-                {
-                    myCommand.Parameters.AddWithValue("@CommentID", commentID);
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
-                }
-            }
-
-            return new JsonResult(resultsTable);
+            return this.commentDAL.GetCommentByID(commentID);
         }
 
         /// <summary>
@@ -103,33 +56,7 @@ namespace BuildABand.Controllers
         [HttpGet("{CommentID}/like")]
         public JsonResult GetCommentLikes(int commentID)
         {
-            if (commentID < 1)
-            {
-                throw new ArgumentException("CommentID must be greater than 0");
-            }
-
-            string selectStatement =
-            @"SELECT *
-            FROM dbo.CommentLike 
-            WHERE CommentID = @CommentID";
-
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
-            {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
-                {
-                    myCommand.Parameters.AddWithValue("@CommentID", commentID);
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
-                }
-            }
-
-            return new JsonResult(resultsTable);
+            return this.commentDAL.GetCommentLikes(commentID);
         }
 
         /// <summary>
@@ -141,55 +68,7 @@ namespace BuildABand.Controllers
         [HttpPost]
         public JsonResult CreateComment(Comment newComment)
         {
-            if (newComment is null)
-            {
-                throw new ArgumentException("Comment cannot be null");
-            }
-            if (String.IsNullOrWhiteSpace(newComment.Content))
-            {
-                throw new ArgumentException("Comment cannot be empty");
-            }
-            if (newComment.MusicianID < 1)
-            {
-                throw new ArgumentException("Invalid MusicianID");
-            }
-            if (newComment.PostID < 1)
-            {
-                throw new ArgumentException("Invalid PostID");
-            }
-
-            string insertStatement = 
-            @"INSERT INTO dbo.Comment
-            VALUES (@CreatedTime, @ParentID, @MusicianID, @PostID, @Content)";
-
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
-            {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(insertStatement, connection))
-                {
-                    myCommand.Parameters.AddWithValue("@CreatedTime", newComment.CreatedTime);
-                    if (newComment.ParentID == 0)
-                    {
-                        myCommand.Parameters.AddWithValue("@ParentID", DBNull.Value);
-                    }
-                    if (newComment.ParentID > 0)
-                    {
-                        myCommand.Parameters.AddWithValue("@ParentID", newComment.ParentID);
-                    }                  
-                    myCommand.Parameters.AddWithValue("@MusicianID", newComment.MusicianID);
-                    myCommand.Parameters.AddWithValue("@PostID", newComment.PostID);
-                    myCommand.Parameters.AddWithValue("@Content", newComment.Content);
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
-                }
-            }
-
-            return new JsonResult("Comment Added Successfully");
+            return this.commentDAL.CreateComment(newComment);
         }
 
         /// <summary>
@@ -201,34 +80,7 @@ namespace BuildABand.Controllers
         [HttpPatch("{comment.CommentID}")]
         public JsonResult UpdateComment(Comment comment)
         {
-            if (comment is null)
-            {
-                throw new ArgumentException("Comment cannot be null");
-            }
-
-            string updateStatement = 
-            @"UPDATE dbo.Comment 
-            SET Content = @Content
-            WHERE CommentID = @CommentID";
-
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
-            {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(updateStatement, connection))
-                {
-                    myCommand.Parameters.AddWithValue("@CommentID", comment.CommentID);
-                    myCommand.Parameters.AddWithValue("@Content", comment.Content);
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
-                }
-            }
-
-            return new JsonResult("Comment Updated Successfully");
+            return this.commentDAL.UpdateComment(comment);
         }
 
         /// <summary>
@@ -240,32 +92,7 @@ namespace BuildABand.Controllers
         [HttpDelete("{comment.CommentID}")]
         public JsonResult DeleteComment(Comment comment)
         {
-            if (comment is null)
-            {
-                throw new ArgumentException("Comment cannot be null");
-            }
-
-            string deleteStatement = 
-            @"DELETE FROM dbo.Comment 
-            WHERE CommentID = @CommentID";
-
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
-            {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(deleteStatement, connection))
-                {
-                    myCommand.Parameters.AddWithValue("@CommentID", comment.CommentID);
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
-                }
-            }
-
-            return new JsonResult("Comment Deleted Successfully");
+            return this.commentDAL.DeleteComment(comment);
         }
     }
 }

@@ -8,9 +8,9 @@ using System.Data.SqlClient;
 namespace BuildABand.DAL
 {
     /// <summary>
-    /// CommentLike table data access layer (DAL).
+    /// PostLike table data access layer (DAL).
     /// </summary>
-    public class CommentLikeDAL
+    public class PostLikeDAL
     {
         private IConfiguration _configuration;
 
@@ -18,22 +18,22 @@ namespace BuildABand.DAL
         /// 1-param constructor.
         /// </summary>
         /// <param name="configuration"></param>
-        public CommentLikeDAL(IConfiguration configuration)
+        public PostLikeDAL(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
         /// <summary>
-        /// Gets all comment likes.
+        /// Gets all post likes.
         /// </summary>
-        /// <returns>Table of comment likes</returns>
-        public JsonResult GetCommentLikes()
+        /// <returns>Table of post likes</returns>
+        public JsonResult GetPostLikes()
         {
             try
             {
                 string selectStatement = @"
                 SELECT *
-                FROM dbo.CommentLike
+                FROM dbo.PostLike
                 ";
 
                 DataTable resultsTable = new DataTable();
@@ -60,23 +60,23 @@ namespace BuildABand.DAL
         }
 
         /// <summary>
-        /// Get comment like by ID.
+        /// Gets post like by ID.
         /// </summary>
-        /// <param name="commentLikeID"></param>
-        /// <returns>Array for specified comment like</returns>
-        public JsonResult GetCommentLikeByID(int commentLikeID)
+        /// <param name="postLikeID"></param>
+        /// <returns>Array for specified post like</returns>
+        public JsonResult GetPostLikeByID(int postLikeID)
         {
-            if (!this.CommentLikeExists(commentLikeID))
+            if (!this.PostLikeExists(postLikeID))
             {
-                throw new ArgumentException("Error: comment like does not exist");
+                throw new ArgumentException("Error: post like doesn't exist");
             }
 
             try
             {
                 string selectStatement = @"
                 SELECT *
-                FROM dbo.CommentLike 
-                WHERE CommentLikeID = @CommentLikeID
+                FROM dbo.PostLike 
+                WHERE PostLikeID = @PostLikeID
                 ";
 
                 DataTable resultsTable = new DataTable();
@@ -87,7 +87,7 @@ namespace BuildABand.DAL
                     connection.Open();
                     using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
                     {
-                        myCommand.Parameters.AddWithValue("@CommentLikeID", commentLikeID);
+                        myCommand.Parameters.AddWithValue("@PostLikeID", postLikeID);
                         dataReader = myCommand.ExecuteReader();
                         resultsTable.Load(dataReader);
                         dataReader.Close();
@@ -104,22 +104,22 @@ namespace BuildABand.DAL
         }
 
         /// <summary>
-        /// Adds new CommentLike row to the table
+        /// Adds new PostLike row to the table
         /// </summary>
-        /// <param name="newCommentLike"></param>
+        /// <param name="newPostLike"></param>
         /// <returns>JsonResult with create status</returns>
-        public JsonResult LikeComment(CommentLike newCommentLike)
+        public JsonResult LikePost(PostLike newPostLike)
         {
-            if (this.UserAlreadyLikedComment(newCommentLike))
+            if (this.UserAlreadyLikedPost(newPostLike))
             {
-                return new JsonResult("User has already liked this comment");
+                return new JsonResult("User has already liked this post");
             }
 
             try
             {
                 string insertStatement = @"
-                INSERT INTO dbo.CommentLike
-                VALUES (@CommentID, @MusicianID, @CreatedTime)
+                INSERT INTO dbo.PostLike
+                VALUES (@PostID, @MusicianID, @CreatedTime)
                 ";
 
                 DataTable resultsTable = new DataTable();
@@ -130,9 +130,9 @@ namespace BuildABand.DAL
                     connection.Open();
                     using (SqlCommand myCommand = new SqlCommand(insertStatement, connection))
                     {
-                        myCommand.Parameters.AddWithValue("@CommentID", newCommentLike.CommentID);
-                        myCommand.Parameters.AddWithValue("@MusicianID", newCommentLike.MusicianID);
-                        myCommand.Parameters.AddWithValue("@CreatedTime", newCommentLike.CreatedTime);
+                        myCommand.Parameters.AddWithValue("@PostID", newPostLike.PostID);
+                        myCommand.Parameters.AddWithValue("@MusicianID", newPostLike.MusicianID);
+                        myCommand.Parameters.AddWithValue("@CreatedTime", newPostLike.CreatedTime);
                         dataReader = myCommand.ExecuteReader();
                         resultsTable.Load(dataReader);
                         dataReader.Close();
@@ -140,7 +140,7 @@ namespace BuildABand.DAL
                     }
                 }
 
-                return new JsonResult("Comment Liked Successfully");
+                return new JsonResult("Post Liked Successfully");
             }
             catch(Exception ex)
             {
@@ -149,25 +149,29 @@ namespace BuildABand.DAL
         }
 
         /// <summary>
-        /// Removes CommentLike row from table.
+        /// Removes PostLike row from table
         /// </summary>
-        /// <param name="commentLikeID"></param>
+        /// <param name="postLikeID"></param>
         /// <returns>JsonResult with deletion status</returns>
-        public JsonResult DeleteCommentLikeByID(int commentLikeID)
+        public JsonResult DeletePostLikeByID(int postLikeID)
         {
-            if (!this.CommentLikeExists(commentLikeID))
+            if (!this.PostLikeExists(postLikeID))
             {
-                throw new ArgumentException("Error: comment like does not exist");
+                throw new ArgumentException("Error: post like does not exist");
             }
 
             try
             {
                 string deleteStatement = @"
-                DELETE FROM dbo.CommentLike
-                WHERE CommentLikeID = @CommentLikeID
+                DELETE FROM dbo.PostLike
+                WHERE PostLikeID = @PostLikeID
+
                 DECLARE @lastID int
-                SELECT @lastID = MAX(CommentLikeID) FROM dbo.CommentLike
-                DBCC CHECKIDENT(CommentLike, RESEED, @lastID)
+                SELECT @lastID = MAX(PostLikeID) FROM dbo.PostLike
+                IF @lastID IS NULL
+                DBCC CHECKIDENT(PostLike, RESEED, 0)
+                ELSE
+                DBCC CHECKIDENT(PostLike, RESEED, @lastID)
                 ";
 
                 DataTable resultsTable = new DataTable();
@@ -178,7 +182,7 @@ namespace BuildABand.DAL
                     connection.Open();
                     using (SqlCommand myCommand = new SqlCommand(deleteStatement, connection))
                     {
-                        myCommand.Parameters.AddWithValue("@CommentLikeID", commentLikeID);
+                        myCommand.Parameters.AddWithValue("@PostLikeID", postLikeID);
                         dataReader = myCommand.ExecuteReader();
                         resultsTable.Load(dataReader);
                         dataReader.Close();
@@ -186,7 +190,7 @@ namespace BuildABand.DAL
                     }
                 }
 
-                return new JsonResult("Comment Deleted Successfully");
+                return new JsonResult("Post Like Deleted Successfully");
             }
             catch(Exception ex)
             {
@@ -195,23 +199,23 @@ namespace BuildABand.DAL
         }
 
         /// <summary>
-        /// Returns true if user liked specified comment.
+        /// Returns true if user liked specified post.
         /// </summary>
-        /// <param name="commentLike"></param>
-        /// <returns>True if user liked specified comment.</returns>
-        public bool UserAlreadyLikedComment(CommentLike commentLike)
+        /// <param name="postLike"></param>
+        /// <returns>True if user liked specified post.</returns>
+        public bool UserAlreadyLikedPost(PostLike postLike)
         {
-            if (commentLike is null)
+            if (postLike is null)
             {
-                throw new ArgumentException("Comment Like cannot be null");
+                throw new ArgumentException("Post Like cannot be null");
             }
 
             try
             {
                 string selectStatement = @"
                 SELECT COUNT(*)
-                FROM dbo.CommentLike
-                WHERE CommentID = @CommentID
+                FROM dbo.PostLike
+                WHERE PostID = @PostID
                 AND MusicianID = @MusicianID
                 ";
 
@@ -220,38 +224,38 @@ namespace BuildABand.DAL
                     connection.Open();
                     using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
                     {
-                        selectCommand.Parameters.AddWithValue("@CommentID", commentLike.CommentID);
-                        selectCommand.Parameters.AddWithValue("@MusicianID", commentLike.MusicianID);
+                        selectCommand.Parameters.AddWithValue("@PostID", postLike.PostID);
+                        selectCommand.Parameters.AddWithValue("@MusicianID", postLike.MusicianID);
                         bool isLiked = Convert.ToBoolean(selectCommand.ExecuteScalar());
 
                         return isLiked;
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new ArgumentException(ex.Message);
-            }         
+            }
         }
 
         /// <summary>
-        /// Returns true if comment like exists.
+        /// Returns true if post like exists.
         /// </summary>
-        /// <param name="commentLikeID"></param>
-        /// <returns>True if comment like exists</returns>
-        public bool CommentLikeExists(int commentLikeID)
+        /// <param name="postLikeID"></param>
+        /// <returns>True if post like exists</returns>
+        public bool PostLikeExists(int postLikeID)
         {
-            if (commentLikeID <= 0)
+            if (postLikeID <= 0)
             {
-                throw new ArgumentException("Error: comment like ID must be greater than 0");
+                throw new ArgumentException("Error: post like ID must be greater than 0");
             }
 
             try
             {
                 string selectStatement = @"
                 SELECT COUNT(*)
-                FROM dbo.CommentLike
-                WHERE CommentLikeID = @CommentLikeID
+                FROM dbo.PostLike
+                WHERE PostLikeID = @PostLikeID
                 ";
 
                 using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
@@ -259,10 +263,10 @@ namespace BuildABand.DAL
                     connection.Open();
                     using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
                     {
-                        selectCommand.Parameters.AddWithValue("@CommentLikeID", commentLikeID);
-                        bool commentLikeExists = Convert.ToBoolean(selectCommand.ExecuteScalar());
+                        selectCommand.Parameters.AddWithValue("@PostLikeID", postLikeID);
+                        bool postLikeExists = Convert.ToBoolean(selectCommand.ExecuteScalar());
 
-                        return commentLikeExists;
+                        return postLikeExists;
                     }
                 }
             }

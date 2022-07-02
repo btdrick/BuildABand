@@ -7,9 +7,10 @@
     height: 100%;
 }
 
-#logo {
+#logo-home {
     width: 100px;
     height: 100px;
+    border-radius: 50px;
 }
 
 .login-page {
