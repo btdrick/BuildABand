@@ -33,7 +33,7 @@ const Feed = ({ getPosts, canCreatePost, canFilterPosts }) => {
     };
 
     /* Handles onClick event for Create button */
-    const createPost = (content) => {
+    const createPost = (content, audioID) => {
         fetch(variables.API_URL+'post',{
             method:'POST',
             headers:{
@@ -43,7 +43,8 @@ const Feed = ({ getPosts, canCreatePost, canFilterPosts }) => {
             body:JSON.stringify({   
                 CreatedTime: new Date(),                           
                 MusicianID: UserProfile.getMusicianID(),
-                Content:    content
+                Content:    content,
+                AudioID: audioID,
             })
         })
         .then(res=>res.json())

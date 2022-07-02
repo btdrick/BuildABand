@@ -1,31 +1,71 @@
-import {React, useState} from 'react';
+import {React, useState, useRef, useEffect} from 'react';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import UserProfile from '../components/UserProfile';
+import { variables } from '../Variables';
 
 const CreatePost= ({ canCreatePost, handleSubmit }) => {
     /* Create post modal attributes */
     const [modalTitle, setModalTitle] = useState("");
     const [content, setContent] = useState("");
+    const [audioID, setAudioID] = useState(0);
     const [postID, setPostID] = useState(0);
+    const [fileInfo, setFileInfo] = useState({});
+    const file = useRef();
+
+    useEffect(() => { 
+        console.log("audio id"+audioID+typeof(audioID))
+        if(audioID !== 0){
+            handleSubmit(content, audioID);
+            setModalTitle("");
+            setContent("");
+            setFileInfo(null);
+        }
+        setAudioID(0);
+    }, [audioID])
 
     /* Handles event of text entry for Post content */
     const changePostContent =(e)=>{
         setContent(e.target.value)
     };
 
+    const changeFile = (e) => {
+        setFileInfo(e.target.files[0]);
+    }
+
     /* Handles onClick event for Add button */
     const addClick = () => {
         setModalTitle("Create Post");
         setPostID(0);
         setContent("");
+        setFileInfo(null);
     };
 
     const onClick = (event) => {
         event.preventDefault();
-        handleSubmit(content);
-        setModalTitle("");
-        setContent("");
+        if(content !== "") {
+            submitFileInfo();
+        } else {
+            alert('Post content cannot be blank');
+        }
+    }
+
+    const submitFileInfo = async () => {
+        const response = await fetch(variables.API_URL+'audio?filename=' + fileInfo.name + '&musicianID=' + UserProfile.getMusicianID(),{
+            method:'POST',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/octet-stream'
+            },
+            body: fileInfo
+        })
+        if (!response.ok) {  
+            alert("Invalid file upload")
+            return;
+        } 
+        const result = await response.json();
+        setAudioID(result)
     }
 
     return (
@@ -63,6 +103,15 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
                             placeholder="Enter post content..."
                             value={ content } 
                             onChange={ changePostContent }/>
+                            
+                            <Form.Group controlId="formFile" className="mb-3">
+                                <Form.Label>Opt. Add a Music Sample (.wav or .mp3)</Form.Label>
+                                <Form.Control 
+                                    type="file" 
+                                    accept='.wav, .mp3' 
+                                    ref={file}
+                                    onChange={ changeFile } />
+                            </Form.Group>
                         </InputGroup>
 
                                        
