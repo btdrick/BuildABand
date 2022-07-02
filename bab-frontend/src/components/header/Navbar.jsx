@@ -82,6 +82,11 @@ export class Navbar extends React.Component {
                                         Connections
                                     </Nav.Link>
                                 </Nav.Item>
+                                <Nav.Item>
+                                  <Nav.Link href="#/messenger">
+                                      Messages
+                                  </Nav.Link>
+                                </Nav.Item>
                             </Nav>
                             {/* Dropdown menu */}
                             <Dropdown className="dropdown">
