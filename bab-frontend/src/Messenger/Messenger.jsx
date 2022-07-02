@@ -34,11 +34,7 @@ export default function Messenger(){
     }
 
     useEffect(()=> {
-        const timer = setInterval(async()=> {
-            const res = await fetch(variables.API_URL+'message/'+ currentChat.ConversationID);
-            const data = await res.json();
-            setMessages(data);
-           }, 60000);
+        const timer = setInterval(getMessages, 60000);
         return () => clearInterval(timer);
     },[])
 
