@@ -7,17 +7,30 @@ var UserProfile = (function() {
  
    //Set musician id to sessionStorage 
    var setMusicianID = function(ID) {
-       sessionStorage.musicianID = ID;     
-     
+       sessionStorage.musicianID = ID;
    };
 
-   var getProfileID = function(){
+   var getProfileID = function() {
     return sessionStorage.profileID;
    }
 
-   var setProfileID = function(ID){
+   var setProfileID = function(ID) {
         sessionStorage.profileID = ID;
    };
+
+   var getIsAdmin = function() {
+    return sessionStorage.isAdmin === 'true';
+   }
+
+   /* Set isAdmin value based on value */
+   var setIsAdmin = function(musicianIsAdminValue){
+    if (musicianIsAdminValue === 1) {
+        sessionStorage.isAdmin = true;
+    }
+    if (musicianIsAdminValue !== 1) {
+        sessionStorage.isAdmin = false;
+    }
+   }
 
    var clearSession = function (){
        sessionStorage.clear();
@@ -28,6 +41,8 @@ var UserProfile = (function() {
        setProfileID: setProfileID,
        getMusicianID: getMusicianID,
        setMusicianID: setMusicianID,
+       setIsAdmin: setIsAdmin,
+       getIsAdmin: getIsAdmin,
        clearSession: clearSession
    }
  
