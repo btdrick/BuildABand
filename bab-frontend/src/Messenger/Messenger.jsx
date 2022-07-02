@@ -1,11 +1,11 @@
-import "./Messenger.css"
-import Navbar from "../components/header/Navbar"
-import Conversation from "../components/conversations/conversation"
-import Message from "../components/message/Message"
+import "./Messenger.css";
+import Navbar from "../components/header/Navbar";
+import Conversation from "../components/conversations/conversation";
+import Message from "../components/message/Message";
 import { variables } from '../Variables.js';
-import ChatOnline from "../components/chatOnline/ChatOnline"
+import ChatOnline from "../components/chatOnline/ChatOnline";
 import UserProfile from "../components/UserProfile";
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef } from "react";
 
 
 export default function Messenger(){
@@ -26,16 +26,24 @@ export default function Messenger(){
 
     },[MusicianID]);
 
-
+    const getMessages = async()=> {
+        const res = await fetch(variables.API_URL+'message/'+ currentChat.ConversationID);
+        const data = await res.json();
+        setMessages(data);
+        
+    }
 
     useEffect(()=> {
-        const getMessages =async()=> {
+        const timer = setInterval(async()=> {
             const res = await fetch(variables.API_URL+'message/'+ currentChat.ConversationID);
             const data = await res.json();
             setMessages(data);
-            
-        }
+           }, 60000);
+        return () => clearInterval(timer);
+    },[])
 
+
+    useEffect(()=> {
         getMessages();
 
     },[currentChat])
@@ -54,9 +62,8 @@ export default function Messenger(){
                                 Text: newMessage,
                                 ConversationID:currentChat.ConversationID, 
                             })
-                         })
-         const data = await res.json();
-        console.log(data);
+                         });
+        const data = await res.json();
         setMessages([...messages, data]);
         setNewMessage("");
 
