@@ -11,6 +11,7 @@ import { useEffect, useState, useRef } from "react";
 export default function Messenger(){
     const [currentChat, setCurrentChat] = useState(null);
     const [conversations, setConversations] = useState([]);
+    const [connections, setConnections] = useState([]);
     const [messages, setMessages] = useState([]);
     const MusicianID =  UserProfile.getMusicianID();
     const [newMessage, setNewMessage] = useState("");
@@ -25,6 +26,16 @@ export default function Messenger(){
       getConversations(); 
 
     },[MusicianID]);
+
+    useEffect( ()=> {
+       const getConnections = async ()=> {
+          const res = await fetch(variables.API_URL + "musicianconnections/" + MusicianID)
+          const data = await res.json();     
+          setConnections(data);
+       };
+       getConnections();
+    },[MusicianID]);
+         
 
     const getMessages = async()=> {
         const res = await fetch(variables.API_URL+'message/'+ currentChat.ConversationID);
@@ -43,6 +54,9 @@ export default function Messenger(){
         getMessages();
 
     },[currentChat])
+
+
+   
 
     const handleSubmit = async(e) => {
         e.preventDefault();
@@ -110,10 +124,12 @@ export default function Messenger(){
             </div>
             <div className="chatOnline">
                 <div className="chatOnlineWrapper">
-                    <ChatOnline />
-                    <ChatOnline />
-                    <ChatOnline />
-                    <ChatOnline />
+                        <div>
+                             { connections.map(c=> (
+                                <ChatOnline connection={c} currentMusicianID={MusicianID} />
+                            ))}  
+                        </div>
+                                 
                 </div>
             </div>
         </div>

@@ -10,8 +10,7 @@ export default function Conversation({conversation}){
 
   useEffect(() =>{
     const friendID = conversation.ReceiverID === MusicianID? conversation.SenderID : conversation.ReceiverID;
-    console.log(friendID);
-
+    
     const getMusician = async ()=> {
       const res = await fetch(variables.API_URL+'musician/'+ friendID);
       const data = await res.json();
@@ -21,7 +20,7 @@ export default function Conversation({conversation}){
     getMusician()
    
     
-  }, [conversation.ReceiverID]);
+  }, [MusicianID,conversation]);
 
  
 
