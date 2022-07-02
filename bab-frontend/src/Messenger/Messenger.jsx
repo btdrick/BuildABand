@@ -13,9 +13,12 @@ export default function Messenger(){
     const [conversations, setConversations] = useState([]);
     const [connections, setConnections] = useState([]);
     const [messages, setMessages] = useState([]);
+    const [currentnNames, setCurrentNames] =  useState([]);
     const MusicianID =  UserProfile.getMusicianID();
     const [newMessage, setNewMessage] = useState("");
     const scrollRef = useRef();
+    const CurrentConversationName = UserProfile.getCurrentConversationNames()
+    
 
     const getConversations = async ()=> {
         const res = await fetch(variables.API_URL+'conversation/'+ MusicianID);
@@ -28,6 +31,26 @@ export default function Messenger(){
       getConversations(); 
 
     },[MusicianID]);
+
+    useEffect(() =>{
+        
+     if (currentChat !==null) {
+        const friendID = currentChat.ReceiverID === MusicianID? currentChat.SenderID : currentChat.ReceiverID;
+        
+        const getCurrentConversationNames = async ()=> {
+          const res = await fetch(variables.API_URL+'musician/'+ friendID);
+          const data = await res.json();
+          setCurrentNames(data[0]);
+        };
+    
+        getCurrentConversationNames();
+        
+
+     }
+       
+      
+        
+      }, [currentChat]);
 
     useEffect( ()=> {
        const getConnections = async ()=> {
@@ -95,6 +118,8 @@ export default function Messenger(){
 
     }
 
+  
+
     
     useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -106,9 +131,9 @@ export default function Messenger(){
         <div className="messenger">
             <div className="chatMenu">
                 <div className="chatMenuWrapper">
-                        <h3> Conservation</h3>
-                        {conversations.map((c) => (
-                            <div onClick={()=> setCurrentChat(c)}>
+                        <h3> Conversation</h3>
+                        {conversations.map((c, i) => (
+                            <div key={i}  onClick={()=> setCurrentChat(c)}>
                             <Conversation conversation={c}/>
                             </div>
                         ))}    
@@ -121,6 +146,7 @@ export default function Messenger(){
                     currentChat?
                 <>
                 <div className="chatBoxTop">
+                  <h3>{currentnNames.Fname + " " + currentnNames.Lname}</h3>
                   {messages.map(m=>(
                     <div ref={scrollRef}>
                        <Message message={m} own={m.SenderID === MusicianID} /> 
@@ -140,9 +166,9 @@ export default function Messenger(){
               </div>      
             </div>
             <div className="chatOnline">
-            <h3> Connections</h3>
+           
                 <div className="chatOnlineWrapper">
-                      
+                       <h3 > Connections</h3>
                              { connections.map(c=> (
                                 <div onClick={()=> addConversation(c)}>
                                         <ChatOnline connection={c} currentMusicianID={MusicianID} />
