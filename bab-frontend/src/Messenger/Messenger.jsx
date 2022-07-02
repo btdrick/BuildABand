@@ -13,11 +13,11 @@ export default function Messenger(){
     const [conversations, setConversations] = useState([]);
     const [connections, setConnections] = useState([]);
     const [messages, setMessages] = useState([]);
-    const [currentnNames, setCurrentNames] =  useState([]);
+    const [currentNames, setCurrentNames] =  useState([]);
     const MusicianID =  UserProfile.getMusicianID();
     const [newMessage, setNewMessage] = useState("");
     const scrollRef = useRef();
-    const CurrentConversationName = UserProfile.getCurrentConversationNames()
+  
     
 
     const getConversations = async ()=> {
@@ -112,8 +112,8 @@ export default function Messenger(){
                                 ConversationID:currentChat.ConversationID, 
                             })
                          });
-        const data = await res.json();
-        setMessages([...messages, data]);
+      
+       getMessages();
         setNewMessage("");
 
     }
@@ -142,11 +142,12 @@ export default function Messenger(){
             <div className="chatBox">
             <h3> Chat</h3>
                <div className="chatBoxWrapper">
+               <h3>{ currentNames.Fname === undefined ? " " : currentNames.Fname + " " + currentNames.Lname}</h3>
                 {
                     currentChat?
                 <>
                 <div className="chatBoxTop">
-                  <h3>{currentnNames.Fname + " " + currentnNames.Lname}</h3>
+                
                   {messages.map(m=>(
                     <div ref={scrollRef}>
                        <Message message={m} own={m.SenderID === MusicianID} /> 

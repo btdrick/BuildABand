@@ -10,16 +10,7 @@ var UserProfile = (function() {
        sessionStorage.musicianID = ID;
    };
 
-    // pull id from sessionStorage 
-    var getCurrentConversationNames = function() {
-         return sessionStorage.currentConversationNames;   
-    };
-    
-    //Set musician id to sessionStorage 
-    var setCurrentConversationNames = function(names) {
-         sessionStorage.currentConversationNames = names;
-      };
-
+   
    var getProfileID = function() {
     return sessionStorage.profileID;
    }
@@ -49,8 +40,6 @@ var UserProfile = (function() {
    return {
        getProfileID: getProfileID,
        setProfileID: setProfileID,
-       getCurrentConversationNames: getCurrentConversationNames,
-       setCurrentConversationNames: setCurrentConversationNames,
        getMusicianID: getMusicianID,
        setMusicianID: setMusicianID,
        setIsAdmin : setIsAdmin,
