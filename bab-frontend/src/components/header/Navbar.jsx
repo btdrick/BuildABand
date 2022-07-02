@@ -47,6 +47,7 @@ export class Navbar extends React.Component {
                         <Link className="nav-link" to="/home">Home</Link>
                         <Link className="nav-link" to={`/profile/${UserProfile.getMusicianID()}`}>Profile</Link>
                         <Link className="nav-link" to="/connections">Connections</Link>
+                        <Link className="nav-link" to="/messenger">Message</Link>
                         <button className="nav-link bg-dark" onClickCapture={this.logout}>Logout</button>
                         {/* Search a user */}
                         <Search 
