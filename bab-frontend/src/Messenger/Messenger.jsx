@@ -17,12 +17,14 @@ export default function Messenger(){
     const [newMessage, setNewMessage] = useState("");
     const scrollRef = useRef();
 
-    useEffect(()=> {
-      const getConversations = async ()=> {
+    const getConversations = async ()=> {
         const res = await fetch(variables.API_URL+'conversation/'+ MusicianID);
         const data = await res.json();
         setConversations(data);
       };
+
+    useEffect(()=> {
+     
       getConversations(); 
 
     },[MusicianID]);
@@ -55,7 +57,21 @@ export default function Messenger(){
 
     },[currentChat])
 
+    const addConversation = async(e) => {
 
+        try {
+     
+        const SenderID = e.InitiatorID === MusicianID? e.FollowerID : e.InitiatorID;
+        
+        const res = await fetch (variables.API_URL+'conversation/'+ MusicianID + '/' + SenderID, {
+                            method: 'POST'})
+       getConversations();
+            
+        } catch (error) {
+            
+        }
+
+    }
    
 
     const handleSubmit = async(e) => {
@@ -90,7 +106,7 @@ export default function Messenger(){
         <div className="messenger">
             <div className="chatMenu">
                 <div className="chatMenuWrapper">
-                    <input placeholder="Search for friends" className="chatMenuInput" />
+                        <h3> Conservation</h3>
                         {conversations.map((c) => (
                             <div onClick={()=> setCurrentChat(c)}>
                             <Conversation conversation={c}/>
@@ -99,6 +115,7 @@ export default function Messenger(){
                 </div>
             </div>
             <div className="chatBox">
+            <h3> Chat</h3>
                <div className="chatBoxWrapper">
                 {
                     currentChat?
@@ -123,13 +140,14 @@ export default function Messenger(){
               </div>      
             </div>
             <div className="chatOnline">
+            <h3> Connections</h3>
                 <div className="chatOnlineWrapper">
-                        <div>
+                      
                              { connections.map(c=> (
-                                <ChatOnline connection={c} currentMusicianID={MusicianID} />
-                            ))}  
-                        </div>
-                                 
+                                <div onClick={()=> addConversation(c)}>
+                                        <ChatOnline connection={c} currentMusicianID={MusicianID} />
+                                </div>                            
+                            ))}            
                 </div>
             </div>
         </div>
