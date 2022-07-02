@@ -20,7 +20,7 @@ var UserProfile = (function() {
    };
 
    var getIsAdmin = function() {
-    return sessionStorage.isAdmin;
+    return sessionStorage.isAdmin === 'true';
    }
 
    /* Set isAdmin value based on value */
@@ -42,8 +42,8 @@ var UserProfile = (function() {
        setProfileID: setProfileID,
        getMusicianID: getMusicianID,
        setMusicianID: setMusicianID,
-       setIsAdmin : setIsAdmin,
-       getIsAdmin : getIsAdmin,
+       setIsAdmin: setIsAdmin,
+       getIsAdmin: getIsAdmin,
        clearSession: clearSession
    }
  

@@ -114,7 +114,7 @@ const Post = (props) => {
     /* User cannot stack likes */
     const canLike = hasLiked();
     /* User cannot delete others' post */
-    const canDelete = props.MusicianID === currentUserID;
+    const canDelete = (props.MusicianID === currentUserID) || UserProfile.getIsAdmin() === true;
 
     /* Format comment time displayed */
     const createdTime = 
