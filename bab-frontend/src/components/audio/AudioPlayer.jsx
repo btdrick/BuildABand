@@ -5,7 +5,7 @@ import track1 from '../../audioFiles/track1.wav'
 function AudioPlayer() {
   return (
     <div>
-      <h3>Audio player in React</h3>
+      <h3>Song Title</h3>
       <ReactPlayer
         url={track1}
         width="400px"
