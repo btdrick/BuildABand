@@ -86,7 +86,7 @@ ALTER DATABASE [BuildABand] SET QUERY_STORE = OFF
 GO
 USE [BuildABand]
 GO
-/****** Object:  Table [dbo].[Accounts]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Table [dbo].[Accounts]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -103,7 +103,7 @@ CREATE TABLE [dbo].[Accounts](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Audio]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Table [dbo].[Audio]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -119,7 +119,7 @@ CREATE TABLE [dbo].[Audio](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Comment]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Table [dbo].[Comment]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -137,7 +137,7 @@ CREATE TABLE [dbo].[Comment](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CommentLike]    Script Date: 6/20/2022 5:35:57 PM ******/
+/****** Object:  Table [dbo].[CommentLike]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -153,7 +153,7 @@ CREATE TABLE [dbo].[CommentLike](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Connection]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Table [dbo].[Connection]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -170,25 +170,40 @@ CREATE TABLE [dbo].[Connection](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Message]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Table [dbo].[Conversation]    Script Date: 7/2/2022 11:54:52 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Conversation](
+	[ConversationID] [int] IDENTITY(1,1) NOT NULL,
+	[SenderID] [int] NOT NULL,
+	[ReceiverID] [int] NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_ConversationID] PRIMARY KEY CLUSTERED 
+(
+	[ConversationID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Message]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Message](
 	[MessageID] [int] IDENTITY(1,1) NOT NULL,
+	[ConversationID] [int] NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
 	[SenderID] [int] NOT NULL,
-	[RecipientID] [int] NOT NULL,
-	[Subject] [varchar](100) NOT NULL,
-	[Body] [varchar](500) NOT NULL,
+	[Text] [varchar](500) NOT NULL,
  CONSTRAINT [PK_MessageID] PRIMARY KEY CLUSTERED 
 (
 	[MessageID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Musician]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Table [dbo].[Musician]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -215,7 +230,7 @@ CREATE TABLE [dbo].[Musician](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Post]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Table [dbo].[Post]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -232,7 +247,7 @@ CREATE TABLE [dbo].[Post](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PostLike]    Script Date: 6/24/2022 5:23:43 PM ******/
+/****** Object:  Table [dbo].[PostLike]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -248,7 +263,7 @@ CREATE TABLE [dbo].[PostLike](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Project]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Table [dbo].[Project]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -265,7 +280,7 @@ CREATE TABLE [dbo].[Project](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Project_Workon]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Table [dbo].[Project_Workon]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -281,7 +296,7 @@ CREATE TABLE [dbo].[Project_Workon](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[States]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Table [dbo].[States]    Script Date: 7/2/2022 11:54:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -330,9 +345,9 @@ SET IDENTITY_INSERT [dbo].[Comment] OFF
 GO
 SET IDENTITY_INSERT [dbo].[CommentLike] ON 
 
-INSERT [dbo].[CommentLike] ([CommentLikeID], [CommentID], [MusicianID], [CreatedTime]) VALUES (1, 1, 1, '2022-06-20 17:29:13.507')
-INSERT [dbo].[CommentLike] ([CommentLikeID], [CommentID], [MusicianID], [CreatedTime]) VALUES (2, 1, 2, '2022-06-20 17:29:13.507')
-INSERT [dbo].[CommentLike] ([CommentLikeID], [CommentID], [MusicianID], [CreatedTime]) VALUES (3, 1, 3, '2022-06-20 17:29:13.507')
+INSERT [dbo].[CommentLike] ([CommentLikeID], [CommentID], [MusicianID], [CreatedTime]) VALUES (1, 1, 1, CAST(N'2022-06-20T17:29:13.507' AS DateTime))
+INSERT [dbo].[CommentLike] ([CommentLikeID], [CommentID], [MusicianID], [CreatedTime]) VALUES (2, 1, 2, CAST(N'2022-06-20T17:29:13.507' AS DateTime))
+INSERT [dbo].[CommentLike] ([CommentLikeID], [CommentID], [MusicianID], [CreatedTime]) VALUES (3, 1, 3, CAST(N'2022-06-20T17:29:13.507' AS DateTime))
 SET IDENTITY_INSERT [dbo].[CommentLike] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Connection] ON 
@@ -343,16 +358,23 @@ INSERT [dbo].[Connection] ([ConnectionID], [InitiatorID], [FollowerID], [Created
 INSERT [dbo].[Connection] ([ConnectionID], [InitiatorID], [FollowerID], [CreatedTime], [Connected]) VALUES (4, 1, 5, CAST(N'2022-06-09T00:00:00.000' AS DateTime), 1)
 SET IDENTITY_INSERT [dbo].[Connection] OFF
 GO
+SET IDENTITY_INSERT [dbo].[Conversation] ON 
+
+INSERT [dbo].[Conversation] ([ConversationID], [SenderID], [ReceiverID], [CreatedTime]) VALUES (1, 1, 2, CAST(N'2022-06-30T11:17:07.113' AS DateTime))
+INSERT [dbo].[Conversation] ([ConversationID], [SenderID], [ReceiverID], [CreatedTime]) VALUES (2, 1, 3, CAST(N'2022-06-30T11:26:48.660' AS DateTime))
+SET IDENTITY_INSERT [dbo].[Conversation] OFF
+GO
 SET IDENTITY_INSERT [dbo].[Message] ON 
 
-INSERT [dbo].[Message] ([MessageID], [CreatedTime], [SenderID], [RecipientID], [Subject], [Body]) VALUES (1, CAST(N'2022-04-20T00:00:00.000' AS DateTime), 1, 2, N'Happy bday', N'Happy bday Andrew')
-INSERT [dbo].[Message] ([MessageID], [CreatedTime], [SenderID], [RecipientID], [Subject], [Body]) VALUES (2, CAST(N'2022-04-21T00:00:00.000' AS DateTime), 3, 2, N'Invitation Request', N'Would like to join my music project: Sweet Taboo')
-INSERT [dbo].[Message] ([MessageID], [CreatedTime], [SenderID], [RecipientID], [Subject], [Body]) VALUES (3, CAST(N'2022-04-23T00:00:00.000' AS DateTime), 4, 1, N'Invitation Request', N'Would like to join my music project: Message In A Bottle')
+INSERT [dbo].[Message] ([MessageID], [ConversationID], [CreatedTime], [SenderID], [Text]) VALUES (1, 1, CAST(N'2022-06-30T12:43:39.323' AS DateTime), 1, N'Hi my name is nancy ')
+INSERT [dbo].[Message] ([MessageID], [ConversationID], [CreatedTime], [SenderID], [Text]) VALUES (2, 1, CAST(N'2022-06-30T12:44:25.860' AS DateTime), 1, N'May I know you ')
+INSERT [dbo].[Message] ([MessageID], [ConversationID], [CreatedTime], [SenderID], [Text]) VALUES (3, 1, CAST(N'2022-06-30T12:44:55.717' AS DateTime), 2, N'Hi nancy my name is steve ')
+INSERT [dbo].[Message] ([MessageID], [ConversationID], [CreatedTime], [SenderID], [Text]) VALUES (4, 1, CAST(N'2022-06-30T12:45:20.413' AS DateTime), 2, N'I stay in the States ')
 SET IDENTITY_INSERT [dbo].[Message] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Musician] ON 
 
-INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [StateCode], [ZipCode], [AccountID], [AvaterFilename]) VALUES (1, N'Davolio', N'Nancy', CAST(N'1968-12-08' AS Date), N'206-555-9857', N'dnacy@test.com', N'Drum', N'Female', N'507 - 20th Ave.', NULL, N'Seattle',  N'WA', N'98122', 1, NULL)
+INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [StateCode], [ZipCode], [AccountID], [AvaterFilename]) VALUES (1, N'Davolio', N'Nancy', CAST(N'1968-12-08' AS Date), N'206-555-9857', N'dnacy@test.com', N'Drum', N'Female', N'507 - 20th Ave.', NULL, N'Seattle', N'WA', N'98122', 1, NULL)
 INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [StateCode], [ZipCode], [AccountID], [AvaterFilename]) VALUES (2, N'Fuller', N'Andrew', CAST(N'1952-02-19' AS Date), N'206-555-9482', N'fandrew@test.com', N'Piano', N'Male', N'908 W. Capital Way', N'by Zip way', N'Tacoma', N'WA', N'98401', 2, NULL)
 INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [StateCode], [ZipCode], [AccountID], [AvaterFilename]) VALUES (3, N'Leverling', N'Janet', CAST(N'1963-08-30' AS Date), N'206-555-3412', N'ljanet@test.com', N'Bass Guitar', N'Female', N'722 Moss Bay Blvd.', NULL, N'Kirkland', N'WA', N'98033', 3, NULL)
 INSERT [dbo].[Musician] ([MusicianID], [Fname], [Lname], [DateOfBirth], [Phone], [Email], [Instrument], [Sex], [Address1], [Address2], [City], [StateCode], [ZipCode], [AccountID], [AvaterFilename]) VALUES (4, N'Peacock', N'Margaret', CAST(N'1958-09-19' AS Date), N'206-555-8122', N'pmargaret@test.com', N'Lead Guitar', N'Female', N'4110 Old Redmond Rd.', NULL, N'Redmond', N'WA', N'98052', 4, NULL)
@@ -371,7 +393,6 @@ SET IDENTITY_INSERT [dbo].[PostLike] ON
 INSERT [dbo].[PostLike] ([PostLikeID], [PostID], [MusicianID], [CreatedTime]) VALUES (1, 1, 1, CAST(N'2022-05-20T00:00:00.000' AS DateTime))
 INSERT [dbo].[PostLike] ([PostLikeID], [PostID], [MusicianID], [CreatedTime]) VALUES (2, 1, 2, CAST(N'2022-05-21T00:00:00.000' AS DateTime))
 INSERT [dbo].[PostLike] ([PostLikeID], [PostID], [MusicianID], [CreatedTime]) VALUES (3, 1, 3, CAST(N'2022-05-21T00:00:00.000' AS DateTime))
-
 SET IDENTITY_INSERT [dbo].[PostLike] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Project] ON 
@@ -448,17 +469,31 @@ INSERT [dbo].[States] ([StateCode], [StateName]) VALUES (N'WY', N'Wyoming')
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UK_Accounts_Username]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Index [UK_Accounts_Username]    Script Date: 7/2/2022 11:54:53 PM ******/
 ALTER TABLE [dbo].[Accounts] ADD  CONSTRAINT [UK_Accounts_Username] UNIQUE NONCLUSTERED 
 (
 	[Username] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UK_Connection_InitiatorID_FollowerID]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  Index [AK_CommentLike]    Script Date: 7/2/2022 11:54:53 PM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [AK_CommentLike] ON [dbo].[CommentLike]
+(
+	[CommentID] ASC,
+	[MusicianID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [UK_Connection_InitiatorID_FollowerID]    Script Date: 7/2/2022 11:54:53 PM ******/
 ALTER TABLE [dbo].[Connection] ADD  CONSTRAINT [UK_Connection_InitiatorID_FollowerID] UNIQUE NONCLUSTERED 
 (
 	[InitiatorID] ASC,
 	[FollowerID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [Uk_SenderID_ReceiverID]    Script Date: 7/2/2022 11:54:53 PM ******/
+ALTER TABLE [dbo].[Conversation] ADD  CONSTRAINT [Uk_SenderID_ReceiverID] UNIQUE NONCLUSTERED 
+(
+	[SenderID] ASC,
+	[ReceiverID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[Audio]  WITH CHECK ADD  CONSTRAINT [FK_Audio_Musician] FOREIGN KEY([OwnerID])
@@ -501,15 +536,25 @@ REFERENCES [dbo].[Musician] ([MusicianID])
 GO
 ALTER TABLE [dbo].[Connection] CHECK CONSTRAINT [FK_Connection_Musician_InitiatorID]
 GO
-ALTER TABLE [dbo].[Message]  WITH CHECK ADD  CONSTRAINT [FK_Message_Musician_RecipientID] FOREIGN KEY([RecipientID])
+ALTER TABLE [dbo].[Conversation]  WITH CHECK ADD  CONSTRAINT [FK_Conversation_Musician_ReceiverID] FOREIGN KEY([ReceiverID])
 REFERENCES [dbo].[Musician] ([MusicianID])
 GO
-ALTER TABLE [dbo].[Message] CHECK CONSTRAINT [FK_Message_Musician_RecipientID]
+ALTER TABLE [dbo].[Conversation] CHECK CONSTRAINT [FK_Conversation_Musician_ReceiverID]
 GO
-ALTER TABLE [dbo].[Message]  WITH CHECK ADD  CONSTRAINT [FK_Message_Musician_SenderID] FOREIGN KEY([SenderID])
+ALTER TABLE [dbo].[Conversation]  WITH CHECK ADD  CONSTRAINT [FK_Conversation_Musician_SenderID] FOREIGN KEY([SenderID])
 REFERENCES [dbo].[Musician] ([MusicianID])
 GO
-ALTER TABLE [dbo].[Message] CHECK CONSTRAINT [FK_Message_Musician_SenderID]
+ALTER TABLE [dbo].[Conversation] CHECK CONSTRAINT [FK_Conversation_Musician_SenderID]
+GO
+ALTER TABLE [dbo].[Message]  WITH CHECK ADD  CONSTRAINT [FK_Message_Conversation] FOREIGN KEY([ConversationID])
+REFERENCES [dbo].[Conversation] ([ConversationID])
+GO
+ALTER TABLE [dbo].[Message] CHECK CONSTRAINT [FK_Message_Conversation]
+GO
+ALTER TABLE [dbo].[Message]  WITH CHECK ADD  CONSTRAINT [FK_Message_Muscian_SenderID] FOREIGN KEY([SenderID])
+REFERENCES [dbo].[Musician] ([MusicianID])
+GO
+ALTER TABLE [dbo].[Message] CHECK CONSTRAINT [FK_Message_Muscian_SenderID]
 GO
 ALTER TABLE [dbo].[Musician]  WITH CHECK ADD  CONSTRAINT [FK_Musician_Accounts] FOREIGN KEY([AccountID])
 REFERENCES [dbo].[Accounts] ([AccountID])
@@ -561,7 +606,7 @@ REFERENCES [dbo].[Musician] ([MusicianID])
 GO
 ALTER TABLE [dbo].[Music] CHECK CONSTRAINT [FK_Music_Musician]
 GO
-/****** Object:  StoredProcedure [dbo].[createUser]    Script Date: 18/06/2022 6:40:34 PM ******/
+/****** Object:  StoredProcedure [dbo].[createUser]    Script Date: 7/2/2022 11:54:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
