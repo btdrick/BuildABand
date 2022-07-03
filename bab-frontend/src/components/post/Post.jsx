@@ -2,6 +2,7 @@ import { React, useState, useEffect, useCallback } from 'react';
 import { variables } from '../../Variables.js';
 import Comments from '../comments/Comments';
 import UserProfile from '../UserProfile';
+import AudioPlayer from '../audio/AudioPlayer.jsx';
 import './post.css';
 
 /* This is a child component to serveral other components, i.e. child component in Profile component */
@@ -130,6 +131,7 @@ const Post = (props) => {
                     <p className="card-text"> { props.Content } </p>
                     <cite title="Created Time">{ createdTime }</cite>
                 </div>
+                <AudioPlayer FileName={props.FileName} AzureFileName={props.AzureFileName} />
                 {/* Like post section */}
                 {canLike ? (
                         <button       

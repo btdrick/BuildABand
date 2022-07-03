@@ -1,13 +1,26 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ReactPlayer from "react-player";
-import track1 from '../../audioFiles/track1.wav'
+import { variables } from '../../Variables';
+import { useState } from 'react';
  
-function AudioPlayer() {
+function AudioPlayer(props) {
+  const [file, setFile] = useState({});
+
+  useEffect(() => { 
+    getAudioFile();
+  },[])
+
+  const getAudioFile = async () => {
+    const response = await fetch(variables.API_URL+'audio/blob?azureFileName='+ props.AzureFileName);
+    const data = await response;
+    setFile(data.url);
+  }
+
   return (
     <div>
-      <h3>Song Title</h3>
+      <h3>Track name: {props.FileName}</h3>
       <ReactPlayer
-        url={track1}
+        url={file}
         width="400px"
         height="50px"
         playing={false}

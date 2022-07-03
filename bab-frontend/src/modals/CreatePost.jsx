@@ -16,7 +16,6 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
 
     /* Only submits post after audio file is uploaded */
     useEffect(() => { 
-        console.log("audio id"+audioID+typeof(audioID))
         if(audioID !== 0){
             handleSubmit(content, audioID);
             setModalTitle("");
