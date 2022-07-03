@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { variables } from './Variables.js';
-import Feed from './components/feed/Feed.js';
+import Feed from './components/feed/Feed.jsx';
 import Navbar from './components/header/Navbar';
 import './style/home.css';
 

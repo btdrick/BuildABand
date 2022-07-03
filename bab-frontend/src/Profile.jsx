@@ -1,7 +1,7 @@
 import { React, useCallback } from 'react';
 import {variables} from './Variables.js';
 import { useParams } from "react-router-dom";
-import Feed from './components/feed/Feed.js';
+import Feed from './components/feed/Feed.jsx';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
 import UserProfile from './components/UserProfile.js';
