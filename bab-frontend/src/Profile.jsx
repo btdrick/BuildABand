@@ -15,7 +15,7 @@ function Profile() {
     const getUsersPosts = useCallback(async () => {
         const response = await fetch(variables.API_URL+'post/'+ id);
         const data = await response.json();
-        return data;
+        return data.reverse();
     }, [id]);
 
     /* Renders the profile page's html. You can't pass entire object to child component */
