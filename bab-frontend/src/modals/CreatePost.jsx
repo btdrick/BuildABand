@@ -20,7 +20,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
             handleSubmit(content, audioID);
             setModalTitle("");
             setContent("");
-            setFileInfo(null);
+            setFileInfo({});
         }
         setAudioID(0);
     }, [audioID])
@@ -39,7 +39,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
         setModalTitle("Create Post");
         setPostID(0);
         setContent("");
-        setFileInfo(null);
+        setFileInfo({});
     };
 
     const onClick = (event) => {
