@@ -12,6 +12,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
     const [audioID, setAudioID] = useState(0);
     const [postID, setPostID] = useState(0);
     const [fileInfo, setFileInfo] = useState({});
+    const [resetFile, setResetFile] = useState('')
     const file = useRef();
 
     /* Only submits post after audio file is uploaded */
@@ -21,6 +22,8 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
             setModalTitle("");
             setContent("");
             setFileInfo({});
+            var randomString = Math.random().toString(36)
+            setResetFile(randomString);
         }
         setAudioID(0);
     }, [audioID])
@@ -40,6 +43,8 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
         setPostID(0);
         setContent("");
         setFileInfo({});
+        var randomString = Math.random().toString(36)
+        setResetFile(randomString);
     };
 
     const onClick = (event) => {
@@ -110,6 +115,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
                                     type="file" 
                                     accept='.wav, .mp3' 
                                     ref={file}
+                                    key={resetFile || ''}
                                     onChange={ changeFile } />
                             </Form.Group>
                         </InputGroup>
