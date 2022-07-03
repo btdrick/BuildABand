@@ -15,6 +15,7 @@ const Post = (props) => {
     const [likesCount, setLikesCount] = useState(0);
     /* Author of post */
     const[authorInfo, setAuthorInfo] = useState([]);
+    const hasAudio = props.FileName;
 
     /* Makes api call to backend to get all post likes */
     const getLikes = useCallback(async () => {
@@ -131,7 +132,11 @@ const Post = (props) => {
                     <p className="card-text"> { props.Content } </p>
                     <cite title="Created Time">{ createdTime }</cite>
                 </div>
+                {hasAudio ? 
                 <AudioPlayer FileName={props.FileName} AzureFileName={props.AzureFileName} />
+                :
+                <></>
+                }
                 {/* Like post section */}
                 {canLike ? (
                         <button       

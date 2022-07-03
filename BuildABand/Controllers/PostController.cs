@@ -60,7 +60,8 @@ namespace BuildABand.Controllers
             string selectStatement = 
             @"SELECT *
             FROM dbo.Post 
-            WHERE musicianID = @id";
+            LEFT JOIN dbo.Music ON dbo.Post.AudioID = dbo.Music.ID
+            WHERE dbo.Post.musicianID = @id";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
