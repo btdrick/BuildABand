@@ -16,7 +16,6 @@ const Post = (props) => {
     /* Author of post */
     const[authorInfo, setAuthorInfo] = useState([]);
     const hasAudio = (props.FileName !== "" && props.FileName !== "undefined") ? true : false;
-    console.log(typeof(props.FileName))
     /* Makes api call to backend to get all post likes */
     const getLikes = useCallback(async () => {
         const response = await fetch(variables.API_URL+'post/'+props.PostID+'/like');
