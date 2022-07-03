@@ -384,8 +384,8 @@ SET IDENTITY_INSERT [dbo].[Musician] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Post] ON 
 
-INSERT [dbo].[Post] ([PostID], [CreatedTime], [MusicianID], [Content]) VALUES (1, CAST(N'2022-05-20T00:00:00.000' AS DateTime), 1, N'Welcome everyone to Build-a-band')
-INSERT [dbo].[Post] ([PostID], [CreatedTime], [MusicianID], [Content]) VALUES (2, CAST(N'2022-05-21T00:00:00.000' AS DateTime), 2, N'I think FAR OUT album by police  is a need to listen to')
+INSERT [dbo].[Post] ([PostID], [CreatedTime], [MusicianID], [Content], [AudioID]) VALUES (1, CAST(N'2022-05-20T00:00:00.000' AS DateTime), 1, N'Welcome everyone to Build-a-band', null)
+INSERT [dbo].[Post] ([PostID], [CreatedTime], [MusicianID], [Content], [AudioID]) VALUES (2, CAST(N'2022-05-21T00:00:00.000' AS DateTime), 2, N'I think FAR OUT album by police  is a need to listen to', null)
 SET IDENTITY_INSERT [dbo].[Post] OFF
 GO
 SET IDENTITY_INSERT [dbo].[PostLike] ON 
@@ -474,13 +474,6 @@ ALTER TABLE [dbo].[Accounts] ADD  CONSTRAINT [UK_Accounts_Username] UNIQUE NONCL
 (
 	[Username] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-/****** Object:  Index [AK_CommentLike]    Script Date: 7/2/2022 11:54:53 PM ******/
-CREATE UNIQUE NONCLUSTERED INDEX [AK_CommentLike] ON [dbo].[CommentLike]
-(
-	[CommentID] ASC,
-	[MusicianID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
 /****** Object:  Index [UK_Connection_InitiatorID_FollowerID]    Script Date: 7/2/2022 11:54:53 PM ******/
 ALTER TABLE [dbo].[Connection] ADD  CONSTRAINT [UK_Connection_InitiatorID_FollowerID] UNIQUE NONCLUSTERED 
