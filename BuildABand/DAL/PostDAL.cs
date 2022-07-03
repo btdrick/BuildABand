@@ -70,8 +70,7 @@ namespace BuildABand.DAL
             string selectStatement = @"
             SELECT *
             FROM dbo.PostLike 
-            WHERE PostID = @PostID
-            ";
+            WHERE PostID = @PostID ";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");

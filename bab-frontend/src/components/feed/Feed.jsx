@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { variables } from '../../Variables.js';
-import Post from '../post/Post.js';
+import Post from '../post/Post.jsx';
 import CreatePost from '../../modals/CreatePost';
 import UserProfile from '../UserProfile.js';
 import FeedFilterSwitch from './FeedFilterSwitch';
@@ -113,7 +113,9 @@ const Feed = ({ getPosts, canCreatePost, canFilterPosts }) => {
                             CreatedTime={ post.CreatedTime }
                             Content={ post.Content }
                             MusicianID={ post.MusicianID }
-                            deletePost={ deletePost } />
+                            deletePost={ deletePost }
+                            AzureFileName={post.azure_file_name}
+                            FileName={post.file_name} />
                         </li>
                     )}
                 </ul>
