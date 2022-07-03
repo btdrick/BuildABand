@@ -125,7 +125,7 @@ class NewMusician extends Component {
         const re = /^\S*$/;
         if(input["username"].length < 6 || !re.test(input["username"])){
             isValid = false;
-            errors["username"] = "Username already exists.";
+            errors["username"] = "Please enter a valid username with 7 or more characters.";
         }
       }
 
