@@ -34,14 +34,18 @@ namespace BuildABand.DAL
         public List<MusicianConnection> GetMusicianConnectionsByID(int MusicianID)
         {
             List<MusicianConnection> musicianConnections = new List<MusicianConnection>();
-            string selectStatement = "SELECT ConnectionID, InitiatorID, " +
-                "CONCAT(A.Fname,' ',A.Lname) as InitiatorNames, " +
-                "FollowerID, CONCAT(B.Fname, ' ', B.Lname) as FollowerNames, " +
-                "CreatedTime, Connected " +
-                "FROM Connection C " +
-                "JOIN Musician A on C.InitiatorID = A.AccountID " +
-                "JOIN Musician B on C.FollowerID = B.AccountID " +
-                "WHERE (C.InitiatorID = @MusicianID OR C.FollowerID = @MusicianID)";
+            string selectStatement = @"
+            SELECT ConnectionID, InitiatorID,
+            CONCAT(A.Fname,' ',A.Lname) as InitiatorNames,
+            FollowerID, CONCAT(B.Fname, ' ', B.Lname) as FollowerNames,
+            CreatedTime, Connected
+            FROM Connection C
+            JOIN Musician A on C.InitiatorID = A.AccountID
+            JOIN Musician B on C.FollowerID = B.AccountID
+            WHERE (C.InitiatorID = @MusicianID OR C.FollowerID = @MusicianID)
+            AND C.Connected = 1
+            ";
+
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
