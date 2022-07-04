@@ -125,7 +125,7 @@ class NewMusician extends Component {
         const re = /^\S*$/;
         if(input["username"].length < 6 || !re.test(input["username"])){
             isValid = false;
-            errors["username"] = "Please enter valid username.";
+            errors["username"] = "Please enter a valid username with 7 or more characters.";
         }
       }
 
@@ -259,7 +259,7 @@ class NewMusician extends Component {
                         value={this.state.input.username}
                         onChange={this.handleChange}
                         className="form-control"
-                        placeholder="Enter Username"
+                        placeholder="*Enter Username"
                         id="username" />
                       <div className="text-danger">{this.state.errors.username}</div>
                     </div>
@@ -271,7 +271,7 @@ class NewMusician extends Component {
                         value={this.state.input.fname}
                         onChange={this.handleChange}
                         className="form-control"
-                        placeholder="Enter First Name"
+                        placeholder="*Enter First Name"
                         id="fname" />
 
                       <div className="text-danger">{this.state.errors.fname}</div>
@@ -283,7 +283,7 @@ class NewMusician extends Component {
                         value={this.state.input.lname}
                         onChange={this.handleChange}
                         className="form-control"
-                        placeholder="Enter Last Name"
+                        placeholder="*Enter Last Name"
                         id="lname" />
                       <div className="text-danger">{this.state.errors.lname}</div>
                     </div>
@@ -294,7 +294,7 @@ class NewMusician extends Component {
                         value={this.state.input.email}
                         onChange={this.handleChange}
                         className="form-control"
-                        placeholder="Enter email"
+                        placeholder="*Enter email"
                         id="email" />
 
                       <div className="text-danger">{this.state.errors.email}</div>
@@ -306,7 +306,7 @@ class NewMusician extends Component {
                         value={this.state.input.password}
                         onChange={this.handleChange}
                         className="form-control"
-                        placeholder="Enter password"
+                        placeholder="*Enter password"
                         id="password" />
 
                       <div className="text-danger">{this.state.errors.password}</div>
@@ -319,7 +319,7 @@ class NewMusician extends Component {
                         value={this.state.input.confirm_password}
                         onChange={this.handleChange}
                         className="form-control"
-                        placeholder="Enter confirm password"
+                        placeholder="*Enter confirm password"
                         id="confirm_password" />
 
                       <div className="text-danger">{this.state.errors.confirm_password}</div>
@@ -331,7 +331,7 @@ class NewMusician extends Component {
                         value={this.state.input.dateOfBirth}
                         onChange={this.handleChange}
                         className="form-control"
-                        placeholder="Enter Date of Birth"
+                        placeholder="*Enter Date of Birth"
                         onFocus={(e)=> e.target.type='date'}
                         onBlur={(e)=>e.target.type='text'}
                         id="dateOfBirth" />
@@ -345,7 +345,7 @@ class NewMusician extends Component {
                         value={this.state.input.phone}
                         onChange={this.handleChange}
                         className="form-control"
-                        placeholder="Enter phone number"
+                        placeholder="*Enter phone number"
                         id="phone" />
 
                       <div className="text-danger">{this.state.errors.phone}</div>
@@ -355,7 +355,7 @@ class NewMusician extends Component {
                       value={this.state.input.sex}
                       onChange={this.handleChange}
                       className="form-select">
-                      <option value=""> -- Select a Sex -- </option>
+                      <option value=""> -- *Select a Sex -- </option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
                      </select>
@@ -370,7 +370,7 @@ class NewMusician extends Component {
                         value={this.state.input.address1}
                         onChange={this.handleChange}
                         className="form-control"
-                        placeholder="Enter address1"
+                        placeholder="*Enter address1"
                         id="address1" />
 
                       <div className="text-danger">{this.state.errors.address1}</div>
@@ -396,7 +396,7 @@ class NewMusician extends Component {
                         value={this.state.input.city}
                         onChange={this.handleChange}
                         className="form-control"
-                        placeholder="Enter city"
+                        placeholder="*Enter city"
                         id="city" />
 
                       <div className="text-danger">{this.state.errors.city}</div>
@@ -407,7 +407,7 @@ class NewMusician extends Component {
                       value={this.state.input.zipCode}
                       onChange={this.handleChange} 
                       className="form-control" 
-                      placeholder="Enter zipCode" id="zipCod"/>
+                      placeholder="*Enter zipCode" id="zipCod"/>
 
                       <div className="text-danger">{this.state.errors.zipCode}</div>
                     </div>
@@ -416,7 +416,7 @@ class NewMusician extends Component {
                       value={this.state.input.stateCode} 
                       onChange={this.handleChange} 
                       className="form-select">
-                        <option value=""> -- Select a State -- </option>
+                        <option value=""> -- *Select a State -- </option>
                         {this.getStates()}
                       </select>
                     

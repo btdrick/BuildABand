@@ -10,6 +10,7 @@ import './style/home.css';
 function Profile() {
     /* Profile's owner */
     const { id } = useParams();
+    const isMyProfile = (id === UserProfile.getMusicianID().toString()) ? true : false;
 
     /* Makes api call to backend to get the user's posts */
     const getUsersPosts = useCallback(async () => {
@@ -24,7 +25,9 @@ function Profile() {
             <Navbar/>
             <h3 className="title"> This is the Profile page </h3> 
             <div className="container-lg">
-                <AddConnection followerID={ id } />
+                {!isMyProfile &&
+                    <AddConnection followerID={ id } />
+                }
                 <Feed getPosts={ getUsersPosts } 
                 canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
             </div>
