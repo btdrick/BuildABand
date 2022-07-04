@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
+import UserProfile from '../UserProfile';
 
 const FeedFilterSwitch = ({ getConnections, getBackendPosts, setBackendPosts }) => {
     /* All of the users connections */
@@ -26,10 +27,13 @@ const FeedFilterSwitch = ({ getConnections, getBackendPosts, setBackendPosts }) 
                 connectionIDs.push(connection.FollowerID);
             }
         });
+        if(!connectionIDs.includes(UserProfile.getMusicianID())) {
+            connectionIDs.push(UserProfile.getMusicianID());
+        }
 
         /* Set posts to posts made by friends */
         getBackendPosts().then((data) => {
-            var friendsPosts = data.filter(post => post.MusicianID in connectionIDs);
+            var friendsPosts = data.filter(post => connectionIDs.includes(post.MusicianID));
             setBackendPosts(friendsPosts);
         });
     }
