@@ -12,7 +12,7 @@ const containerVariants = {
     expanded: {
       width: "400px",
       height: "20em",
-      marginTop: "19%",
+      y: "9em",
     },
     collapsed: {
       height: "40px",
