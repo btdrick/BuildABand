@@ -44,6 +44,7 @@ export class Navbar extends React.Component {
         });
     }
 
+    /* Clears the session for logout */
     logout() {
         if (window.confirm("Are you sure you want to logout?")) {
         UserProfile.clearSession();
@@ -96,6 +97,7 @@ export class Navbar extends React.Component {
 
                                 <Dropdown.Menu className="dropdown-menu">
                                     <Card body>
+                                        {UserProfile.getIsAdmin() && <p className="text-center" style={{color:"purple"}}>(Admin)</p>}
                                         <img id="avatar" src={require('../comments/user-icon.png')} alt={'User icon'}
                                         style={{float: 'left', marginRight: 1 + 'em'}}/>
                                         <Card.Title>
