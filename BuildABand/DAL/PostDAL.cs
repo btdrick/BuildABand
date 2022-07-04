@@ -24,10 +24,11 @@ namespace BuildABand.DAL
         /// <returns>Table of posts</returns>
         public JsonResult GetAllPosts()
         {
-            string selectStatement =
-            @"SELECT *
+            string selectStatement = @"
+            SELECT *
             FROM dbo.Post
-            LEFT JOIN dbo.Music ON dbo.Post.AudioID = dbo.Music.ID";
+            LEFT JOIN dbo.Music ON dbo.Post.AudioID = dbo.Music.ID
+            ";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
