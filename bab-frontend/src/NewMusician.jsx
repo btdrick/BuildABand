@@ -230,8 +230,8 @@ class NewMusician extends Component {
     }
     return (
       <div id="login-background">
-        <div style={{backgroundColor: '#3a3a3f'}}>
-          <img id="logo" src={require('./style/images/Build-A-Band.png')} alt={'Build a band logo'}/>
+        <div className="bg-dark">
+          <img id="logo-home" src={require('./style/images/bab.png')} alt={'Build a band logo'}/>
         </div>
 
         <div className='login-page'>
