@@ -215,7 +215,7 @@ CREATE TABLE [dbo].[Musician](
 	[DateOfBirth] [date] NOT NULL,
 	[Phone] [varchar](12) NOT NULL,
 	[Email] [varchar](200) NOT NULL,
-	[Instrument] [varchar](500) NOT NULL,
+	[Instrument] [varchar](500) NULL,
 	[Sex] [varchar](10) NOT NULL,
 	[Address1] [varchar](50) NOT NULL,
 	[Address2] [varchar](50) NULL,
@@ -626,6 +626,9 @@ Create Procedure [dbo].[createUser]
 AS
 
 BEGIN
+SET NOCOUNT ON
+BEGIN TRAN
+BEGIN TRY
 INSERT INTO Accounts
 VALUES(@Username, @Password, 1, 0)
 
@@ -634,6 +637,11 @@ INSERT INTO Musician
 VALUES(@Fname, @Lname, @DateOfBirth, @Phone, @Email, @Instrument, @Sex,
        @Address1, @Address2, @City, @StateCode, @Zipcode,  @@IDENTITY, 
        @AvaterFilename)
+COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+ROLLBACK TRANSACTION
+END CATCH
 END
 GO
 USE [master]
