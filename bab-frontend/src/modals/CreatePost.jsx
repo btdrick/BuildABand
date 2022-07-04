@@ -16,14 +16,14 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
 
     /* Only submits post after audio file is uploaded */
     useEffect(() => { 
-        if(audioID !== 0){
+        if(audioID !== 0) {
             handleSubmit(content, audioID);
             setModalTitle("");
             setContent("");
             setFileInfo(null);
         }
         setAudioID(0);
-    }, [audioID])
+    }, [content, audioID, handleSubmit])
 
     /* Handles event of text entry for Post content */
     const changePostContent =(e)=>{
@@ -91,30 +91,27 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
                             aria-label="Close"/>
                         </div> 
                         <div className="modal-body">
-                        {/* Modal input */}
-                        <InputGroup className="mb-3">
-                            <InputGroup.Text 
-                            id="inputPostContent">
-                            Content</InputGroup.Text>
-                            <Form.Control 
-                            type="text"
-                            aria-describedby="inputPostContent"
-                            aria-label="Enter post content..."
-                            placeholder="Enter post content..."
-                            value={ content } 
-                            onChange={ changePostContent }/>
-                            
+                            {/* Modal input */}
+                            <InputGroup className="mb-3">
+                                <InputGroup.Text 
+                                id="inputPostContent">
+                                Content</InputGroup.Text>
+                                <Form.Control 
+                                type="text"
+                                aria-describedby="inputPostContent"
+                                aria-label="Enter post content..."
+                                placeholder="Enter post content..."
+                                value={ content } 
+                                onChange={ changePostContent }/>
+                            </InputGroup>
                             <Form.Group controlId="formFile" className="mb-3">
-                                <Form.Label>Opt. Add a Music Sample (.wav or .mp3)</Form.Label>
+                                <Form.Label>(Optional) Add a Music Sample (.wav or .mp3)</Form.Label>
                                 <Form.Control 
                                     type="file" 
                                     accept='.wav, .mp3' 
                                     ref={file}
                                     onChange={ changeFile } />
-                            </Form.Group>
-                        </InputGroup>
-
-                                       
+                            </Form.Group>                                  
                             {postID===0?
                             <Button type="button"
                             className="btn btn-primary float-start"
