@@ -9,7 +9,8 @@ const FeedFilterSwitch = ({ getConnections, getBackendPosts, setBackendPosts }) 
     /* Once the page renders, this hook takes place */
     useEffect(() => {
         getConnections().then((data) => {
-            setConnections(data);
+            var acceptedConnections = data.filter(connection => connection.Connected);
+            setConnections(acceptedConnections);
         });
     }, [getConnections]);
 
