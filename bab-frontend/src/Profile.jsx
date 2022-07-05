@@ -26,7 +26,7 @@ function Profile() {
             <h3 className="title"> This is the Profile page </h3> 
             <div className="container-lg">
                 {!isMyProfile &&
-                    <AddConnection followerID={ id } />
+                    <AddConnection followerID={id} />
                 }
                 <Feed getPosts={ getUsersPosts } 
                 canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
