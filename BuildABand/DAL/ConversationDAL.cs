@@ -90,14 +90,14 @@ namespace BuildABand.DAL
 
         public void AddConversation(int SenderID, int ReceiverID)
         {
-            string insertStatement = "INSERT INTO Conversation " +
-               "VALUES (@SenderID, @ReceiverID, @CreatedTime)";
+           
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
-                using (SqlCommand insertCommand = new SqlCommand(insertStatement, connection))
+                using (SqlCommand insertCommand = new SqlCommand("dbo.addConversation", connection))
                 {
 
+                    insertCommand.CommandType = System.Data.CommandType.StoredProcedure;
                     insertCommand.Parameters.AddWithValue("@SenderID", SenderID);
                     insertCommand.Parameters.AddWithValue("@ReceiverID", ReceiverID);
                     insertCommand.Parameters.AddWithValue("@CreatedTime", DateTime.Now);

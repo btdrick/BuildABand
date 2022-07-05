@@ -55,8 +55,9 @@ export default function Messenger(){
     useEffect( ()=> {
        const getConnections = async ()=> {
           const res = await fetch(variables.API_URL + "musicianconnections/" + MusicianID)
-          const data = await res.json();     
-          setConnections(data);
+          const data = await res.json();
+          const connectedConn = data.filter(conn => conn.Connected);    
+          setConnections(connectedConn);
        };
        getConnections();
     },[MusicianID]);
@@ -140,8 +141,9 @@ export default function Messenger(){
                 </div>
             </div>
             <div className="chatBox">
-            <h3> Chat</h3>
+           
                <div className="chatBoxWrapper">
+               <h3 className="chatCaption"> Chat</h3>
                <h3>{ currentNames.Fname === undefined ? " " : currentNames.Fname + " " + currentNames.Lname}</h3>
                 {
                     currentChat?
