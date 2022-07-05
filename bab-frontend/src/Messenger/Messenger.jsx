@@ -55,8 +55,9 @@ export default function Messenger(){
     useEffect( ()=> {
        const getConnections = async ()=> {
           const res = await fetch(variables.API_URL + "musicianconnections/" + MusicianID)
-          const data = await res.json();     
-          setConnections(data);
+          const data = await res.json();
+          const connectedConn = data.filter(conn => conn.Connected);    
+          setConnections(connectedConn);
        };
        getConnections();
     },[MusicianID]);
