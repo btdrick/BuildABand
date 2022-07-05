@@ -12,6 +12,15 @@ Iteration Summaries: https://docs.google.com/document/d/1uinaRB7ojzzWrdGHrQ6hytv
 
 Test Report: https://docs.google.com/document/d/1_JhbqE1M40MQ-doQ0FhwSQXt94kRsavAbOioFLbjU8A/edit?usp=sharing
 ***
+***
+Admin login
+username: dnancy
+pass: test1234
+
+Regular user login
+username: ljanet
+pass:test1234
+***
 Iteration 1 Goal:
 The app will implement user stories pertaining to making posts, 
 expanding the user’s network, and messaging connected peers. 
