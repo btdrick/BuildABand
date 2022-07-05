@@ -72,7 +72,7 @@ class Connections extends Component {
         return (
             <div>
                 <Navbar />
-                <div>
+                <div className="mt-5 pt-5" >
                     <h2>Connection Status</h2>
                     <table style={{ width: "20%" }}>
                         <thead>
