@@ -140,8 +140,9 @@ export default function Messenger(){
                 </div>
             </div>
             <div className="chatBox">
-            <h3> Chat</h3>
+           
                <div className="chatBoxWrapper">
+               <h3 className="chatCaption"> Chat</h3>
                <h3>{ currentNames.Fname === undefined ? " " : currentNames.Fname + " " + currentNames.Lname}</h3>
                 {
                     currentChat?

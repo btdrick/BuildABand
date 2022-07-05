@@ -1,6 +1,8 @@
 .messenger {
     height: calc(100vh - 70px);
     display: flex;
+    margin-top: 100px;
+    padding-top: 10px;
 }
 
 .chatMenu{
@@ -19,6 +21,10 @@
     padding: 10px;
     height: 100%;
     
+}
+
+.chatCaption{
+    color:black;
 }
 
 
