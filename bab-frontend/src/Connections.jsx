@@ -23,8 +23,6 @@ function Connections() {
             setPendingConnections(pendingConnectionData);
             setConnectedConnection(data);
         });
-        console.log("Pending", pendingConnections);
-        console.log("Connected", connectedConnections);
     }, [getConnections]);
 
     //Accepts the connection
