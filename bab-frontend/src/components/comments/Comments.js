@@ -75,7 +75,7 @@ const Comments = ({ currentUserID, currentPostID }) => {
             })
         })
         .then(res=>res.json())
-        .then(()=>{ 
+        .then((result)=>{ 
             /* Refresh backendComments */
             getComments().then((data) => {
                 setBackendComments(data);
@@ -99,7 +99,7 @@ const Comments = ({ currentUserID, currentPostID }) => {
             })
         })
         .then(res=>res.json())
-        .then(()=>{ 
+        .then((result)=>{ 
             /* Refresh backendComments */
             getComments().then((data) => {
                 setBackendComments(data);
@@ -124,7 +124,7 @@ const Comments = ({ currentUserID, currentPostID }) => {
                 })
             })
             .then(res=>res.json())
-            .then(()=>{ 
+            .then((result)=>{ 
                 /* Update backendComments */
                 const updatedBackendComments = backendComments.filter(
                     (backendComment) => backendComment.CommentID !== comment.CommentID
