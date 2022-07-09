@@ -1,9 +1,9 @@
 import {React, useState, useRef, useEffect} from 'react';
+import { variables } from '../Variables';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import UserProfile from '../components/UserProfile';
-import { variables } from '../Variables';
 
 const CreatePost= ({ canCreatePost, handleSubmit }) => {
     /* Create post modal attributes */
@@ -33,6 +33,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
         setContent(e.target.value)
     };
 
+    /* Handles change for selected file */
     const changeFile = (e) => {
         setFileInfo(e.target.files[0]);
     }
@@ -47,6 +48,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
         setResetFile(randomString);
     };
 
+    /* Validates and submits post */
     const onClick = (event) => {
         event.preventDefault();
         if(content !== "") {
@@ -56,6 +58,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
         }
     }
 
+    /* Posts audio file */
     const submitFileInfo = async () => {
         const response = await fetch(variables.API_URL+'audio?filename=' + fileInfo.name + '&musicianID=' + UserProfile.getMusicianID(),{
             method:'POST',
