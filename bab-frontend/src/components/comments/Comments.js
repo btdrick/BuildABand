@@ -75,12 +75,11 @@ const Comments = ({ currentUserID, currentPostID }) => {
             })
         })
         .then(res=>res.json())
-        .then((result)=>{ 
+        .then(()=>{ 
             /* Refresh backendComments */
             getComments().then((data) => {
                 setBackendComments(data);
-            })
-            alert(result);       
+            })      
         },(_error)=>{
             alert('An error has occurred with submitting your comment');
         });
@@ -100,13 +99,12 @@ const Comments = ({ currentUserID, currentPostID }) => {
             })
         })
         .then(res=>res.json())
-        .then((result)=>{ 
+        .then(()=>{ 
             /* Refresh backendComments */
             getComments().then((data) => {
                 setBackendComments(data);
             });
-            setActiveComment(null); 
-            alert(result);                  
+            setActiveComment(null);                   
         },(_error)=>{
             alert('An error has occurred with updating your comment');
         });
