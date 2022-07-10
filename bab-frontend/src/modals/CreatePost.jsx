@@ -122,6 +122,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
                             <Button type="button"
                             className="btn btn-primary float-start"
                             onClick={ onClick }
+                            data-bs-dismiss="modal" 
                             >Create</Button>
                             :null}
                         </div>
