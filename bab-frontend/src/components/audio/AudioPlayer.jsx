@@ -8,7 +8,7 @@ function AudioPlayer(props) {
 
   useEffect(() => { 
     getAudioFile();
-  },[])
+  },[props.FileName])
 
   const getAudioFile = async () => {
     const response = await fetch(variables.API_URL+'audio/blob?azureFileName='+ props.AzureFileName);
