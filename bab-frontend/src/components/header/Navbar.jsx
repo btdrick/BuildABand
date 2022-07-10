@@ -22,13 +22,13 @@ export class Navbar extends React.Component {
     }
 
     componentDidMount(){
-        this.getMusicians();
+        this.getActiveMusicians();
         this.getCurrentMusicianInfo();
     }
 
     /* Makes api call to backend to get all Musicians */
-    async getMusicians() {
-        const response = await fetch(variables.API_URL+'musician');
+    async getActiveMusicians() {
+        const response = await fetch(variables.API_URL+'musician/active');
         const data = await response.json();
         this.setState({
             musicians: data
