@@ -8,8 +8,17 @@ using System.Threading.Tasks;
 
 namespace BuildABand.Models
 {
+    /// <summary>
+    /// Model class to encrypt and decrypt Plan text using AES
+    /// </summary>
     public class Crypto
     {
+        /// <summary>
+        /// Encrypt plantext and return a aes cypher Text
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="plainText"></param>
+        /// <returns> cyphertest</returns>
         public static string Encrypt (string key, string plainText)
         {
             byte[] iv = new byte[16];
@@ -39,6 +48,12 @@ namespace BuildABand.Models
             return Convert.ToBase64String(array);
         }
 
+        /// <summary>
+        /// Decrypt aes cypher Text and return plan text
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="cipherText"></param>
+        /// <returns> Plan text</returns>
         public static string Decrypt (string key, string cipherText)
         {
             byte[] iv = new byte[16];
