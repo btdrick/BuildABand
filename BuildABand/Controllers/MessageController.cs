@@ -40,6 +40,7 @@ namespace BuildABand.Controllers
 
             try
             {
+               
                 return new JsonResult(
                     this.messageSource.GetMessageByConversationID(ConversationID));
             }
@@ -61,9 +62,8 @@ namespace BuildABand.Controllers
             try
             {
                 String planText = message.Text;
-               var messagekey = _configuration["Messagekey"];
-                
-                string cypherText = Crypto.Encrypt(messagekey, planText); 
+              
+                string cypherText = Crypto.Encrypt(_configuration["Messagekey"], planText); 
                 message.Text = cypherText;
                 this.messageSource.AddMessage(message);
             
