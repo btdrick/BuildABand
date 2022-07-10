@@ -51,8 +51,10 @@ function Profile() {
         <div id="container">
             <Navbar/>
             <h3 className="title"> Profile: {profileInfo.Fname + " " + profileInfo.Lname} </h3>
-            {profileInfo.Instrument &&
-            <h4 className="text-center text-muted">Instrument: {profileInfo.Instrument} </h4>}
+            {profileInfo.Instrument ? (
+            <h4 className="text-center text-muted">Instrument: {profileInfo.Instrument} </h4>
+            ) : (
+            <h4 className="text-center text-muted">No instrument chosen{profileInfo.Instrument} </h4>)}
             <div className="container-lg">
                 {!isMyProfile &&
                     <AddConnection connection={ connection } />
