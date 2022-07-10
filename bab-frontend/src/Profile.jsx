@@ -1,4 +1,4 @@
-import { React, useState, useCallback, useEffect } from 'react';
+import { React, useCallback } from 'react';
 import {variables} from './Variables.js';
 import { useParams } from "react-router-dom";
 import Feed from './components/feed/Feed.jsx';
@@ -31,6 +31,7 @@ function Profile() {
             const data = await response.json();
             return data;
         }
+        //Is there a connection between user and this musician
         getConnections().then((data) => {
             const connection = data.find((conn) => (parseInt(id) === conn.FollowerID && UserProfile.getMusicianID() === conn.InitiatorID) 
             || (parseInt(id) === conn.InitiatorID && UserProfile.getMusicianID() === conn.FollowerID));
@@ -49,13 +50,10 @@ function Profile() {
     return ( 
         <div id="container">
             <Navbar/>
-            <h3 className="title"> Profile: {profileInfo.Fname + " " + profileInfo.Lname} </h3> 
-            <h4 className="mg-3 text-center"> Instrument: {profileInfo.Instrument} </h4>
+            <h3 className="title"> This is the Profile page </h3> 
             <div className="container-lg">
                 {!isMyProfile &&
-                    <AddConnection 
-                    followerID={ parseInt(id) }
-                    connection={ connection } />
+                    <AddConnection followerID={id} />
                 }
                 <Feed getPosts={ getUsersPosts } 
                 canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
