@@ -1,4 +1,4 @@
-import { React, useCallback } from 'react';
+import { React, useCallback, useState, useEffect } from 'react';
 import {variables} from './Variables.js';
 import { useParams } from "react-router-dom";
 import Feed from './components/feed/Feed.jsx';
@@ -50,10 +50,11 @@ function Profile() {
     return ( 
         <div id="container">
             <Navbar/>
-            <h3 className="title"> This is the Profile page </h3> 
+            <h3 className="title"> Profile: {profileInfo.Fname + " " + profileInfo.Lname} </h3>
+            <h4 className="text-center text-muted">Instrument: {profileInfo.Instrument} </h4>
             <div className="container-lg">
                 {!isMyProfile &&
-                    <AddConnection followerID={id} />
+                    <AddConnection connection={ connection } />
                 }
                 <Feed getPosts={ getUsersPosts } 
                 canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
