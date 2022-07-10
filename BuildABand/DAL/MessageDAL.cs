@@ -39,7 +39,8 @@ namespace BuildABand.DAL
                                 ConversationID = (int)reader["ConversationID"],
                                 CreatedTime = (DateTime)reader["CreatedTime"],
                                 SenderID = (int)reader["SenderID"],
-                                Text = reader["Text"].ToString()
+                                Text = Crypto.Decrypt(_configuration["MessageKey"],
+                                    reader["Text"].ToString())
 
                             };
                             messages.Add(message);
