@@ -15,23 +15,14 @@ namespace BuildABand.Models.Tests
         /// Test to ensure that Generatekey method generates
         /// a 32bit random key
         /// </summary>
-        [TestMethod()]
-        public void GenerateKeyTest()
-        {
-            byte[] rndkey = Crypto.GenerateKey();
-            Assert.AreEqual(rndkey.Length, 32);
-
-        }
-
+      
         [TestMethod()]
         public void EncryptTest()
         {
-            byte[] rndkey = Crypto.GenerateKey();
+            string key = "Where we are warriors";
             String planText = "Things we do";
 
-            byte[] cypherBytes = Crypto.Encrypt(planText, rndkey);
-
-            string cypherText = Convert.ToBase64String(cypherBytes);
+            string cypherText = Crypto.Encrypt(planText, key);
 
             Assert.IsNotNull(cypherText);
             Assert.AreNotEqual(planText, cypherText);
@@ -41,14 +32,14 @@ namespace BuildABand.Models.Tests
         [TestMethod()]
         public void DecryptTest()
         {
-            byte[] rndkey = Crypto.GenerateKey();
             String planText = "Things we do";
+            String key = "Where we are warriors";
 
-            byte[] cypherBytes = Crypto.Encrypt(planText, rndkey);
-            string decryptedPlainText = Crypto.Decrypt(cypherBytes, rndkey);
+            string cypherText = Crypto.Encrypt(planText, key);
+            string decryptedPlainText = Crypto.Decrypt(cypherText, key);
 
             Assert.IsNotNull(decryptedPlainText);
-            Assert.AreNotEqual(planText, decryptedPlainText);
+            Assert.AreEqual(planText, decryptedPlainText);
 
         }
     }
