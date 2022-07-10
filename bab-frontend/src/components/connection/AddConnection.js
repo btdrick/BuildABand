@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button'
 const AddConnection = ({ followerID, connection }) => {
     const [isConnected, setIsConnected] = useState(false);
     const [isPending, setIsPending] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     /* Sets connection status */
     useEffect(() => {
@@ -13,9 +14,10 @@ const AddConnection = ({ followerID, connection }) => {
             setIsConnected(false);
             setIsPending(false);
         }
-        if (typeof connection !== 'undefined') {
+        if (typeof connection !== 'undefined' && typeof connection.Connected !== 'undefined') {
             setIsConnected(connection.Connected === true);
             setIsPending(connection.Connected === false);
+            setIsLoading(false);
         }
     }, [connection]);
     
@@ -27,21 +29,25 @@ const AddConnection = ({ followerID, connection }) => {
                 .then(res => res.json())
                 .then(result=> alert(result))         
     }
-
-    return(
-        <div style={{display: 'flex', justifyContent: 'center', marginBottom: '1em'}}>
-            {!isConnected && !isPending &&
-            <Button className="btn btn-primary"
-                onClick={sendConnectionRequest}>
-                Add Connection
-            </Button>}
-            {isPending && !isConnected &&
-            <Button className="btn btn-secondary" disabled>
-                Connection Pending . . .
-            </Button>}
-            {isConnected && <p className="text-center text-muted">You're connected with this musician</p>}
-        </div>
-    )
+    if (!isLoading) {
+        return(
+            <div style={{display: 'flex', justifyContent: 'center', marginBottom: '1em'}}>
+                {!isConnected && !isPending &&
+                <Button className="btn btn-primary"
+                    onClick={sendConnectionRequest}>
+                    Add Connection
+                </Button>}
+                {isPending && !isConnected &&
+                <Button className="btn btn-secondary" disabled>
+                    Connection Pending . . .
+                </Button>}
+                {isConnected && <p className="text-center text-muted">You're connected with this musician</p>}
+            </div>
+        )
+    }
+    if (isLoading) {
+        return(<p className="text-center text-muted">Checking connection status...</p>)
+    }
 }
 
 export default AddConnection;

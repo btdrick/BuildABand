@@ -32,7 +32,8 @@ function Profile() {
             return data;
         }
         getConnections().then((data) => {
-            const connection = data.find((connection) => connection.FollowerID === parseInt(id));
+            const connection = data.find((conn) => (parseInt(id) === conn.FollowerID && UserProfile.getMusicianID() === conn.InitiatorID) 
+            || (parseInt(id) === conn.InitiatorID && UserProfile.getMusicianID() === conn.FollowerID));
             setConnection(connection);
         });
     }, [id]);
