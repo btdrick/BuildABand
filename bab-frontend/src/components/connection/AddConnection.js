@@ -1,9 +1,9 @@
-import React, {Component} from "react";
+import {React, useState, useEffect} from "react";
 import { variables } from '../../Variables.js';
 import UserProfile from "../../components/UserProfile";
 import Button from 'react-bootstrap/Button'
 
-const AddConnection = ({ followerID, connection }) => {
+const AddConnection = ({ connection }) => {
     const [isConnected, setIsConnected] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
