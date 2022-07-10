@@ -1,9 +1,9 @@
 import {React, useState, useRef, useEffect} from 'react';
+import { variables } from '../Variables';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import UserProfile from '../components/UserProfile';
-import { variables } from '../Variables';
 
 const CreatePost= ({ canCreatePost, handleSubmit }) => {
     /* Create post modal attributes */
@@ -33,6 +33,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
         setContent(e.target.value)
     };
 
+    /* Handles change for selected file */
     const changeFile = (e) => {
         setFileInfo(e.target.files[0]);
     }
@@ -47,6 +48,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
         setResetFile(randomString);
     };
 
+    /* Validates and submits post */
     const onClick = (event) => {
         event.preventDefault();
         if(content !== "") {
@@ -56,6 +58,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
         }
     }
 
+    /* Posts audio file */
     const submitFileInfo = async () => {
         const response = await fetch(variables.API_URL+'audio?filename=' + fileInfo.name + '&musicianID=' + UserProfile.getMusicianID(),{
             method:'POST',
@@ -81,10 +84,10 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
                 type="button"
                 className="btn m-3"
                 data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
+                data-bs-target="#create-post-modal"
                 onClick={addClick}>Create Post</Button>}
             {/* Create post modal */}
-            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
+            <div className="modal fade" id="create-post-modal" tabIndex="-1" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -122,6 +125,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
                             <Button type="button"
                             className="btn btn-primary float-start"
                             onClick={ onClick }
+                            data-bs-dismiss="modal" 
                             >Create</Button>
                             :null}
                         </div>
