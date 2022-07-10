@@ -3,18 +3,19 @@ import { variables } from '../../Variables.js';
 import UserProfile from "../../components/UserProfile";
 import Button from 'react-bootstrap/Button'
 
-const AddConnection = ({ connection }) => {
+const AddConnection = ({ followerID, connection }) => {
     const [isConnected, setIsConnected] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     /* Sets connection status */
     useEffect(() => {
-        if (typeof connection === 'undefined') {
+        if (connection === undefined) {
             setIsConnected(false);
             setIsPending(false);
+            setIsLoading(false);
         }
-        if (typeof connection !== 'undefined' && typeof connection.Connected !== 'undefined') {
+        if (connection !== undefined && !!Object.keys(connection).length) {
             setIsConnected(connection.Connected === true);
             setIsPending(connection.Connected === false);
             setIsLoading(false);
@@ -24,7 +25,7 @@ const AddConnection = ({ connection }) => {
     /* Send connection request to musician */
     const sendConnectionRequest = async() => {
         fetch (variables.API_URL + "musicianconnections/" + 
-                UserProfile.getMusicianID()+"/" + this.props.followerID,{
+                UserProfile.getMusicianID()+"/" + followerID,{
                 method: "POST"})
                 .then(res => res.json())
                 .then(result=> alert(result))         

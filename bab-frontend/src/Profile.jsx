@@ -14,30 +14,34 @@ function Profile() {
     const [profileInfo, setProfileInfo] = useState([]);
     const [connection, setConnection] = useState([]);
 
-    /* Sets backend posts */
+    /* Sets profile and connection information */
     useEffect(() => {
+        ///Set musician information
         const getProfileInfo = async() => {
-            const response = await fetch(variables.API_URL+'musician/'+ id);
-            const data = await response.json();
-            return data;
+            fetch(variables.API_URL+'musician/'+ id)
+            .then(res=>res.json())
+            .then((data) => {
+                setProfileInfo(data[0]);
+            })
         }
-        getProfileInfo().then((data) => {
-            setProfileInfo(data[0]);
-        });
-
-        //Get all connections for the musician
-        const getConnections = async () => {
-            const response = await fetch(variables.API_URL + "musicianconnections/" + id)
-            const data = await response.json();
-            return data;
+        getProfileInfo();
+        
+        //Set connection information
+        const getConnection = async () => {
+            if (isMyProfile) {
+                setConnection([]);
+                return;
+            }
+            fetch(variables.API_URL + "musicianconnections/" + id)
+            .then(res=>res.json())
+            .then((data) => {
+                const dataConnection = data.find((conn) => (parseInt(id) === conn.FollowerID && UserProfile.getMusicianID() === conn.InitiatorID) 
+                || (parseInt(id) === conn.InitiatorID && UserProfile.getMusicianID() === conn.FollowerID));
+                setConnection(dataConnection);
+            })
         }
-        //Is there a connection between user and this musician
-        getConnections().then((data) => {
-            const connection = data.find((conn) => (parseInt(id) === conn.FollowerID && UserProfile.getMusicianID() === conn.InitiatorID) 
-            || (parseInt(id) === conn.InitiatorID && UserProfile.getMusicianID() === conn.FollowerID));
-            setConnection(connection);
-        });
-    }, [id]);
+        getConnection();
+    }, [id, isMyProfile]);
 
     /* Makes api call to backend to get the user's posts */
     const getUsersPosts = useCallback(async () => {
@@ -57,7 +61,9 @@ function Profile() {
             <h4 className="text-center text-muted">No instrument chosen{profileInfo.Instrument} </h4>)}
             <div className="container-lg">
                 {!isMyProfile &&
-                    <AddConnection connection={ connection } />
+                    <AddConnection 
+                    followerID={ parseInt(id) }
+                    connection={ connection } />
                 }
                 <Feed getPosts={ getUsersPosts } 
                 canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
