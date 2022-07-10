@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BuildABand.Controllers
@@ -39,6 +40,7 @@ namespace BuildABand.Controllers
 
             try
             {
+               
                 return new JsonResult(
                     this.messageSource.GetMessageByConversationID(ConversationID));
             }
@@ -59,10 +61,16 @@ namespace BuildABand.Controllers
                 throw new ArgumentException("Invalid arguement");
             try
             {
+                String planText = message.Text;
+              
+                string cypherText = Crypto.Encrypt(_configuration["Messagekey"], planText); 
+                message.Text = cypherText;
                 this.messageSource.AddMessage(message);
+            
             }
             catch (Exception ex)
-            {
+            {  
+               
                 return new JsonResult(ex.Message);
             }
 

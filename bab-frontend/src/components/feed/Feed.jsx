@@ -49,6 +49,7 @@ const Feed = ({ getPosts, canCreatePost, canFilterPosts }) => {
         })
         .then(res=>res.json())
         .then((result)=>{
+            alert(result);
             getPosts().then((data) => {
                 setBackendPosts(data);
             });
@@ -71,7 +72,8 @@ const Feed = ({ getPosts, canCreatePost, canFilterPosts }) => {
                 })
             })
             .then(res=>res.json())
-            .then((result)=>{   
+            .then((result)=>{ 
+                alert(result);  
                 /* Update backendPostss */
                 const updatedBackendPosts = backendPosts.filter(
                     (backendPost) => backendPost.PostID !== postID

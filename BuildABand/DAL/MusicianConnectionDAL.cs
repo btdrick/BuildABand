@@ -15,7 +15,7 @@ namespace BuildABand.DAL
     public class MusicianConnectionDAL
     {
         private readonly IConfiguration _configuration;
-        private SqlTransaction transaction;
+       
 
         /// <summary>
         /// Constructor to initialize configuration variable
