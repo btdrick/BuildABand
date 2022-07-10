@@ -10,64 +10,59 @@ namespace BuildABand.Models
 {
     public class Crypto
     {
-        public static byte[] Encrypt(string plainText, byte[] key)
+        public static string Encrypt (string key, string plainText)
         {
-            using Aes aes = Aes.Create();
-            aes.Key = key;
+            byte[] iv = new byte[16];
+            byte[] array;
 
-            using var memStream = new MemoryStream();
-            memStream.Write(aes.IV, 0, aes.IV.Length);
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = iv;
 
-            using var cryptoStream = new CryptoStream(
-                memStream,
-                aes.CreateEncryptor(),
-                CryptoStreamMode.Write);
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
 
-            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter((Stream)cryptoStream))
+                        {
+                            streamWriter.Write(plainText);
+                        }
 
-            cryptoStream.Write(plainTextBytes);
-            cryptoStream.FlushFinalBlock();
+                        array = memoryStream.ToArray();
+                    }
+                }
+            }
 
-            memStream.Position = 0;
-
-            return memStream.ToArray();
-
+            return Convert.ToBase64String(array);
         }
 
-        public static string Decrypt(byte[] cypherBytes, byte[] key)
+        public static string Decrypt (string key, string cipherText)
         {
-            using var memStream = new MemoryStream();
-            memStream.Write(cypherBytes);
-            memStream.Position = 0;
+            byte[] iv = new byte[16];
+            byte[] buffer = Convert.FromBase64String(cipherText);
 
-            using var aes = Aes.Create();
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = iv;
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
-            byte[] iv = new byte[aes.IV.Length];
-            memStream.Read(iv, 0, iv.Length);
-
-            using var cryptoStream = new CryptoStream(
-                memStream,
-                aes.CreateDecryptor(key, iv),
-                CryptoStreamMode.Read);
-
-
-            int plainTextByteLength = cypherBytes.Length - iv.Length;
-            var plainTextBytes = new byte[plainTextByteLength];
-            cryptoStream.Read(plainTextBytes, 0, plainTextByteLength);
-
-            return Encoding.UTF8.GetString(plainTextBytes);
+                using (MemoryStream memoryStream = new MemoryStream(buffer))
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
+                        {
+                            return streamReader.ReadToEnd();
+                        }
+                    }
+                }
+            }
         }
 
-        public static byte[] GenerateKey()
-        {
-            const int KeyLength = 32;
-
-            byte[] key = new byte[KeyLength];
-            var rngRand = new RNGCryptoServiceProvider();
-
-            rngRand.GetBytes(key);
-
-            return key;
-        }
+      
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BuildABand.Controllers
@@ -59,10 +60,17 @@ namespace BuildABand.Controllers
                 throw new ArgumentException("Invalid arguement");
             try
             {
+                String planText = message.Text;
+               var messagekey = _configuration["Messagekey"];
+                
+                string cypherText = Crypto.Encrypt(messagekey, planText); 
+                message.Text = cypherText;
                 this.messageSource.AddMessage(message);
+            
             }
             catch (Exception ex)
-            {
+            {  
+               
                 return new JsonResult(ex.Message);
             }
 
