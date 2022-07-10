@@ -30,9 +30,20 @@ namespace BuildABand.Controllers
         /// </summary>
         /// <returns>JsonResult table of all comments</returns>
         [HttpGet]
-        public JsonResult GetComments()
+        public JsonResult GetAllComments()
         {
-            return this.commentDAL.GetComments();
+            return this.commentDAL.GetAllComments();
+        }
+
+        /// <summary>
+        /// Gets all comments from active users
+        /// GET: api/comment/active_accounts
+        /// </summary>
+        /// <returns>JsonResult table of all comments from active users</returns>
+        [HttpGet("active_accounts")]
+        public JsonResult GetCommentsFromActiveAccounts()
+        {
+            return this.commentDAL.GetAllCommentsFromActiveAccounts();
         }
 
         /// <summary>
