@@ -1,16 +1,18 @@
 import { React, useCallback } from 'react';
 import {variables} from './Variables.js';
 import { useParams } from "react-router-dom";
+import UserProfile from './components/UserProfile.js';
 import Feed from './components/feed/Feed.jsx';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
-import UserProfile from './components/UserProfile.js';
+import DeactivateAccount from './components/account/DeactivateAccount.js';
 import './style/home.css';
 
 function Profile() {
     /* Profile's owner */
     const { id } = useParams();
     const isMyProfile = (id === UserProfile.getMusicianID().toString()) ? true : false;
+    const canDeactivate = isMyProfile || UserProfile.getIsAdmin();
 
     /* Makes api call to backend to get the user's posts */
     const getUsersPosts = useCallback(async () => {
@@ -25,9 +27,12 @@ function Profile() {
             <Navbar/>
             <h3 className="title"> This is the Profile page </h3> 
             <div className="container-lg">
+                {/* Deactivate account section */}
+                {canDeactivate && 
+                    <DeactivateAccount accountID={ id } />}
+                {/* Add connection section */}
                 {!isMyProfile &&
-                    <AddConnection followerID={id} />
-                }
+                    <AddConnection followerID={id} />}
                 <Feed getPosts={ getUsersPosts } 
                 canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
             </div>
