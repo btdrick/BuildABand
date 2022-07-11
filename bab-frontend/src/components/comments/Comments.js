@@ -79,8 +79,7 @@ const Comments = ({ currentUserID, currentPostID }) => {
             /* Refresh backendComments */
             getCommentsByActiveUsers().then((data) => {
                 setBackendComments(data);
-            })
-            alert(result);       
+            })  
         },(_error)=>{
             alert('An error has occurred with submitting your comment');
         });
@@ -105,8 +104,7 @@ const Comments = ({ currentUserID, currentPostID }) => {
             getCommentsByActiveUsers().then((data) => {
                 setBackendComments(data);
             });
-            setActiveComment(null); 
-            alert(result);                  
+            setActiveComment(null);               
         },(_error)=>{
             alert('An error has occurred with updating your comment');
         });
