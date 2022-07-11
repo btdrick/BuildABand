@@ -18,7 +18,7 @@ namespace BuildABand.Controllers
 
         public AudioController(IConfiguration configuration)
         {
-            connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+            connectionString = configuration.GetConnectionString("AZURE_STORAGE_CONNECTION_STRING");
             musicDal = new MusicDAL(configuration);
         }
 
