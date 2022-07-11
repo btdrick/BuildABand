@@ -40,8 +40,8 @@ namespace BuildABand.DAL
             FollowerID, CONCAT(B.Fname, ' ', B.Lname) as FollowerNames,
             CreatedTime, Connected
             FROM Connection C
-            JOIN Musician A on C.InitiatorID = A.AccountID
-            JOIN Musician B on C.FollowerID = B.AccountID
+            JOIN Musician A on C.InitiatorID = A.MusicianID
+            JOIN Musician B on C.FollowerID = B.MusicianID
             WHERE (C.InitiatorID = @MusicianID OR C.FollowerID = @MusicianID) 
             ";
 
@@ -121,14 +121,12 @@ namespace BuildABand.DAL
         /// <param name="toMusicianID"></param>
         public void SendConnectionRequest(int fromMusicianID, int toMusicianID)
         {
-            string insertStatement = "INSERT INTO Connection " +
-                "VALUEs (@InitiatorID, @FollowerID, @CreatedTime, 0)";
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
-                using (SqlCommand insertCommand = new SqlCommand(insertStatement, connection))
+                using (SqlCommand insertCommand = new SqlCommand("dbo.addConnection", connection))
                 {
-                   
+                    insertCommand.CommandType = System.Data.CommandType.StoredProcedure;
                     insertCommand.Parameters.AddWithValue("@InitiatorID", fromMusicianID);
                     insertCommand.Parameters.AddWithValue("@FollowerID", toMusicianID);
                     insertCommand.Parameters.AddWithValue("@CreatedTime", DateTime.Now);
