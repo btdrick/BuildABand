@@ -121,14 +121,12 @@ namespace BuildABand.DAL
         /// <param name="toMusicianID"></param>
         public void SendConnectionRequest(int fromMusicianID, int toMusicianID)
         {
-            string insertStatement = "INSERT INTO Connection " +
-                "VALUEs (@InitiatorID, @FollowerID, @CreatedTime, 0)";
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
-                using (SqlCommand insertCommand = new SqlCommand(insertStatement, connection))
+                using (SqlCommand insertCommand = new SqlCommand("dbo.addConnection", connection))
                 {
-                   
+                    insertCommand.CommandType = System.Data.CommandType.StoredProcedure;
                     insertCommand.Parameters.AddWithValue("@InitiatorID", fromMusicianID);
                     insertCommand.Parameters.AddWithValue("@FollowerID", toMusicianID);
                     insertCommand.Parameters.AddWithValue("@CreatedTime", DateTime.Now);
