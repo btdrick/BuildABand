@@ -121,12 +121,15 @@ function SearchBar({ placeholder, data} ) {
             {isExpanded && wordEntered === "" && 
                 <div className="data-result">
                 {data.slice(0, 20).map((value, index) => {
+                    if (value.Instrument === null) {
+                        value.Instrument = "None";
+                    }
                     return (
                     <div key={index} className="data-item">
                         <Link className="data-link" to={`/profile/${value.MusicianID}`}>
                             {value.Fname + " " + value.Lname}
-                            {" (" + value.Instrument + "): "}
-                            {value.City + ", " + value.StateCode}
+                            {" (" + value.Instrument + ")"}
+                            {": "+ value.City + ", " + value.StateCode}
                         </Link>
                         {UserProfile.setProfileID(value.MusicianID)}
                     </div>

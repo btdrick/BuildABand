@@ -57,6 +57,15 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
     }
 
     const submitFileInfo = async () => {
+        if(fileInfo.name.length > 45) {
+            alert("File name must be under 45 characters")
+            return;
+        }
+        var regex = /^[A-Za-z0-9\-_.]+$/g;
+        if(!fileInfo.name.match(regex)) {
+            alert("File name can only contain letters, numbers, periods, hyphens, and underscores")
+            return;
+        }
         const response = await fetch(variables.API_URL+'audio?filename=' + fileInfo.name + '&musicianID=' + UserProfile.getMusicianID(),{
             method:'POST',
             headers:{
@@ -122,6 +131,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
                             <Button type="button"
                             className="btn btn-primary float-start"
                             onClick={ onClick }
+                            data-bs-dismiss="modal" 
                             >Create</Button>
                             :null}
                         </div>
