@@ -40,8 +40,8 @@ namespace BuildABand.DAL
             FollowerID, CONCAT(B.Fname, ' ', B.Lname) as FollowerNames,
             CreatedTime, Connected
             FROM Connection C
-            JOIN Musician A on C.InitiatorID = A.AccountID
-            JOIN Musician B on C.FollowerID = B.AccountID
+            JOIN Musician A on C.InitiatorID = A.MusicianID
+            JOIN Musician B on C.FollowerID = B.MusicianID
             WHERE (C.InitiatorID = @MusicianID OR C.FollowerID = @MusicianID) 
             ";
 
