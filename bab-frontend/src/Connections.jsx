@@ -40,14 +40,44 @@ function Connections() {
     }
 
     /* Check connection status and return corresponding value */
-    function checkConnectionStatus (connection){
+    function printConnectionStatus (connection){
         if (connection === 0)
-            return "pending";
+            return "Pending";
         else if (connection === 1)
-            return "connected";
+            return "Connected";
         else if (connection === 2)
-            return "rejected";
+            return "Rejected";
     }
+
+    function getStatusButton(conn){
+        if ( conn.Connected === 1 || (!isActiveConnection(conn) && !conn.Connected))
+          {
+            return(
+                <Button size="sm"
+                    className="btn btn-danger"
+                    value={conn.ConnectionID} 
+                    onClick={e=> disconnect(e)}>
+                    Disconnect
+                </Button>
+            )
+          }
+            
+        else if ( conn.Connected === 2 || (!isActiveConnection(conn) && !conn.Connected))
+         {
+            return (
+                <Button size="sm"
+                    className="btn btn-danger"
+                    value={conn.ConnectionID} 
+                    onClick={e=> clearRejectedConnection(e)}>
+                    Clear
+                </Button>
+            )       
+         }
+            
+        else 
+            return null;              
+                   
+    }	
 
     /* Sets connections */
     useEffect(() => {
@@ -56,7 +86,10 @@ function Connections() {
                 data.filter(conn => conn.Connected === 0 && 
                 conn.FollowerID === UserProfile.getMusicianID());
             setPendingConnections(pendingConnectionData);
-            setConnectedConnection(data);
+            setConnectedConnection(
+                data.filter(conn => !(conn.Connected === 2 &&
+                    conn.FollowerID === UserProfile.getMusicianID()))
+            );
         });
 
         getActiveConnections().then((data) => {
@@ -80,9 +113,35 @@ function Connections() {
                         data.filter(conn => !conn.Connected && 
                         conn.FollowerID === UserProfile.getMusicianID());
                     setPendingConnections(pendingConnectionData);
-                    setConnectedConnection(data);
+                    setConnectedConnection(
+                        data.filter(conn => !(conn.Connected === 2 &&
+                            conn.FollowerID === UserProfile.getMusicianID()))
+                    );
                 });
             });
+    }
+
+    const clearRejectedConnection =async(e) => {
+       
+                const connectionID = e.target.value;
+                fetch(variables.API_URL + "musicianconnections/disconnect/" + connectionID, {
+                    method: "POST"
+                })
+                    .then(res => (res.json()))
+                    .then(result => { 
+                        getConnections().then((data) => {
+                            const pendingConnectionData = 
+                                data.filter(conn => !conn.Connected && 
+                                conn.FollowerID === UserProfile.getMusicianID());
+                            setPendingConnections(pendingConnectionData);
+                            setConnectedConnection(
+                                data.filter(conn => !(conn.Connected === 2 &&
+                                conn.FollowerID === UserProfile.getMusicianID()))
+                                );
+                        });  
+                    });
+            
+        
     }
 
     //Confirms disconnect
@@ -101,7 +160,10 @@ function Connections() {
                                 data.filter(conn => !conn.Connected && 
                                 conn.FollowerID === UserProfile.getMusicianID());
                             setPendingConnections(pendingConnectionData);
-                            setConnectedConnection(data);
+                            setConnectedConnection(
+                                data.filter(conn => !(conn.Connected === 2 &&
+                                conn.FollowerID === UserProfile.getMusicianID()))
+                            );
                         });  
                     });
             }
@@ -119,10 +181,13 @@ function Connections() {
                 alert(result);
                 getConnections().then((data) => {
                     const pendingConnectionData = 
-                        data.filter(conn => !conn.Connected && 
+                        data.filter(conn => conn.Connected === 0 && 
                         conn.FollowerID === UserProfile.getMusicianID());
                     setPendingConnections(pendingConnectionData);
-                    setConnectedConnection(data);
+                    setConnectedConnection(
+                        data.filter(conn => !(conn.Connected === 2 &&
+                            conn.FollowerID === UserProfile.getMusicianID()))
+                    );
                 });  
             });
     }
@@ -152,15 +217,9 @@ function Connections() {
                                         <td className="text-warning"> {conn.FollowerID === UserProfile.getMusicianID() ?
                                             "(Inactive) " + conn.InitiatorNames : "(Inactive) " + conn.FollowerNames}</td>)}
 
-                                    <td> {checkConnectionStatus(conn.Connected) }</td>
-                                    <td>{conn.Connected || (!isActiveConnection(conn) && !conn.Connected)? 
-                                        (
-                                        <Button size="sm"
-                                            className="btn btn-danger"
-                                            value={conn.ConnectionID} 
-                                            onClick={e=> disconnect(e)}>
-                                            Disconnect
-                                        </Button> ) : null }   
+                                    <td> {printConnectionStatus(conn.Connected) }</td>
+                                    <td>
+                                        {getStatusButton (conn)}
                                     </td>                
                                 </tr>
                             )}
