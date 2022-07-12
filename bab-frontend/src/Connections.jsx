@@ -78,7 +78,23 @@ function Connections() {
     //Confirms disconnect
     const disconnect = async(e) => {
         if(window.confirm("Confirm disconnection?")) {
-            rejectConnection(e);
+            {
+                const connectionID = e.target.value;
+                fetch(variables.API_URL + "musicianconnections/disconnect/" + connectionID, {
+                    method: "POST"
+                })
+                    .then(res => (res.json()))
+                    .then(result => { 
+                        alert(result);
+                        getConnections().then((data) => {
+                            const pendingConnectionData = 
+                                data.filter(conn => !conn.Connected && 
+                                conn.FollowerID === UserProfile.getMusicianID());
+                            setPendingConnections(pendingConnectionData);
+                            setConnectedConnection(data);
+                        });  
+                    });
+            }
         }
     }
 
