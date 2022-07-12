@@ -57,11 +57,13 @@ function Profile() {
     return ( 
         <div id="container">
             <Navbar/>
+            {/* Profile header */}
             <h3 className="title"> Profile: {profileInfo.Fname + " " + profileInfo.Lname} </h3>
             {profileInfo.Instrument ? (
             <h4 className="text-center text-muted">Instrument: {profileInfo.Instrument} </h4>
             ) : (
             <h4 className="text-center text-muted">No instrument chosen{profileInfo.Instrument} </h4>)}
+            {/* Profile buttons */}
             <div className="container-lg">
                 {/* Deactivate account section */}
                 {canDeactivate && 
@@ -70,8 +72,8 @@ function Profile() {
                 {!isMyProfile &&
                     <AddConnection 
                     followerID={ parseInt(id) }
-                    connection={ connection } />
-                }
+                    connection={ connection } />}
+                {/* Profile feed */}
                 <Feed getPosts={ getUsersPosts } 
                 canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
             </div>
