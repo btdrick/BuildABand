@@ -27,7 +27,7 @@ namespace BuildABand.DAL
         /// Gets all comments.
         /// </summary>
         /// <returns>Table of comments</returns>
-        public JsonResult GetComments()
+        public JsonResult GetAllComments()
         {
             string selectStatement = @"
             SELECT *
@@ -51,6 +51,48 @@ namespace BuildABand.DAL
                     }
                 }
                 catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult(resultsTable);
+        }
+
+        /// <summary>
+        /// Gets all comments from active users.
+        /// </summary>
+        /// <returns>Table of comments by active users</returns>
+        public JsonResult GetAllCommentsFromActiveAccounts()
+        {
+            string selectStatement = @"
+            SELECT *
+            FROM dbo.Comment
+            WHERE MusicianID IN 
+            (SELECT m.AccountID 
+            FROM dbo.Musician m 
+            JOIN Accounts a 
+            ON m.AccountID = a.AccountID 
+            WHERE a.is_Active = 1)
+            ";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close();
+                    }
+                }
+                catch (Exception ex)
                 {
                     throw new Exception(ex.Message);
                 }
