@@ -65,7 +65,7 @@ namespace BuildABand.DAL
                                 FollowerID = (int)reader["FollowerID"],
                                 FollowerNames = reader["FollowerNames"].ToString(),
                                 CreatedTime = (DateTime)reader["createdTime"],
-                                Connected = Convert.ToBoolean(Convert.ToInt32(reader["Connected"]))
+                                Connected = Convert.ToInt32((reader["Connected"]))
                             };
                             musicianConnections.Add(musicianConnection);
                         }

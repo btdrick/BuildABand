@@ -39,11 +39,21 @@ function Connections() {
         return isActive;
     }
 
+    /* Check connection status and return corresponding value */
+    function checkConnectionStatus (connection){
+        if (connection === 0)
+            return "pending";
+        else if (connection === 1)
+            return "connected";
+        else if (connection === 2)
+            return "rejected";
+    }
+
     /* Sets connections */
     useEffect(() => {
         getConnections().then((data) => {
             const pendingConnectionData = 
-                data.filter(conn => !conn.Connected && 
+                data.filter(conn => conn.Connected === 0 && 
                 conn.FollowerID === UserProfile.getMusicianID());
             setPendingConnections(pendingConnectionData);
             setConnectedConnection(data);
@@ -142,7 +152,7 @@ function Connections() {
                                         <td className="text-warning"> {conn.FollowerID === UserProfile.getMusicianID() ?
                                             "(Inactive) " + conn.InitiatorNames : "(Inactive) " + conn.FollowerNames}</td>)}
 
-                                    <td> {conn.Connected ? "connected" : "pending"}</td>
+                                    <td> {checkConnectionStatus(conn.Connected) }</td>
                                     <td>{conn.Connected || (!isActiveConnection(conn) && !conn.Connected)? 
                                         (
                                         <Button size="sm"
