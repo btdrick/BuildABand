@@ -146,6 +146,33 @@ namespace BuildABand.Controllers
             return new JsonResult("Connection request removed.");
         }
 
+         /// <summary>
+        /// Reject pending connection
+        /// Post api/musicianconnections/connectionRequestID
+        /// </summary>
+        /// <param name="connectionRequestID"></param>
+        /// <returns></returns>
+        [HttpPost("disconnect/{connectionRequestID}")]
+        public JsonResult DisconnectConnectionRequest(int connectionRequestID)
+        {
+            if (connectionRequestID < 0)
+            {
+                throw new ArgumentException("Invalid connection request");
+            }
+
+            try
+            {
+                this.connectionSource.DisconnectConnectionRequest(connectionRequestID);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message);
+
+            }
+           
+            return new JsonResult("Connection request removed.");
+        }
+
 
     }
 }

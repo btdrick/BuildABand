@@ -19,7 +19,7 @@ namespace BuildABand.Models
         public int FollowerID { get; set; }
         public string FollowerNames { get; set; }
         public DateTime CreatedTime { get; set; }
-        public bool Connected { get; set; }
+        public int Connected { get; set; }
 
     }
 }

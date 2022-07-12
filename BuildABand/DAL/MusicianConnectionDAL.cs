@@ -65,7 +65,7 @@ namespace BuildABand.DAL
                                 FollowerID = (int)reader["FollowerID"],
                                 FollowerNames = reader["FollowerNames"].ToString(),
                                 CreatedTime = (DateTime)reader["createdTime"],
-                                Connected = Convert.ToBoolean(Convert.ToInt32(reader["Connected"]))
+                                Connected = Convert.ToInt32((reader["Connected"]))
                             };
                             musicianConnections.Add(musicianConnection);
                         }
@@ -134,7 +134,7 @@ namespace BuildABand.DAL
         /// Removes user from connections table. This can also be used to disconnect a current connection.
         /// </summary>
         /// <param name="connectionRequestID"></param>
-        public void RejectConnectionRequest(int connectionRequestID)
+        public void DisconnectConnectionRequest(int connectionRequestID)
         {
             string deleteStatement = "DELETE FROM Connection " +
                "WHERE ConnectionID = @ConnectionID";
@@ -149,6 +149,25 @@ namespace BuildABand.DAL
             }
         }
 
+         /// <summary>
+        /// Changes connection status to 2 meaning reject
+        /// </summary> 
+        /// <param name="connectionRequestID"></param>
+        public void RejectConnectionRequest(int connectionRequestID)
+        {
+            string updateStatement = "UPDATE Connection " +
+                "SET connected = 2 " +
+                "WHERE ConnectionID = @ConnectionID";
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand insertCommand = new SqlCommand(updateStatement, connection))
+                {
+                    insertCommand.Parameters.AddWithValue("@ConnectionID", connectionRequestID);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
+        }
 
         /// <summary>
         /// Changes connection status
