@@ -49,9 +49,9 @@ function Connections() {
             return "Rejected";
     }
 
+    /* Returns button based on connection status */
     function getStatusButton(conn){
-        if ( conn.Connected === 1 || (!isActiveConnection(conn) && !conn.Connected))
-          {
+        if (conn.Connected === 1 || (!isActiveConnection(conn) && !conn.Connected)) {
             return(
                 <Button size="sm"
                     className="btn btn-danger"
@@ -60,10 +60,8 @@ function Connections() {
                     Disconnect
                 </Button>
             )
-          }
-            
-        else if ( conn.Connected === 2 || (!isActiveConnection(conn) && !conn.Connected))
-         {
+        }
+        else if ( conn.Connected === 2 || (!isActiveConnection(conn) && !conn.Connected)) {
             return (
                 <Button size="sm"
                     className="btn btn-danger"
@@ -72,11 +70,8 @@ function Connections() {
                     Clear
                 </Button>
             )       
-         }
-            
-        else 
-            return null;              
-                   
+        } 
+        else return null;                     
     }	
 
     /* Sets connections */
@@ -105,9 +100,53 @@ function Connections() {
         fetch(variables.API_URL + "musicianconnections/accept/" + connectionID, {
             method: "POST"
         })
+        .then(res => (res.json()))
+        .then(result => { 
+            alert(result)
+            getConnections().then((data) => {
+                const pendingConnectionData = 
+                    data.filter(conn => !conn.Connected && 
+                    conn.FollowerID === UserProfile.getMusicianID());
+                setPendingConnections(pendingConnectionData);
+                setConnectedConnection(
+                    data.filter(conn => !(conn.Connected === 2 &&
+                        conn.FollowerID === UserProfile.getMusicianID()))
+                );
+            });
+        });
+    }
+
+    /* Clears a rejected connection from the table */
+    const clearRejectedConnection =async(e) => {
+        const connectionID = e.target.value;
+        fetch(variables.API_URL + "musicianconnections/disconnect/" + connectionID, {
+            method: "POST"
+        })
+        .then(res => (res.json()))
+        .then(result => { 
+            getConnections().then((data) => {
+                const pendingConnectionData = 
+                    data.filter(conn => !conn.Connected && 
+                    conn.FollowerID === UserProfile.getMusicianID());
+                setPendingConnections(pendingConnectionData);
+                setConnectedConnection(
+                    data.filter(conn => !(conn.Connected === 2 &&
+                    conn.FollowerID === UserProfile.getMusicianID()))
+                    );
+            });  
+        });     
+    }
+
+    //Confirms disconnect
+    const disconnect = async(e) => {
+        if(window.confirm("Confirm disconnection?")) {
+            const connectionID = e.target.value;
+            fetch(variables.API_URL + "musicianconnections/disconnect/" + connectionID, {
+                method: "POST"
+            })
             .then(res => (res.json()))
             .then(result => { 
-                alert(result)
+                alert(result);
                 getConnections().then((data) => {
                     const pendingConnectionData = 
                         data.filter(conn => !conn.Connected && 
@@ -115,58 +154,10 @@ function Connections() {
                     setPendingConnections(pendingConnectionData);
                     setConnectedConnection(
                         data.filter(conn => !(conn.Connected === 2 &&
-                            conn.FollowerID === UserProfile.getMusicianID()))
+                        conn.FollowerID === UserProfile.getMusicianID()))
                     );
-                });
+                });  
             });
-    }
-
-    const clearRejectedConnection =async(e) => {
-       
-                const connectionID = e.target.value;
-                fetch(variables.API_URL + "musicianconnections/disconnect/" + connectionID, {
-                    method: "POST"
-                })
-                    .then(res => (res.json()))
-                    .then(result => { 
-                        getConnections().then((data) => {
-                            const pendingConnectionData = 
-                                data.filter(conn => !conn.Connected && 
-                                conn.FollowerID === UserProfile.getMusicianID());
-                            setPendingConnections(pendingConnectionData);
-                            setConnectedConnection(
-                                data.filter(conn => !(conn.Connected === 2 &&
-                                conn.FollowerID === UserProfile.getMusicianID()))
-                                );
-                        });  
-                    });
-            
-        
-    }
-
-    //Confirms disconnect
-    const disconnect = async(e) => {
-        if(window.confirm("Confirm disconnection?")) {
-            {
-                const connectionID = e.target.value;
-                fetch(variables.API_URL + "musicianconnections/disconnect/" + connectionID, {
-                    method: "POST"
-                })
-                    .then(res => (res.json()))
-                    .then(result => { 
-                        alert(result);
-                        getConnections().then((data) => {
-                            const pendingConnectionData = 
-                                data.filter(conn => !conn.Connected && 
-                                conn.FollowerID === UserProfile.getMusicianID());
-                            setPendingConnections(pendingConnectionData);
-                            setConnectedConnection(
-                                data.filter(conn => !(conn.Connected === 2 &&
-                                conn.FollowerID === UserProfile.getMusicianID()))
-                            );
-                        });  
-                    });
-            }
         }
     }
 
@@ -176,21 +167,22 @@ function Connections() {
         fetch(variables.API_URL + "musicianconnections/reject/" + connectionID, {
             method: "POST"
         })
-            .then(res => (res.json()))
-            .then(result => { 
-                alert(result);
-                getConnections().then((data) => {
-                    const pendingConnectionData = 
-                        data.filter(conn => conn.Connected === 0 && 
-                        conn.FollowerID === UserProfile.getMusicianID());
-                    setPendingConnections(pendingConnectionData);
-                    setConnectedConnection(
-                        data.filter(conn => !(conn.Connected === 2 &&
-                            conn.FollowerID === UserProfile.getMusicianID()))
-                    );
-                });  
-            });
+        .then(res => (res.json()))
+        .then(result => { 
+            alert(result);
+            getConnections().then((data) => {
+                const pendingConnectionData = 
+                    data.filter(conn => conn.Connected === 0 && 
+                    conn.FollowerID === UserProfile.getMusicianID());
+                setPendingConnections(pendingConnectionData);
+                setConnectedConnection(
+                    data.filter(conn => !(conn.Connected === 2 &&
+                        conn.FollowerID === UserProfile.getMusicianID()))
+                );
+            });  
+        });
     }
+
     if (!isLoading) {
         return (
             <div className="container-lg justify-content-center text-center">
