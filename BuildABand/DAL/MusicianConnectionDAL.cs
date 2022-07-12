@@ -1,7 +1,9 @@
 ﻿using BuildABand.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -72,6 +74,60 @@ namespace BuildABand.DAL
 
             }
             return musicianConnections;
+        }
+
+        /// <summary>
+        /// Return active musician connections
+        /// </summary>
+        /// <param name="musicianID"></param>
+        /// <returns>JsonResult table of active musician connections</returns>
+        public JsonResult GetActiveMusicianConnectionsByMusicianID(int musicianID)
+        {
+            string selectStatement = @"
+            DECLARE @ActiveMusicianIDs TABLE (ActiveMusicianID INT)
+            INSERT INTO @ActiveMusicianIDs
+            SELECT m.MusicianID 
+            FROM Musician m
+            JOIN Accounts a
+            ON m.AccountID = a.AccountID
+            WHERE a.is_Active = 1;
+
+            SELECT ConnectionID, InitiatorID,
+            CONCAT(A.Fname,' ',A.Lname) AS InitiatorNames,
+            FollowerID, CONCAT(B.Fname, ' ', B.Lname) AS FollowerNames,
+            CreatedTime, Connected
+            FROM Connection C
+            JOIN Musician A ON C.InitiatorID = A.MusicianID
+            JOIN Musician B ON C.FollowerID = B.MusicianID
+            WHERE (C.InitiatorID = @MusicianID OR C.FollowerID = @MusicianID)
+            AND (C.InitiatorID IN (SELECT ActiveMusicianID FROM @ActiveMusicianIDs)
+            AND C.FollowerID IN (SELECT ActiveMusicianID FROM @ActiveMusicianIDs))
+            ";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        myCommand.Parameters.AddWithValue("MusicianID", musicianID);
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close(); 
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult(resultsTable);
         }
 
         /// <summary>

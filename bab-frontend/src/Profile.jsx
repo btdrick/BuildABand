@@ -1,10 +1,11 @@
 import { React, useCallback, useState, useEffect } from 'react';
 import {variables} from './Variables.js';
 import { useParams } from "react-router-dom";
+import UserProfile from './components/UserProfile.js';
 import Feed from './components/feed/Feed.jsx';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
-import UserProfile from './components/UserProfile.js';
+import DeactivateAccount from './components/account/DeactivateAccount.js';
 import './style/home.css';
 
 function Profile() {
@@ -43,6 +44,8 @@ function Profile() {
         getConnection();
     }, [id, isMyProfile]);
 
+    const canDeactivate = isMyProfile || UserProfile.getIsAdmin();
+
     /* Makes api call to backend to get the user's posts */
     const getUsersPosts = useCallback(async () => {
         const response = await fetch(variables.API_URL+'post/'+ id);
@@ -54,17 +57,23 @@ function Profile() {
     return ( 
         <div id="container">
             <Navbar/>
+            {/* Profile header */}
             <h3 className="title"> Profile: {profileInfo.Fname + " " + profileInfo.Lname} </h3>
             {profileInfo.Instrument ? (
             <h4 className="text-center text-muted">Instrument: {profileInfo.Instrument} </h4>
             ) : (
             <h4 className="text-center text-muted">No instrument chosen{profileInfo.Instrument} </h4>)}
+            {/* Profile buttons */}
             <div className="container-lg">
+                {/* Deactivate account section */}
+                {canDeactivate && 
+                    <DeactivateAccount accountID={ id } />}
+                {/* Add connection section */}
                 {!isMyProfile &&
                     <AddConnection 
                     followerID={ parseInt(id) }
-                    connection={ connection } />
-                }
+                    connection={ connection } />}
+                {/* Profile feed */}
                 <Feed getPosts={ getUsersPosts } 
                 canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
             </div>
