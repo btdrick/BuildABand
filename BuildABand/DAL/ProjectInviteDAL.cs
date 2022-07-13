@@ -36,7 +36,7 @@ namespace BuildABand.DAL
                 connection.Open();
                 using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
                 {
-                    selectCommand.Parameters.AddWithValue("MusicianID", MusicianID);
+                    selectCommand.Parameters.AddWithValue("@MusicianID", MusicianID);
                     using (SqlDataReader reader = selectCommand.ExecuteReader())
                     {
                         while (reader.Read())
@@ -58,6 +58,71 @@ namespace BuildABand.DAL
                     }
                 }
             }
+            return projectInvites;
         }
+
+        /// <summary>
+        /// Accept inviation request
+        /// </summary>
+        /// <param name="ProjectInviteID"></param>
+        public void AcceptInvitationRequest(int ProjectInviteID)
+        {
+            string updateStatement = @"
+             UPDATE Project_invite
+             SET Status = 1 
+             WHERE ProjectInviteID = @ProjectInviteID";
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand insertCommand = new SqlCommand(updateStatement, connection))
+                {
+                    insertCommand.Parameters.AddWithValue("@ProjectInviteID", ProjectInviteID);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Reject inviation request, Change status to 2 meaning reject
+        /// </summary>
+        /// <param name="ProjectInviteID"></param>
+        public void RejectInvitationRequest(int ProjectInviteID)
+        {
+            string updateStatement = @"
+             UPDATE Project_invite
+             SET Status = 2 
+             WHERE ProjectInviteID = @ProjectInviteID";
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand insertCommand = new SqlCommand(updateStatement, connection))
+                {
+                    insertCommand.Parameters.AddWithValue("@ProjectInviteID", ProjectInviteID);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes invite from table. 
+        /// </summary>
+        /// <param name="connectionRequestID"></param>
+        public void RemoveInvite(int ProjectInviteID)
+        {
+            string deleteStatement = "DELETE FROM Project_invite " +
+               "WHERE ProjectInviteID = @ProjectInviteID";
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand insertCommand = new SqlCommand(deleteStatement, connection))
+                {
+                    insertCommand.Parameters.AddWithValue("@ProjectInviteID", ProjectInviteID);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+
     }
 }
