@@ -10,6 +10,7 @@ var UserProfile = (function() {
        sessionStorage.musicianID = ID;
    };
 
+   
    var getProfileID = function() {
     return sessionStorage.profileID;
    }

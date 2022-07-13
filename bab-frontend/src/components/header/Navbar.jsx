@@ -23,13 +23,13 @@ export class Navbar extends React.Component {
     }
 
     componentDidMount(){
-        this.getMusicians();
+        this.getActiveMusicians();
         this.getCurrentMusicianInfo();
     }
 
     /* Makes api call to backend to get all Musicians */
-    async getMusicians() {
-        const response = await fetch(variables.API_URL+'musician');
+    async getActiveMusicians() {
+        const response = await fetch(variables.API_URL+'musician/active');
         const data = await response.json();
         this.setState({
             musicians: data
@@ -45,6 +45,7 @@ export class Navbar extends React.Component {
         });
     }
 
+    /* Clears the session for logout */
     logout() {
         if (window.confirm("Are you sure you want to logout?")) {
         UserProfile.clearSession();
@@ -83,6 +84,11 @@ export class Navbar extends React.Component {
                                         Connections
                                     </Nav.Link>
                                 </Nav.Item>
+                                <Nav.Item>
+                                  <Nav.Link href="#/messenger">
+                                      Messages
+                                  </Nav.Link>
+                                </Nav.Item>
                             </Nav>
                             {/* Dropdown menu */}
                             <Dropdown className="dropdown">
@@ -92,6 +98,7 @@ export class Navbar extends React.Component {
 
                                 <Dropdown.Menu className="dropdown-menu">
                                     <Card body>
+                                        {UserProfile.getIsAdmin() && <p className="text-center" style={{color:"purple"}}>(Admin)</p>}
                                         <img id="avatar" src={require('../comments/user-icon.png')} alt={'User icon'}
                                         style={{float: 'left', marginRight: 1 + 'em'}}/>
                                         <Card.Title>

@@ -1,4 +1,5 @@
-﻿using BuildABand.Models;
+﻿using BuildABand.DAL;
+using BuildABand.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.ComponentModel.DataAnnotations;
@@ -12,10 +13,12 @@ namespace BuildABand.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private AccountDAL accountDAL;
 
         public AccountsController(IConfiguration configuration)
         {
             _configuration = configuration;
+            this.accountDAL = new AccountDAL(configuration);
         }
 
         // GET: api/login
@@ -30,6 +33,7 @@ namespace BuildABand.Controllers
             JOIN dbo.Musician m 
                 ON a.AccountID = m.AccountID
             WHERE Username = @username
+            AND is_Active = 1
             ";
 
             DataTable resultsTable = new DataTable();
@@ -65,6 +69,18 @@ namespace BuildABand.Controllers
             {
                 return BadRequest("Username or password is incorrect");
             }
+        }
+
+        /// <summary>
+        /// Deactivate an account
+        /// POST: api/account/accountID/deactivate
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <returns>JsonResult if updated successfully</returns>
+        [HttpPatch("{AccountID}/deactivate")]
+        public JsonResult DeactivateAccount(int accountID)
+        {
+            return this.accountDAL.DeactivateAccount(accountID);
         }
     }
 }

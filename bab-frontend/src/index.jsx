@@ -8,7 +8,7 @@ import AccountSettings from './AccountSettings';
 import NewMusician from  './NewMusician';
 import reportWebVitals from './reportWebVitals';
 import Connections from './Connections';
-import './index.css';
+import Messenger  from './Messenger/Messenger';
 
 /* All of the routing is defined here. Note: Use backtics ` for dynamic paths, not double
 or single quotes */
@@ -23,6 +23,7 @@ root.render(
         <Route path="/profile/:id" element={<Profile/>}/>
         <Route path="/profile/Settings/:id" element={<AccountSettings/>}/>
         <Route path="/connections" element={<Connections/>}/>
+        <Route path="/messenger" element={<Messenger/>}/>
       </Routes>
     </HashRouter>
   </React.StrictMode>
