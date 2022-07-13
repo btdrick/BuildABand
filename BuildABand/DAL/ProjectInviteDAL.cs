@@ -17,7 +17,7 @@ namespace BuildABand.DAL
             this._configuration = configuration;
         }
 
-        public List<ProjectInvite> GetProjectInvitesByID(int MusicianID)
+        public List<ProjectInvite> GetProjectInvitesByID(int musicianID)
         {
             List<ProjectInvite> projectInvites = new List<ProjectInvite>();
             string selectStatement = @"
@@ -28,7 +28,7 @@ namespace BuildABand.DAL
             FROM Project_invite P
             JOIN Musician A on P.InviterID = A.MusicianID
             JOIN Musician B on P.InviteeID = B.MusicianID
-            WHERE(P.InviterID = @MusicianID OR P.InviteeID = @MusicianID)
+            WHERE(P.InviterID = @musicianID OR P.InviteeID = @musicianID)
             ";
 
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
@@ -36,7 +36,7 @@ namespace BuildABand.DAL
                 connection.Open();
                 using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
                 {
-                    selectCommand.Parameters.AddWithValue("@MusicianID", MusicianID);
+                    selectCommand.Parameters.AddWithValue("@musicianID", musicianID);
                     using (SqlDataReader reader = selectCommand.ExecuteReader())
                     {
                         while (reader.Read())
@@ -65,18 +65,18 @@ namespace BuildABand.DAL
         /// Accept inviation request
         /// </summary>
         /// <param name="ProjectInviteID"></param>
-        public void AcceptInvitationRequest(int ProjectInviteID)
+        public void AcceptInvitationRequest(int projectInviteID)
         {
             string updateStatement = @"
              UPDATE Project_invite
              SET Status = 1 
-             WHERE ProjectInviteID = @ProjectInviteID";
+             WHERE ProjectInviteID = @projectInviteID";
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
                 using (SqlCommand insertCommand = new SqlCommand(updateStatement, connection))
                 {
-                    insertCommand.Parameters.AddWithValue("@ProjectInviteID", ProjectInviteID);
+                    insertCommand.Parameters.AddWithValue("@projectInviteID", projectInviteID);
                     insertCommand.ExecuteNonQuery();
                 }
             }
@@ -87,18 +87,18 @@ namespace BuildABand.DAL
         /// Reject inviation request, Change status to 2 meaning reject
         /// </summary>
         /// <param name="ProjectInviteID"></param>
-        public void RejectInvitationRequest(int ProjectInviteID)
+        public void RejectInvitationRequest(int projectInviteID)
         {
             string updateStatement = @"
              UPDATE Project_invite
              SET Status = 2 
-             WHERE ProjectInviteID = @ProjectInviteID";
+             WHERE ProjectInviteID = @projectInviteID";
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
                 using (SqlCommand insertCommand = new SqlCommand(updateStatement, connection))
                 {
-                    insertCommand.Parameters.AddWithValue("@ProjectInviteID", ProjectInviteID);
+                    insertCommand.Parameters.AddWithValue("@projectInviteID", projectInviteID);
                     insertCommand.ExecuteNonQuery();
                 }
             }
@@ -122,6 +122,31 @@ namespace BuildABand.DAL
                 }
             }
         }
+
+
+        /// <summary>
+        /// Adds pending Invite to ProjectInvite table
+        /// </summary>
+        /// <param name="fromMusicianID"></param>
+        /// <param name="toMusicianID"></param>
+        public void SendProjectInvite(int fromMusicianID, int toMusicianID, int projectID)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand insertCommand = new SqlCommand("dbo.addProjectInvite", connection))
+                {
+                    insertCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    insertCommand.Parameters.AddWithValue("@projectID", projectID);
+                    insertCommand.Parameters.AddWithValue("@inviterID", fromMusicianID);
+                    insertCommand.Parameters.AddWithValue("@inviteeID", toMusicianID);
+                    insertCommand.Parameters.AddWithValue("@CreatedTime", DateTime.Now);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+
 
 
     }
