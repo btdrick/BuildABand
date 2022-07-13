@@ -17,6 +17,7 @@ namespace BuildABand.Models
         public string InviterNames { get; set; }
         public int InviteeID { get; set; }
         public string InviteeNames { get; set; }
+        public DateTime CreatedTime { get; set; }
         public int Status { get; set; }
 
     }
