@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { variables } from './Variables.js';
-import Feed from './components/feed/Feed.js';
+import Feed from './components/feed/Feed.jsx';
 import Navbar from './components/header/Navbar';
 import './style/home.css';
+import UserProfile from './components/UserProfile.js';
 
 export class Home extends Component {
     /* Makes api call to backend to get all posts */
-    async getAllPosts() {
-        const response = await fetch(variables.API_URL+'post');
+    async getPostsFromActiveMusicians() {
+        const response = await fetch(variables.API_URL+'post/active_accounts');
         const data = await response.json();
-        return data;
+        return data.reverse();
     };
 
     /* HTML for the Build-A-Band Main feed */
@@ -18,9 +19,11 @@ export class Home extends Component {
             <div id="container">   
                 <Navbar/>          
                 <h3 className="title"> Build-A-Band Home Feed </h3>
+                {UserProfile.getIsAdmin() && <p className="text-center text-muted">Administrative privileges are enabled</p>}
                 <div className="container-lg">
-                    <Feed getPosts={ this.getAllPosts } 
-                    canCreatePost={ true } />
+                    <Feed getPosts={ this.getPostsFromActiveMusicians } 
+                    canCreatePost={ true } 
+                    canFilterPosts={ true }/>
                 </div>
             </div>
         )

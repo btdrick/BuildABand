@@ -24,9 +24,11 @@ namespace BuildABand.DAL
         /// <returns>Table of posts</returns>
         public JsonResult GetAllPosts()
         {
-            string selectStatement =
-            @"SELECT *
-            FROM dbo.Post";
+            string selectStatement = @"
+            SELECT *
+            FROM dbo.Post
+            LEFT JOIN dbo.Music ON dbo.Post.AudioID = dbo.Music.ID
+            ";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -54,6 +56,50 @@ namespace BuildABand.DAL
         }
 
         /// <summary>
+        /// Gets all posts.
+        /// </summary>
+        /// <returns>Table of posts</returns>
+        public JsonResult GetAllPostsFromActiveAccounts()
+        {
+            string selectStatement = @"
+            SELECT *
+            FROM dbo.Post
+            LEFT JOIN dbo.Music 
+            ON dbo.Post.AudioID = dbo.Music.ID
+            WHERE dbo.Post.MusicianID IN
+            (SELECT m.MusicianID 
+            FROM Musician m
+            JOIN Accounts a
+            ON m.AccountID = a.AccountID
+            WHERE a.is_Active = 1)
+            ";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult(resultsTable);
+        }
+
+        /// <summary>
         /// Get post likes 
         /// associated with postID
         /// </summary>
@@ -69,8 +115,7 @@ namespace BuildABand.DAL
             string selectStatement = @"
             SELECT *
             FROM dbo.PostLike 
-            WHERE PostID = @PostID
-            ";
+            WHERE PostID = @PostID ";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -117,10 +162,14 @@ namespace BuildABand.DAL
             {
                 throw new ArgumentException("Invalid MusicianID");
             }
+            if (newPost.AudioID < 1)
+            {
+                throw new ArgumentException("Invalid AudioID");
+            }
 
             string insertStatement = @"
             INSERT INTO dbo.Post
-            VALUES (@CreatedTime, @MusicianID, @Content)
+            VALUES (@CreatedTime, @MusicianID, @Content, @AudioID)
             ";
 
             DataTable resultsTable = new DataTable();
@@ -136,6 +185,7 @@ namespace BuildABand.DAL
                         myCommand.Parameters.AddWithValue("@CreatedTime", newPost.CreatedTime);
                         myCommand.Parameters.AddWithValue("@MusicianID", newPost.MusicianID);
                         myCommand.Parameters.AddWithValue("@Content", newPost.Content);
+                        myCommand.Parameters.AddWithValue("@AudioID", newPost.AudioID);
                         dataReader = myCommand.ExecuteReader();
                         resultsTable.Load(dataReader);
                         dataReader.Close();

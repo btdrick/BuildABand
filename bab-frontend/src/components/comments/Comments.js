@@ -20,14 +20,14 @@ const Comments = ({ currentUserID, currentPostID }) => {
     
     /* Sets backend comments */
     useEffect(() => {
-        getComments().then((data) => {
+        getCommentsByActiveUsers().then((data) => {
             setBackendComments(data);
         });
     }, []);
 
     /* Makes api call to backend to get all comments */
-    const getComments = async() => {
-        const response = await fetch(variables.API_URL+'comment');
+    const getCommentsByActiveUsers = async() => {
+        const response = await fetch(variables.API_URL+'comment/active_accounts');
         const data = await response.json(); 
         return data;
     };
@@ -77,10 +77,9 @@ const Comments = ({ currentUserID, currentPostID }) => {
         .then(res=>res.json())
         .then((result)=>{ 
             /* Refresh backendComments */
-            getComments().then((data) => {
+            getCommentsByActiveUsers().then((data) => {
                 setBackendComments(data);
-            })
-            alert(result);       
+            })  
         },(_error)=>{
             alert('An error has occurred with submitting your comment');
         });
@@ -102,11 +101,10 @@ const Comments = ({ currentUserID, currentPostID }) => {
         .then(res=>res.json())
         .then((result)=>{ 
             /* Refresh backendComments */
-            getComments().then((data) => {
+            getCommentsByActiveUsers().then((data) => {
                 setBackendComments(data);
             });
-            setActiveComment(null); 
-            alert(result);                  
+            setActiveComment(null);               
         },(_error)=>{
             alert('An error has occurred with updating your comment');
         });

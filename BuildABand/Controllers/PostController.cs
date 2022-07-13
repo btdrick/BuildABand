@@ -43,6 +43,17 @@ namespace BuildABand.Controllers
         }
 
         /// <summary>
+        /// Gets all posts from active accounts
+        /// GET: api/post/active_accounts
+        /// </summary>
+        /// <returns>JsonResult table of all posts</returns>
+        [HttpGet("active_accounts")]
+        public JsonResult GetAllPostsFromActiveAccounts()
+        {
+            return this.postDAL.GetAllPostsFromActiveAccounts();
+        }
+
+        /// <summary>
         /// Gets all posts for specified users
         /// GET: api/post/UserID
         /// </summary>
@@ -60,7 +71,8 @@ namespace BuildABand.Controllers
             string selectStatement = 
             @"SELECT *
             FROM dbo.Post 
-            WHERE musicianID = @id";
+            LEFT JOIN dbo.Music ON dbo.Post.AudioID = dbo.Music.ID
+            WHERE dbo.Post.musicianID = @id";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
