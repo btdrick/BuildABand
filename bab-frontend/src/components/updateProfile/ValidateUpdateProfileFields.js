@@ -17,61 +17,58 @@ var ValidateUpdateProfileFormFields = (function() {
     }
 
     /* Validate input fields */
-    function validSubmit(input) {
+    function invalidSubmit(input) {
         let errors = {};
-        let isValid = true;
 
         /* Date of Birth validation */
         if (!input.DateOfBirth || input.DateOfBirth === '') {
-          isValid = false;
-          errors["dateOfBirth"] = "Please enter your date of birth.";
+          errors["DateOfBirth"] = "Please enter your date of birth.";
         }
         /* User must be 16 or older */
         if (input.DateOfBirth !== undefined || '') {
+          const inputDate = new Date(input['DateOfBirth']);
           const date16YrsAgo = new Date();
           date16YrsAgo.setFullYear(date16YrsAgo.getFullYear() - 16);
-          if (!((new Date(input['DateOfBirth'])) <= date16YrsAgo) ) {
-            isValid = false;
-            errors["dateOfBirth"] = "Please enter date of birth equal or above 16 years";
+          if (!(inputDate <= date16YrsAgo) ) {
+            errors["DateOfBirth"] = "Please enter date of birth equal or above 16 years";
           }
         }
 
         /* Phone format validation */
         if (invalidString(input.Phone) || invalidFormat(input.Phone, regPatterns['Phone'])) {
-          isValid = false;
-          errors["phone"] = "Please enter valid phone number(XXX-XXX-XXXX).";
+          errors["Phone"] = "Please enter valid phone number(XXX-XXX-XXXX).";
         }
 
         /* Email format validation */
         if (invalidString(input.Email) || invalidFormat(input.Email, regPatterns['Email'])) {
-          isValid = false;
-          errors["email"] = "Please enter a valid email Address.";
+          errors["Email"] = "Please enter a valid email Address.";
         }
   
         /* Address 1 validation */
         if (invalidString(input.Address1)) {
-          isValid = false;
-          errors["address1"] = "Please enter your address.";
+          errors["Address1"] = "Please enter your address.";
         }
 
         /* City validation */
         if (invalidString(input.City)) {
-          isValid = false;
-          errors["city"] = "Please enter your city.";
+          errors["City"] = "Please enter your city.";
         }
     
         /* Zip code validation */
         if (invalidString(input.ZipCode) || invalidFormat(input.ZipCode, regPatterns['ZipCode'])) {
-          isValid = false;
-          errors["zipCode"] = "Please enter a valid zip code.";
+          errors["ZipCode"] = "Please enter a valid zip code.";
         }
 
         console.log(errors)
-        return isValid;
+        if (Object.keys(errors).length) {
+          return errors;
+        }
+
+        return false;
     }
 
     return {
-        validSubmit: validSubmit,
+        invalidSubmit: invalidSubmit,
     }
 })();
 
