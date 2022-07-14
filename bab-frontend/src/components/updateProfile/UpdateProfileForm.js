@@ -1,67 +1,130 @@
 import {React, useState, useEffect} from 'react';
 import { variables } from '../../Variables.js';
-import Form from 'react-bootstrap/Form'
+import { useNavigate } from 'react-router-dom';
+import ValidateFields from './ValidateUpdateProfileFields.js';
+import Form from 'react-bootstrap/Form';
 
 const UpdateProfileForm = ({musicianID}) => {
-    const [musician, setMusician] = useState([]);
+    const [musician, setMusicianInfo] = useState([]);
+    const [input, setInput] = useState([]);
+    const [states, setStates] = useState([]);
+    let navigate = useNavigate();
 
-    const [dateOfBirth, setDateOfBirth] = useState('');
-    const [email, setEmail] = useState('');
-    const [address1, setAddress1] = useState('');
-    const [address2, setAddress2] = useState('');
-    const [city, setCity] = useState('');
-    const [stateCode, setStateCode] = useState('');
-    const [zipCode, setZipCode] = useState('');
-    const [instrument, setInstrument] = useState('');
-    
     /* Once the page renders, this hook takes place */
     useEffect(() => {
         /* Retrieve information related to author of post */
-        const getMusician = async() => {
+        const getOriginalMusicianInfo = async() => {
             const response = await fetch(variables.API_URL+'musician/'+ musicianID);
             const data = await response.json(); 
             var author = data[0];
 
             return author;
         };
-        getMusician().then((data) => {
-            setMusician(data);
-            setDateOfBirth(new Date(data.DateOfBirth).toLocaleDateString());
-            setEmail(data.Email);
-            setAddress1(data.Address1);
-            setAddress2(data.Address2);
-            setCity(data.City);
-            setStateCode(data.StateCode);
-            setZipCode(data.ZipCode);
-            setInstrument(data.Instrument);
+        getOriginalMusicianInfo().then((data) => {
+            data.DateOfBirth = new Date(data.DateOfBirth).toISOString().split('T')[0];
+            setMusicianInfo(data);
+            if(!Object.keys(input).length) {
+                setInput(data);
+            }
         });
-    }, [musicianID]);
+        
+        /* Get states for form */
+        const getStates = async() => {
+            fetch(variables.API_URL+'states')
+            .then(res=> res.json())
+            .then((result) => {
+                setStates(result);
+            });
+        }
+        getStates();
+    }, [musicianID, input]);
+
+    /* Handles form input */
+    const handleInput = (e) => {
+        if (e.target.type === 'date' && !Date.parse(e.target.value)) {
+            return;
+        }
+        const fieldName = e.target.name;
+        const inputValue = e.target.value;
+        var newInput = input;
+        newInput[fieldName] = inputValue;
+        setInput(newInput);
+    }
+
+    /* Handle form submission */
+    const handleSubmit = () => {
+        console.log(input)
+        if (!ValidateFields.validSubmit(input)) {
+            alert('Invalid input detected');
+            return;
+        }
+        if (window.confirm("Are you sure you want to update your information?")) {
+            fetch(variables.API_URL+'musician/'+musician.MusicianID,{
+                method:'PATCH',
+                headers:{
+                    'Accept':'application/json',
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({   
+                    MusicianID:     musician.MusicianID,
+                    DateOfBirth:    input.DateOfBirth,
+                    Phone:          input.Phone,
+                    Email:          input.Email,
+                    Address1:       input.Address1,
+                    Address2:       input.Address2,
+                    City:           input.City,
+                    StateCode:      input.StateCode,
+                    ZipCode:        input.ZipCode,
+                    Instrument:     input.Instrument
+                })
+            })
+            .then(res=>res.json())
+            .then((result)=>{ 
+                alert(result);   
+                navigate('/profile/'+musician.MusicianID);           
+            },(_error)=>{
+                alert('An error has occurred with updating your information');
+            });
+        }
+    }
+
+    /* Handle form reset */
+    const handleReset = () => {
+        setInput(musician);
+        document.getElementById("update-profile-form").reset(); 
+    }
+
+    //Method to return option value for states to be called by select element
+    function getStateNames() {
+        return states.map((item) => {
+        return <option key={item.StateCode} value={item.StateCode} > {item.StateName}</option>;
+        });
+    }
 
     return (
-        <Form>
+        <Form id="update-profile-form">
             <Form.Group className="mb-3">
             <div className="row p-4"> 
                 {/* Date of Birth */}
                 <div className="col-sm-6">
                     <Form.Label htmlFor="dob">Date of Birth:</Form.Label>
                     <Form.Control 
-                    type="text" 
-                    value={dateOfBirth || ''} 
-                    onChange={ (e) => setDateOfBirth(e.target.value) } 
-                    onFocus={ (e)=> e.target.type='date' }
-                    onBlur={ (e)=> e.target.type='text' }
-                    id="dob"  
-                    name="dob"></Form.Control>
+                    type="date" 
+                    defaultValue={musician.DateOfBirth} 
+                    onChange={ (e) => handleInput(e)} 
+                    id="DateOfBirth"  
+                    name="DateOfBirth"></Form.Control>
                 </div>
                 {/* Email */}
                 <div className="col-sm-6">
                     <Form.Label htmlFor="email">Email:</Form.Label>
                     <Form.Control 
                     type="email" 
-                    value={email || ''}
-                    onChange={ (e) => setEmail(e.target.value) } 
-                    id="email"  
-                    name="email"></Form.Control>
+                    defaultValue={musician.Email}
+                    onChange={ (e) => handleInput(e) } 
+                    id="Email"  
+                    name="Email"
+                    maxLength={200}></Form.Control>
                 </div>
             </div>
             <div className="row p-4"> 
@@ -70,20 +133,22 @@ const UpdateProfileForm = ({musicianID}) => {
                     <Form.Label htmlFor="address1">Address 1:</Form.Label>
                     <Form.Control 
                     type="text" 
-                    value={address1 || ''} 
-                    onChange={ (e) => setAddress1(e.target.value) } 
-                    id="address1"  
-                    name="address1"></Form.Control>
+                    defaultValue={musician.Address1} 
+                    onChange={ (e) => handleInput(e) } 
+                    id="Address1"  
+                    name="Address1"
+                    maxLength={50}></Form.Control>
                 </div>
                 {/* Address 2 */}
                 <div className="col-sm-6">
                     <Form.Label htmlFor="address2">Address 2:</Form.Label>
                     <Form.Control 
                     type="text" 
-                    value={address2 || ''}
-                    onChange={ (e) => setAddress2(e.target.value) } 
-                    id="address2"  
-                    name="address2"></Form.Control>
+                    defaultValue={musician.Address2}
+                    onChange={ (e) => handleInput(e) } 
+                    id="Address2"  
+                    name="Address2"
+                    maxLength={50}></Form.Control>
                 </div>
             </div>
             <div className="row p-4"> 
@@ -92,48 +157,73 @@ const UpdateProfileForm = ({musicianID}) => {
                     <Form.Label htmlFor="city">City:</Form.Label>
                     <Form.Control 
                     type="text" 
-                    value={city || ''} 
-                    onChange={ (e) => setCity(e.target.value) } 
-                    id="city"  
-                    name="city"></Form.Control>
+                    defaultValue={musician.City} 
+                    onChange={ (e) => handleInput(e) } 
+                    id="City"  
+                    name="City"
+                    maxLength={50}></Form.Control>
                 </div>
                 {/* State */}
                 <div className="col-sm-4">
-                    <Form.Label htmlFor="state">State:</Form.Label>
-                    <Form.Control 
-                    type="text" 
-                    value={stateCode || ''}
-                    onChange={ (e) => setStateCode(e.target.value) } 
-                    id="state"  
-                    name="state"></Form.Control>
+                    <Form.Label htmlFor="stateCode">State:</Form.Label>
+                    <Form.Select 
+                    onChange={ (e) => handleInput(e) } 
+                    id="StateCode"  
+                    name="StateCode">
+                        {getStateNames()}
+                    </Form.Select>
                 </div>
                 {/* Zip */}
                 <div className="col-sm-4">
                     <Form.Label htmlFor="zip">Zip Code:</Form.Label>
                     <Form.Control 
                     type="text" 
-                    value={zipCode || ''} 
-                    onChange={ (e) => setZipCode(e.target.value) } 
-                    id="zip"  
-                    name="zip"></Form.Control>
+                    defaultValue={musician.ZipCode} 
+                    onChange={ (e) => handleInput(e) } 
+                    id="ZipCode"  
+                    name="ZipCode"
+                    maxLength={20}></Form.Control>
                 </div>
             </div>
             <div className="row p-4"> 
+                <div className="col-sm-4">
+                <Form.Label htmlFor="phone">Phone:</Form.Label>
+                    <Form.Control 
+                    type="text" 
+                    defaultValue={musician.Phone}
+                    onChange={ (e) => handleInput(e) } 
+                    id="Phone"  
+                    name="Phone"></Form.Control>
+                </div>
                 {/* Instrument */}
-                <div className="col-sm-6">
+                <div className="col-sm-8">
                     <Form.Label htmlFor="instrument">Instrument:</Form.Label>
                     <Form.Control 
                     type="text" 
-                    value={instrument || ''}
-                    onChange={ (e) => setInstrument(e.target.value) } 
-                    id="instrument"  
-                    name="instrument"></Form.Control>
+                    defaultValue={musician.Instrument}
+                    onChange={ (e) => handleInput(e) } 
+                    id="Instrument"  
+                    name="Instrument"></Form.Control>
                 </div>
             </div>
-            </Form.Group>
-            <div className="pl-4 p-2 ">
-            <button type="button" className="btn btn-primary text-center pl-4 pr-4">Update</button>
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+                <button 
+                type="button" 
+                className="btn btn-warning text-center pl-4 pr-4"
+                style={{margin: "0 1em"}}
+                onClick={() => handleReset()}>
+                Reset Values
+                </button>
+                               
+                <button 
+                type="button" 
+                className="btn btn-primary text-center pl-4 pr-4"
+                style={{margin: "0 1em"}}
+                onClick={() => handleSubmit()}>
+                Update Info
+                </button>
             </div>
+            </Form.Group>
         </Form>
     );
 }
