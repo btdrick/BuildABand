@@ -152,5 +152,17 @@ namespace BuildABand.Controllers
 
             return new JsonResult("New user created");
         }
+
+        /// <summary>
+        /// Updates Musician info by ID
+        /// PATCH: api/musician/MusicianID
+        /// </summary>
+        /// <param name="musician"></param>
+        /// <returns>JsonResult of update status</returns>
+        [HttpPatch("{musician.MusicianID}")]
+        public JsonResult UpdateMusicianInfo(Musician musician)
+        {
+            return this.userSource.UpdateMusicianInfo(musician);
+        }
     }
 }
