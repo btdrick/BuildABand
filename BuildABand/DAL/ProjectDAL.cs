@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,10 +53,11 @@ namespace BuildABand.DAL
         }
 
         /// <summary>
-        /// Remove new project to database
+        /// Remove collaborator except project owner,
+        /// return 1 = error(Can't delete project owner)
         /// </summary>
         /// <param name="project"> project</param>
-        public void removeCollaborator(int projectID, int musicianID)
+        public int removeCollaborator(int projectID, int musicianID)
         {
            
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
@@ -66,7 +68,12 @@ namespace BuildABand.DAL
                     insertCommand.CommandType = System.Data.CommandType.StoredProcedure;
                     insertCommand.Parameters.AddWithValue("@projectID", projectID);
                     insertCommand.Parameters.AddWithValue("@musicianID", musicianID);
-                    insertCommand.ExecuteNonQuery();
+
+                    var returnParameter = insertCommand.Parameters.Add("@result", SqlDbType.Int);
+                    returnParameter.Direction = ParameterDirection.ReturnValue;
+
+                    insertCommand.ExecuteNonQuery();  
+                    return (int)returnParameter.Value;
                 }
             }
 
@@ -100,7 +107,10 @@ namespace BuildABand.DAL
             }
         }
 
-
+        /// <summary>
+        /// DAL to return project by musicianID
+        /// </summary>
+        /// <param name="project"> project</param>
         public List<Project> getProjectByMusicianID(int musicianID)
         {
             List<Project> projects = new List<Project>();
@@ -119,7 +129,7 @@ namespace BuildABand.DAL
                 connection.Open();
                 using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
                 {
-                    selectCommand.Parameters.AddWithValue("@musicianID", musicianID);
+                    selectCommand.Parameters.AddWithValue("@MusicianID", musicianID);
                     using (SqlDataReader reader = selectCommand.ExecuteReader())
                     {
                         while (reader.Read())
@@ -148,6 +158,10 @@ namespace BuildABand.DAL
             return projects;
         }
 
+        /// <summary>
+        /// DAL to return all collaborator for a project
+        /// </summary>
+        /// <param name="project"> project</param>
         public List<Musician> GetCollaboratorsByProjectID(int projectID)
         {
             List<Musician> musicians = new List<Musician>();

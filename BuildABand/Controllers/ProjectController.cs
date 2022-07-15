@@ -29,7 +29,7 @@ namespace BuildABand.Controllers
 
 
         /// <summary>
-        /// Gets specified musician by id
+        /// Gets specified project by MusicianID
         /// GET: api/project/MusicianID
         /// </summary>
         /// <returns>JsonResult table of musician</returns>
@@ -92,7 +92,7 @@ namespace BuildABand.Controllers
 
         /// <summary>
         ///   Post add project collaborator 
-        ///   post: api/project/project
+        ///   post: api/project/addcollaborator/projectID/musicianID
         /// </summary>
         /// <param name="project"></param>
         /// <returns></returns>
@@ -121,13 +121,13 @@ namespace BuildABand.Controllers
         }
 
         /// <summary>
-        ///   Post remove project  
-        ///   post: api/project/remove/projectID
+        ///   Post remove collaborator expect project owner
+        ///   post: api/project/removecollaborator/projectID/musicianID
         /// </summary>
         /// <param name="project"></param>
         /// <returns></returns>
         [HttpPost("removecollaborator/{projectID}/{musicianID}")]
-        public JsonResult removeProject(int projectID, int musicianID)
+        public JsonResult removeCollaborator(int projectID, int musicianID)
         {
             if (projectID < 0)
             {
@@ -136,7 +136,10 @@ namespace BuildABand.Controllers
 
             try
             {
-                this.projectSource.removeCollaborator(projectID, musicianID);
+               int result = this.projectSource.removeCollaborator(projectID, musicianID);
+                if (result == 1)
+                    return new JsonResult("Can't remove project owner");
+
             }
             catch (Exception ex)
             {
