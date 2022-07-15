@@ -8,13 +8,15 @@ namespace BuildABand.Models
     public class Project
     {
         public int ProjectID { get; set; }
-        public string Name { get; set }
-        public int OwnerID { get; set }
+        public string Name { get; set; }
+        public int OwnerID { get; set; }
         public int OwnerNames { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public List<Musician> Collaborators { get; set; }
-        public List<int> Audios { get; set; }
+        public int MusicID { get; set; }
+        public string FileName { get; set; }
+        public String  AzureFileName { get; set; }
 
     }
 }
