@@ -3,7 +3,7 @@ import { variables } from '../../Variables.js';
 import { useNavigate } from 'react-router-dom';
 import ValidateFields from './ValidateUpdateProfileFields.js';
 import Form from 'react-bootstrap/Form';
-import Alert from 'react-bootstrap/Alert'
+import Alert from 'react-bootstrap/Alert';
 
 const UpdateProfileForm = ({musicianID}) => {
     const [musician, setMusicianInfo] = useState([]);

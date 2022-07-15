@@ -21,10 +21,10 @@ namespace BuildABand.Controllers
             this.accountDAL = new AccountDAL(configuration);
         }
 
-        // GET: api/login
+        // GET: api/accounts/login
         // Confirm login
         [HttpGet("login")]
-        public ActionResult<int> GetLogin([FromQuery][Required] string username, [FromQuery][Required] string password)
+        public ActionResult<int> ValidateLogin([FromQuery][Required] string username, [FromQuery][Required] string password)
         {
             string selectStatement =
             @"
@@ -72,8 +72,20 @@ namespace BuildABand.Controllers
         }
 
         /// <summary>
+        /// Update row for account
+        /// PATCH: api/accounts/accountID
+        /// </summary>
+        /// <param name="accountID"></param>
+        /// <returns>JsonResult if updated successfully</returns>
+        [HttpPatch("{AccountID}")]
+        public JsonResult UpdateAccount(NewMusician musician)
+        {
+            return this.accountDAL.UpdateAccount(musician);
+        }
+
+        /// <summary>
         /// Deactivate an account
-        /// POST: api/account/accountID/deactivate
+        /// POST: api/accounts/accountID/deactivate
         /// </summary>
         /// <param name="comment"></param>
         /// <returns>JsonResult if updated successfully</returns>
