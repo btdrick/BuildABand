@@ -71,17 +71,47 @@ namespace BuildABand.DAL
         }
 
 
+        /// <summary>
+        /// Remove new project to database
+        /// </summary>
+        /// <param name="project"> project</param>
+        public void addCollaborator(int projectID, int musicianID)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+
+                String insertStatement = @"
+                    INSERT Project_workon VALUES (@ProjectID, @MusicianID, @JoinedDate)
+                    ";
+
+                 using (SqlCommand insertCommand = new SqlCommand(insertStatement, connection))
+                    {
+                        insertCommand.Parameters.AddWithValue("@ProjectID", projectID);
+                        insertCommand.Parameters.AddWithValue("@MusicianID", musicianID);
+                        insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
+ 
+                        insertCommand.ExecuteNonQuery();
+                    }
+
+             
+            }
+        }
+
+
         public List<Project> GetProjectByMusicianID(int musicianID)
         {
             List<Project> projects = new List<Project>();
             string selectStatement = @"
-                SELECT ProjectID, Name, OwnerID, StartDate, EndDate,
-                CONCAT(M.Fname, ' ', M.Lname) AS OwnerNames,
-                p.musicID, Ms.azure_file_name, ms.file_name
-                FROM project p
-                JOIN Musician M ON p.OwnerID = m.MusicianID
-                JOIN Music Ms ON p.MusicID = ms.ID
-                WHERE Music
+                SELECT PW.ProjectID, P.Name, OwnerID, StartDate, EndDate, P.MusicID,
+                azure_file_name, file_name,
+                CONCAT(M.Fname, ' ', M.Lname) AS MusicianNames
+                FROM 
+                Project_Workon PW
+                JOIN Project P ON PW.ProjectID = P.ProjectID
+                fULL OUTER JOIN Music MS ON P.MusicID = MS.ID
+                JOIN Musician M ON P.OwnerID = M.MusicianID
+                WHERE PW.MusicianID = @MusicianID
                 ";
 
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
@@ -96,14 +126,14 @@ namespace BuildABand.DAL
                         {
                             Project project = new Project()
                             {
-                                ProjectInviteID = (int)reader["ProjectInviteID"],
                                 ProjectID = (int)reader["ProjectID"],
-                                InviteeID = (int)reader["InviteeID"],
-                                InviteeNames = reader["InviteeNames"].ToString(),
-                                InviterID = (int)reader["InviterID"],
-                                InviterNames = reader["InviterNames"].ToString(),
-                                CreatedTime = (DateTime)reader["createdTime"],
-                                Status = Convert.ToInt32((reader["Status"]))
+                                Name = reader["Name"].ToString(),
+                                OwnerID = (int)reader["OwnerID"],
+                                StartDate = (DateTime)reader["createdTime"],
+                                EndDate = (DateTime)reader["createdTime"],
+                                MusicID = (int)reader["MusicID"],
+                                FileName = reader["file_name"].ToString(),
+                                AzureFileName = reader["azure_file_name"].ToString(),
                             };
                             projects.Add(project);
                         }
@@ -112,6 +142,42 @@ namespace BuildABand.DAL
                 }
             }
             return projects;
+        }
+
+        public List<Musician> GetCollaboratorsByProjectID(int projectID)
+        {
+            List<Musician> musicians = new List<Musician>();
+            string selectStatement = @"
+                SELECT MusicianID, Fname, Lname
+                FROM Project_Workon PW
+                JOIN Musician M ON PW.OwnerID = M.MusicianID
+                WHERE PW.projectID = @projectID
+                ";
+
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
+                {
+                    selectCommand.Parameters.AddWithValue("@projectID", projectID);
+                    using (SqlDataReader reader = selectCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Musician musician = new Musician()
+                            {
+                                musicianID = (int)reader["MusicianID"],
+                                FirstName = reader["Fname"].ToString(),
+                                LastName = reader["Lname"].ToString()
+                                
+                            };
+                            musicians.Add(musician);
+                        }
+
+                    }
+                }
+            }
+            return musicians;
         }
 
 
