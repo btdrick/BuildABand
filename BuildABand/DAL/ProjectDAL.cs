@@ -28,20 +28,21 @@ namespace BuildABand.DAL
             {
                 connection.Open();
 
-                String insertStatement = @"
-                    INSERT Project VALUES (@Name, @OwnerID, @StartDate, @EndDate)
-                    ";
-
+                
                 {
-                    using (SqlCommand insertCommand = new SqlCommand(insertStatement, connection))
+                    using (SqlCommand insertCommand = new SqlCommand("dbo.addProject", connection))
                     {
+                        insertCommand.CommandType = System.Data.CommandType.StoredProcedure;
                         insertCommand.Parameters.AddWithValue("@Name", project.Name);
                         insertCommand.Parameters.AddWithValue("@OwnerID", project.OwnerID);
                         insertCommand.Parameters.AddWithValue("@StartDate", DateTime.Now);
                         if (project.EndDate == null)
-                            insertCommand.Parameters.AddWithValue("@Instrument", DBNull.Value);
+                            insertCommand.Parameters.AddWithValue("@EndDate", DBNull.Value);
                         else
                             insertCommand.Parameters.AddWithValue("@EndDate", project.EndDate);
+                        insertCommand.Parameters.AddWithValue("@MusicID", project.MusicID);
+                        insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
+
 
                         insertCommand.ExecuteNonQuery();
                     }
@@ -54,16 +55,17 @@ namespace BuildABand.DAL
         /// Remove new project to database
         /// </summary>
         /// <param name="project"> project</param>
-        public void addRemove(int projectID)
+        public void removeCollaborator(int projectID, int musicianID)
         {
-            String deleteStatement = "DELETE FROM Project " +
-               "WHERE ProjectID = @ProjectID";
+           
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
-                using (SqlCommand insertCommand = new SqlCommand(deleteStatement, connection))
+                using (SqlCommand insertCommand = new SqlCommand("dbo.removeCollaborator", connection))
                 {
+                    insertCommand.CommandType = System.Data.CommandType.StoredProcedure;
                     insertCommand.Parameters.AddWithValue("@projectID", projectID);
+                    insertCommand.Parameters.AddWithValue("@musicianID", musicianID);
                     insertCommand.ExecuteNonQuery();
                 }
             }
@@ -99,20 +101,18 @@ namespace BuildABand.DAL
         }
 
 
-        public List<Project> GetProjectByMusicianID(int musicianID)
+        public List<Project> getProjectByMusicianID(int musicianID)
         {
             List<Project> projects = new List<Project>();
             string selectStatement = @"
                 SELECT PW.ProjectID, P.Name, OwnerID, StartDate, EndDate, P.MusicID,
                 azure_file_name, file_name,
-                CONCAT(M.Fname, ' ', M.Lname) AS MusicianNames
-                FROM 
-                Project_Workon PW
+                CONCAT(M.Fname, ' ', M.Lname) AS OwnerNames
+                FROM Project_Workon PW
                 JOIN Project P ON PW.ProjectID = P.ProjectID
                 fULL OUTER JOIN Music MS ON P.MusicID = MS.ID
                 JOIN Musician M ON P.OwnerID = M.MusicianID
-                WHERE PW.MusicianID = @MusicianID
-                ";
+                WHERE PW.MusicianID = @MusicianID ";
 
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
@@ -124,17 +124,21 @@ namespace BuildABand.DAL
                     {
                         while (reader.Read())
                         {
-                            Project project = new Project()
-                            {
-                                ProjectID = (int)reader["ProjectID"],
-                                Name = reader["Name"].ToString(),
-                                OwnerID = (int)reader["OwnerID"],
-                                StartDate = (DateTime)reader["createdTime"],
-                                EndDate = (DateTime)reader["createdTime"],
-                                MusicID = (int)reader["MusicID"],
-                                FileName = reader["file_name"].ToString(),
-                                AzureFileName = reader["azure_file_name"].ToString(),
-                            };
+                            Project project = new Project();
+
+                            project.ProjectID = (int)reader["ProjectID"];
+                            project.Name = reader["Name"].ToString();
+                            project.OwnerID = (int)reader["OwnerID"];
+                            project.OwnerNames = reader["OwnerNames"].ToString();
+                            project.StartDate = (DateTime)reader["StartDate"];
+                            project.MusicID = (int)reader["MusicID"];
+                            project.FileName = reader["file_name"].ToString();
+                            project.AzureFileName = reader["azure_file_name"].ToString();
+
+                            if (reader["EndDate"] == DBNull.Value)
+                                project.EndDate = null;
+                            else
+                                project.EndDate = (DateTime)reader["EndDate"];
                             projects.Add(project);
                         }
 
@@ -148,9 +152,9 @@ namespace BuildABand.DAL
         {
             List<Musician> musicians = new List<Musician>();
             string selectStatement = @"
-                SELECT MusicianID, Fname, Lname
+                SELECT PW.MusicianID, Fname, Lname
                 FROM Project_Workon PW
-                JOIN Musician M ON PW.OwnerID = M.MusicianID
+                JOIN Musician M ON PW.MusicianID = M.MusicianID
                 WHERE PW.projectID = @projectID
                 ";
 
