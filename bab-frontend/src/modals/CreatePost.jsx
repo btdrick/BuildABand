@@ -1,9 +1,9 @@
 import {React, useState, useRef, useEffect} from 'react';
+import { variables } from '../Variables';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import UserProfile from '../components/UserProfile';
-import { variables } from '../Variables';
 
 const CreatePost= ({ canCreatePost, handleSubmit }) => {
     /* Create post modal attributes */

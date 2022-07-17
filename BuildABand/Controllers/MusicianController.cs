@@ -37,9 +37,47 @@ namespace BuildABand.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            string selectStatement = 
-            @"SELECT * 
-            FROM dbo.Musician";
+            string selectStatement = @"
+            SELECT * 
+            FROM dbo.Musician
+            ";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                {
+                    dataReader = myCommand.ExecuteReader();
+                    resultsTable.Load(dataReader);
+                    dataReader.Close();
+                    connection.Close();
+                }
+            }
+
+            return new JsonResult(resultsTable);
+        }
+
+        /// <summary>
+        /// Gets all active musician
+        /// GET: api/musician/active
+        /// </summary>
+        /// <returns>JsonResult table of all active musicians</returns>
+        [HttpGet("Active")]
+        public JsonResult GetActiveMusicians()
+        {
+            string selectStatement = @"
+            SELECT * 
+            FROM dbo.Musician
+            WHERE AccountID IN 
+                (SELECT m.AccountID 
+                FROM dbo.Musician m 
+                JOIN Accounts a 
+                ON m.AccountID = a.AccountID 
+                WHERE a.is_Active = 1)
+            ";
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
@@ -113,6 +151,18 @@ namespace BuildABand.Controllers
             }
 
             return new JsonResult("New user created");
+        }
+
+        /// <summary>
+        /// Updates Musician info by ID
+        /// PATCH: api/musician/MusicianID
+        /// </summary>
+        /// <param name="musician"></param>
+        /// <returns>JsonResult of update status</returns>
+        [HttpPatch("{musician.MusicianID}")]
+        public JsonResult UpdateMusicianInfo(Musician musician)
+        {
+            return this.userSource.UpdateMusicianInfo(musician);
         }
     }
 }

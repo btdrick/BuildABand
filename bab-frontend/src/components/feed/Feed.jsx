@@ -103,6 +103,7 @@ const Feed = ({ getPosts, canCreatePost, canFilterPosts }) => {
                 <CreatePost canCreatePost={ canCreatePost } 
                 handleSubmit={ createPost } />
                 {/* List-group feed containing card-style group-items */}
+                {backendPosts.length > 0 ? (
                 <ul className="list-group">
                     {backendPosts.slice(0, visiblePosts).map((post, index) => 
                         <li key={index} className="list-group-item">
@@ -116,7 +117,9 @@ const Feed = ({ getPosts, canCreatePost, canFilterPosts }) => {
                             FileName={post.file_name} />
                         </li>
                     )}
-                </ul>
+                </ul>) : ( 
+                    <h6 className="text-center text-muted">No posts found</h6>
+                )}
                 {(backendPosts.length > 5) 
                 && (visiblePosts < backendPosts.length) 
                 && <button 
