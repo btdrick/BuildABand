@@ -15,6 +15,8 @@ const CreateProject = ({handleSubmit}) => {
     const [audioID, setAudioID] = useState(0);
     const file = useRef();
     const [connectedConnections, setConnectedConnection] = useState([]);
+    const multiselectRef = useRef();
+    const closeRef = useRef();
 
     //Get all connections for the musician
     const getConnections = useCallback(async () => {
@@ -51,11 +53,6 @@ const CreateProject = ({handleSubmit}) => {
         setProjectDescription(e.target.value)
     };
 
-    /* Handles change for collaborators added */
-    const changeCollaboratorsAdded =(e)=>{
-        setCollaborators(e.target.value)
-    };
-
     /* Handles change for file entered */
     const changeFile = (e) => {
         setFileInfo(e.target.files[0]);
@@ -67,13 +64,18 @@ const CreateProject = ({handleSubmit}) => {
         if(projectName === "") {
             alert('Must include project name');
         } else if (projectDescription === "") {
-            alert('Must include project name');
+            alert('Must include project description');
         } else {
             submitFileInfo();
+            multiselectRef.current.resetSelectedValues();
+            closeRef.current.click();
         }
     }
 
     const submitFileInfo = async () => {
+        if(Object.keys(fileInfo).length === 0) {
+            return;
+        }
         if(fileInfo.name.length > 45) {
             alert("File name must be under 45 characters")
             return;
@@ -99,6 +101,14 @@ const CreateProject = ({handleSubmit}) => {
         setAudioID(result)
     }
 
+    const onSelectCollaborator = (selectedList, selectedItem) => {
+        setCollaborators(multiselectRef.current.getSelectedItems());
+    }
+
+    const onRemoveCollaborator = (selectedList, selectedItem) => {
+        multiselectRef.current.resetSelectedValues();
+    }
+
     return (
         <>
             <Button 
@@ -118,7 +128,8 @@ const CreateProject = ({handleSubmit}) => {
                             type="button" 
                             className="btn-close" 
                             data-bs-dismiss="modal" 
-                            aria-label="Close"/>
+                            aria-label="Close"
+                            ref={closeRef}/>
                         </div>
 
                         <div className="modal-body">
@@ -151,10 +162,11 @@ const CreateProject = ({handleSubmit}) => {
                             <Multiselect
                                 displayValue="name"
                                 onKeyPressFn={function noRefCheck(){}}
-                                onRemove={function noRefCheck(){}}
+                                onRemove={onRemoveCollaborator}
                                 onSearch={function noRefCheck(){}}
-                                onSelect={function noRefCheck(){}}
+                                onSelect={onSelectCollaborator}
                                 options={connectedConnections}
+                                ref={multiselectRef}
                                 showCheckbox
                             />
 
@@ -171,7 +183,6 @@ const CreateProject = ({handleSubmit}) => {
                             <Button type="button"
                             className="btn btn-primary float-start"
                             onClick={ onClick }
-                            data-bs-dismiss="modal" 
                             >Create</Button>
                         </div>
                     </div>
