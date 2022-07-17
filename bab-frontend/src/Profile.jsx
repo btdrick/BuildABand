@@ -63,6 +63,7 @@ function Profile() {
             <h4 className="text-center text-muted">Instrument: {profileInfo.Instrument} </h4>
             ) : (
             <h4 className="text-center text-muted">No instrument chosen{profileInfo.Instrument} </h4>)}
+            <h6 className="text-center">{profileInfo.City + " ," + profileInfo.StateCode}</h6>
             {/* Profile buttons */}
             <div className="container-lg">
                 {/* Deactivate account section */}

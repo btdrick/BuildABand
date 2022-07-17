@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildABand.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
@@ -20,6 +21,61 @@ namespace BuildABand.DAL
         public AccountDAL(IConfiguration configuration)
         {
             _configuration = configuration;
+        }
+
+        /// <summary>
+        /// Updates a login
+        /// </summary>
+        /// <param name="accountID"></param>
+        /// <returns></returns>
+        public JsonResult UpdateAccount(NewMusician musician)
+        {
+            if (!this.AccountExists(musician.AccountID))
+            {
+                throw new ArgumentException("Error: account does not exist");
+            }
+
+            string updateStatement = "UPDATE dbo.Accounts SET ";
+            if (!string.IsNullOrEmpty(musician.Username) && !string.IsNullOrEmpty(musician.Password))
+            {
+                updateStatement += "Username = @Username, Password = @Password ";
+            }
+            else if (!string.IsNullOrEmpty(musician.Username))
+            {
+                updateStatement += "Username = @Username ";
+            }
+            else if (!string.IsNullOrEmpty(musician.Password))
+            {
+                updateStatement += "Password = @Password ";
+            }
+            updateStatement += "WHERE AccountID = @AccountID";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand myCommand = new SqlCommand(updateStatement, connection))
+                    {
+                        myCommand.Parameters.AddWithValue("@AccountID", musician.AccountID);
+                        myCommand.Parameters.AddWithValue("@Username", musician.Username);
+                        myCommand.Parameters.AddWithValue("@Password", PasswordHash.GetSha256Hash(musician.Password));
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult("Account Updated Successfully");
         }
 
         /// <summary>
