@@ -43,6 +43,17 @@ namespace BuildABand.Controllers
         }
 
         /// <summary>
+        /// Gets all posts from active accounts
+        /// GET: api/post/active_accounts
+        /// </summary>
+        /// <returns>JsonResult table of all posts</returns>
+        [HttpGet("active_accounts")]
+        public JsonResult GetAllPostsFromActiveAccounts()
+        {
+            return this.postDAL.GetAllPostsFromActiveAccounts();
+        }
+
+        /// <summary>
         /// Gets all posts for specified users
         /// GET: api/post/UserID
         /// </summary>

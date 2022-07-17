@@ -7,6 +7,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Card from 'react-bootstrap/Card';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
 import "./navbar.css";
 
 export class Navbar extends React.Component {
@@ -22,13 +23,13 @@ export class Navbar extends React.Component {
     }
 
     componentDidMount(){
-        this.getMusicians();
+        this.getActiveMusicians();
         this.getCurrentMusicianInfo();
     }
 
     /* Makes api call to backend to get all Musicians */
-    async getMusicians() {
-        const response = await fetch(variables.API_URL+'musician');
+    async getActiveMusicians() {
+        const response = await fetch(variables.API_URL+'musician/active');
         const data = await response.json();
         this.setState({
             musicians: data
@@ -108,7 +109,10 @@ export class Navbar extends React.Component {
                                         </Card.Subtitle>
                                     </Card>
                                     <Dropdown.Item href={`#/profile/${UserProfile.getMusicianID()}`}>Profile</Dropdown.Item>
-                                    <Dropdown.Item onClick={this.logout}>Logout<LogoutIcon style={{marginLeft: 5 + 'px'}}/></Dropdown.Item>
+                                    <Dropdown.Item href={`#/profile/settings/${UserProfile.getMusicianID()}`}>Settings
+                                        <SettingsIcon style={{marginLeft: 5 + 'px'}}/></Dropdown.Item>
+                                    <Dropdown.Item onClick={this.logout}>Logout
+                                        <LogoutIcon style={{marginLeft: 5 + 'px'}}/></Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>

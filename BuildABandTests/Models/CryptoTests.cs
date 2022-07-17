@@ -19,27 +19,27 @@ namespace BuildABand.Models.Tests
         [TestMethod()]
         public void EncryptTest()
         {
-            string key = "Where we are warriors";
-            String planText = "Things we do";
+            string key = "8y/B?E(H+MbQeThW";
+            String plainText = "Things we do";
 
-            string cypherText = Crypto.Encrypt(planText, key);
+            string cypherText = Crypto.Encrypt(key, plainText);
 
             Assert.IsNotNull(cypherText);
-            Assert.AreNotEqual(planText, cypherText);
+            Assert.AreNotEqual(plainText, cypherText);
 
         }
 
         [TestMethod()]
         public void DecryptTest()
         {
-            String planText = "Things we do";
-            String key = "Where we are warriors";
+            String plainText = "Things we do";
+            String key = "8y/B?E(H+MbQeThW";
 
-            string cypherText = Crypto.Encrypt(planText, key);
-            string decryptedPlainText = Crypto.Decrypt(cypherText, key);
+            string cypherText = Crypto.Encrypt(key, plainText);
+            string decryptedPlainText = Crypto.Decrypt(key, cypherText);
 
             Assert.IsNotNull(decryptedPlainText);
-            Assert.AreEqual(planText, decryptedPlainText);
+            Assert.AreEqual(plainText, decryptedPlainText);
 
         }
     }

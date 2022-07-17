@@ -1,12 +1,12 @@
 import React from 'react';
+import { HashRouter, Routes, Route } from "react-router-dom";
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import Home from './Home';
 import Profile from './Profile';
+import AccountSettings from './AccountSettings';
 import NewMusician from  './NewMusician';
 import reportWebVitals from './reportWebVitals';
-import { HashRouter, Routes, Route } from "react-router-dom";
 import Connections from './Connections';
 import Messenger  from './Messenger/Messenger';
 
@@ -21,6 +21,7 @@ root.render(
         <Route path="/home" element={<Home/>}/>
         <Route path="/newMusician" element={<NewMusician/>}/>
         <Route path="/profile/:id" element={<Profile/>}/>
+        <Route path="/profile/Settings/:id" element={<AccountSettings/>}/>
         <Route path="/connections" element={<Connections/>}/>
         <Route path="/messenger" element={<Messenger/>}/>
       </Routes>

@@ -30,9 +30,9 @@ namespace BuildABand.Controllers
         /// <param name="MusicianID"></param>
         /// <returns>JsonResult with connections</returns
         [HttpGet("{MusicianID}")]
-        public JsonResult GetMusicianConnections(int MusicianID)
+        public JsonResult GetMusicianConnections(int musicianID)
         {
-            if (MusicianID < 0)
+            if (musicianID < 0)
             {
                 throw new ArgumentException("Invalid connection request");
             }
@@ -40,13 +40,25 @@ namespace BuildABand.Controllers
             try
             {
                 return new JsonResult(
-                    this.connectionSource.GetMusicianConnectionsByID(MusicianID));
+                    this.connectionSource.GetMusicianConnectionsByID(musicianID));
             }
             catch (Exception ex)
             {
 
                 return new JsonResult(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Gets Musician Connections
+        /// GET: api/MusicianConnections/MusicianID/active
+        /// </summary>
+        /// <param name="MusicianID"></param>
+        /// <returns>JsonResult with activeconnections</returns
+        [HttpGet("{MusicianID}/active")]
+        public JsonResult GetActiveMusicianConnectionsByMusicianID(int musicianID)
+        {
+            return this.connectionSource.GetActiveMusicianConnectionsByMusicianID(musicianID);
         }
 
         /// <summary>
@@ -124,6 +136,33 @@ namespace BuildABand.Controllers
             try
             {
                 this.connectionSource.RejectConnectionRequest(connectionRequestID);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message);
+
+            }
+           
+            return new JsonResult("Connection request removed.");
+        }
+
+         /// <summary>
+        /// Reject pending connection
+        /// Post api/musicianconnections/connectionRequestID
+        /// </summary>
+        /// <param name="connectionRequestID"></param>
+        /// <returns></returns>
+        [HttpPost("disconnect/{connectionRequestID}")]
+        public JsonResult DisconnectConnectionRequest(int connectionRequestID)
+        {
+            if (connectionRequestID < 0)
+            {
+                throw new ArgumentException("Invalid connection request");
+            }
+
+            try
+            {
+                this.connectionSource.DisconnectConnectionRequest(connectionRequestID);
             }
             catch (Exception ex)
             {

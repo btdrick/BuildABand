@@ -2,10 +2,14 @@ import React, { useState, useCallback, useEffect } from "react";
 import { variables } from "./Variables";
 import UserProfile from "./components/UserProfile";
 import Navbar from './components/header/Navbar';
+import Table from 'react-bootstrap/Table'
+import Button from 'react-bootstrap/Button'
 
 function Connections() {
     const [pendingConnections, setPendingConnections] = useState([]);
     const [connectedConnections, setConnectedConnection] = useState([]);
+    const [activeConnections, setActiveConnections] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     //Get all connections for the musician
     const getConnections = useCallback(async () => {
@@ -14,16 +18,81 @@ function Connections() {
         return data;
     }, []);
 
+    //Get all connections for the musician
+    const getActiveConnections = useCallback(async () => {
+        const response = await fetch(variables.API_URL + "musicianconnections/" + UserProfile.getMusicianID() + "/active")
+        const data = await response.json();
+        return data;
+    }, []);
+
+    //Check if a connection is active
+    function isActiveConnection(connection) {
+        var isActive = false;
+        activeConnections.every(conn => {
+            isActive = conn.ConnectionID === connection.ConnectionID;
+            if (isActive === true) {
+                return false;
+            }
+            return true;
+        });
+
+        return isActive;
+    }
+
+    /* Check connection status and return corresponding value */
+    function printConnectionStatus (connection){
+        if (connection === 0)
+            return "Pending";
+        else if (connection === 1)
+            return "Connected";
+        else if (connection === 2)
+            return "Rejected";
+    }
+
+    /* Returns button based on connection status */
+    function getStatusButton(conn){
+        if (conn.Connected === 1 || (!isActiveConnection(conn) && !conn.Connected)) {
+            return(
+                <Button size="sm"
+                    className="btn btn-danger"
+                    value={conn.ConnectionID} 
+                    onClick={e=> disconnect(e)}>
+                    Disconnect
+                </Button>
+            )
+        }
+        else if ( conn.Connected === 2 || (!isActiveConnection(conn) && !conn.Connected)) {
+            return (
+                <Button size="sm"
+                    className="btn btn-danger"
+                    value={conn.ConnectionID} 
+                    onClick={e=> clearRejectedConnection(e)}>
+                    Clear
+                </Button>
+            )       
+        } 
+        else return null;                     
+    }	
+
     /* Sets connections */
     useEffect(() => {
         getConnections().then((data) => {
             const pendingConnectionData = 
-                data.filter(conn => !conn.Connected && 
+                data.filter(conn => conn.Connected === 0 && 
                 conn.FollowerID === UserProfile.getMusicianID());
             setPendingConnections(pendingConnectionData);
-            setConnectedConnection(data);
+            setConnectedConnection(
+                data.filter(conn => !(conn.Connected === 2 &&
+                    conn.FollowerID === UserProfile.getMusicianID()))
+            );
         });
-    }, [getConnections]);
+
+        getActiveConnections().then((data) => {
+            setActiveConnections(data);
+        });
+
+        setIsLoading(false);
+    }, [getConnections, getActiveConnections]);
 
     //Accepts the connection
     const acceptConnection = async(event) => {
@@ -31,23 +100,64 @@ function Connections() {
         fetch(variables.API_URL + "musicianconnections/accept/" + connectionID, {
             method: "POST"
         })
-            .then(res => (res.json()))
-            .then(result => { 
-                alert(result)
-                getConnections().then((data) => {
-                    const pendingConnectionData = 
-                        data.filter(conn => !conn.Connected && 
-                        conn.FollowerID === UserProfile.getMusicianID());
-                    setPendingConnections(pendingConnectionData);
-                    setConnectedConnection(data);
-                });
+        .then(res => (res.json()))
+        .then(result => { 
+            alert(result)
+            getConnections().then((data) => {
+                const pendingConnectionData = 
+                    data.filter(conn => !conn.Connected && 
+                    conn.FollowerID === UserProfile.getMusicianID());
+                setPendingConnections(pendingConnectionData);
+                setConnectedConnection(
+                    data.filter(conn => !(conn.Connected === 2 &&
+                        conn.FollowerID === UserProfile.getMusicianID()))
+                );
             });
+        });
+    }
+
+    /* Clears a rejected connection from the table */
+    const clearRejectedConnection =async(e) => {
+        const connectionID = e.target.value;
+        fetch(variables.API_URL + "musicianconnections/disconnect/" + connectionID, {
+            method: "POST"
+        })
+        .then(res => (res.json()))
+        .then(result => { 
+            getConnections().then((data) => {
+                const pendingConnectionData = 
+                    data.filter(conn => !conn.Connected && 
+                    conn.FollowerID === UserProfile.getMusicianID());
+                setPendingConnections(pendingConnectionData);
+                setConnectedConnection(
+                    data.filter(conn => !(conn.Connected === 2 &&
+                    conn.FollowerID === UserProfile.getMusicianID()))
+                    );
+            });  
+        });     
     }
 
     //Confirms disconnect
     const disconnect = async(e) => {
         if(window.confirm("Confirm disconnection?")) {
-            rejectConnection(e);
+            const connectionID = e.target.value;
+            fetch(variables.API_URL + "musicianconnections/disconnect/" + connectionID, {
+                method: "POST"
+            })
+            .then(res => (res.json()))
+            .then(result => { 
+                alert(result);
+                getConnections().then((data) => {
+                    const pendingConnectionData = 
+                        data.filter(conn => !conn.Connected && 
+                        conn.FollowerID === UserProfile.getMusicianID());
+                    setPendingConnections(pendingConnectionData);
+                    setConnectedConnection(
+                        data.filter(conn => !(conn.Connected === 2 &&
+                        conn.FollowerID === UserProfile.getMusicianID()))
+                    );
+                });  
+            });
         }
     }
 
@@ -57,87 +167,104 @@ function Connections() {
         fetch(variables.API_URL + "musicianconnections/reject/" + connectionID, {
             method: "POST"
         })
-            .then(res => (res.json()))
-            .then(result => { 
-                alert(result);
-                getConnections().then((data) => {
-                    const pendingConnectionData = 
-                        data.filter(conn => !conn.Connected && 
-                        conn.FollowerID === UserProfile.getMusicianID());
-                    setPendingConnections(pendingConnectionData);
-                    setConnectedConnection(data);
-                });  
-            });
+        .then(res => (res.json()))
+        .then(result => { 
+            alert(result);
+            getConnections().then((data) => {
+                const pendingConnectionData = 
+                    data.filter(conn => conn.Connected === 0 && 
+                    conn.FollowerID === UserProfile.getMusicianID());
+                setPendingConnections(pendingConnectionData);
+                setConnectedConnection(
+                    data.filter(conn => !(conn.Connected === 2 &&
+                        conn.FollowerID === UserProfile.getMusicianID()))
+                );
+            });  
+        });
     }
 
-    return (
-        <div>
-            <Navbar />
-            <div className="mt-5 pt-5" >
-                <h2>Connection Status</h2>
-                <table style={{ width: "40%" }}>
-                    <thead>
-                        <tr>
-                            <th>Musician Name</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            connectedConnections.map(conn =>
+    if (!isLoading) {
+        return (
+            <div className="container-lg justify-content-center text-center">
+                <Navbar />
+                <h1 style={{marginTop: "8%"}}>Connections Page</h1>
+                <hr></hr>
+                <div className="mt-4" style={{display: "inline-block", margin: "2em", minWidth: "40%"}}>
+                    <h2>Connection Status</h2>
+                    <Table striped bordered hover variant="dark">
+                        <thead>
+                            <tr>
+                                <th>Musician Name</th>
+                                <th>Status</th>
+                                <th colSpan={2}></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {connectedConnections.map(conn =>
                                 <tr key={conn.ConnectionID}>
-                                    <td> {conn.FollowerID === UserProfile.getMusicianID()?
-                                        conn.InitiatorNames : conn.FollowerNames}</td>
-                                    <td> {conn.Connected ? "connected" : "pending"}</td>
-                                    <td>{conn.Connected? 
-                                        (
-                                            <button value={conn.ConnectionID} 
-                                                onClick={e=> disconnect(e)}>
-                                                Disconnect
-                                        </button> ) : null }   
+                                    {isActiveConnection(conn) ? (
+                                        <td> {conn.FollowerID === UserProfile.getMusicianID() ?
+                                            conn.InitiatorNames : conn.FollowerNames}</td>
+                                            ) : (
+                                        <td className="text-warning"> {conn.FollowerID === UserProfile.getMusicianID() ?
+                                            "(Inactive) " + conn.InitiatorNames : "(Inactive) " + conn.FollowerNames}</td>)}
+
+                                    <td> {printConnectionStatus(conn.Connected) }</td>
+                                    <td>
+                                        {getStatusButton (conn)}
                                     </td>                
                                 </tr>
-                            )
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <div className="pt-4">
-                <h2>Pending Friends Request</h2>
-                <table style={{ width: "20%" }}>
-                    <thead>
-                        <tr>
-                            <th>Musician Name</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            pendingConnections.map(conn =>
-                                <tr key={conn.ConnectionID}>
-                                        <td> {conn.FollowerID === UserProfile.getMusicianID()?
-                                        conn.InitiatorNames : conn.FollowerNames}</td>
+                            )}
+                        </tbody>
+                    </Table>
+                </div>
+                <div className="mt-4" style={{display: "inline-block", margin: "2em", minWidth: "40%"}}>
+                    <h2>Pending Requests</h2>
+                    <Table striped bordered hover variant="dark">
+                        <thead>
+                            <tr>
+                                <th>Musician Name</th>
+                                <th>Status</th>
+                                <th colSpan={2}></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pendingConnections.map(function(conn) {
+                                if(isActiveConnection(conn)) {
+                                return <tr key={conn.ConnectionID}>
+                                    <td> {conn.FollowerID === UserProfile.getMusicianID() ?
+                                    conn.InitiatorNames : conn.FollowerNames}</td>
                                     <td> {conn.Connected ? "connected" : "pending"}</td>
                                     <td>
-                                        <button value={conn.ConnectionID}
+                                        <Button size="sm"
+                                            className="btn btn-primary" 
+                                            value={conn.ConnectionID}
                                             onClick={e => acceptConnection(e)}>
                                             Accept
-                                        </button>
+                                        </Button>
                                     </td>
                                     <td>
-                                        <button value={conn.ConnectionID}
+                                        <Button size="sm"
+                                            className="btn btn-danger"
+                                            value={conn.ConnectionID}
                                             onClick={e => rejectConnection(e)}>
                                             Reject
-                                        </button>
+                                        </Button>
                                     </td>
-                                </tr>
-                            )
-                        }
-                    </tbody>
-                </table>
+                                </tr>}
+                                else {
+                                    return null;
+                                }}
+                            )}
+                        </tbody>
+                    </Table>
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
+    if (isLoading) {
+        return(<div>Loading connections...</div>)
+    }
 }
 
 export default Connections;
