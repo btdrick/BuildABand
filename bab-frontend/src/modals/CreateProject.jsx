@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import UserProfile from '../components/UserProfile';
 import { variables } from '../Variables';
 
-const CreateProject = ({handleSubmit}) => {
+const CreateProject = () => {
     const [collaborators, setCollaborators] = useState([]);
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
@@ -32,7 +32,7 @@ const CreateProject = ({handleSubmit}) => {
             data.map(x => x.FollowerID === UserProfile.getMusicianID() ? newData.push({id: x.InitiatorID, name: x.InitiatorNames}) : newData.push({id: x.FollowerID, name: x.FollowerNames}))
             setConnectedConnection(newData);
         });
-    }, [getConnections]);
+    }, [getConnections, audioID]);
 
     /* Handles onClick event for creating a new project button */
     const createProjectButton = () => {
@@ -67,6 +67,7 @@ const CreateProject = ({handleSubmit}) => {
             alert('Must include project description');
         } else {
             submitFileInfo();
+            submitProject();
             multiselectRef.current.resetSelectedValues();
             closeRef.current.click();
         }
@@ -94,11 +95,20 @@ const CreateProject = ({handleSubmit}) => {
             body: fileInfo
         })
         if (!response.ok) {  
-            alert("Invalid file upload")
+            alert("Invalid file upload");
             return;
         } 
         const result = await response.json();
         setAudioID(result)
+    }
+
+    const submitProject = async () => {
+        //TODO post project to endpoint
+        const response = await fetch(variables.API_URL);
+        if (!response.ok) {  
+            alert("Unable to start project");
+            return;
+        }
     }
 
     const onSelectCollaborator = (selectedList, selectedItem) => {
