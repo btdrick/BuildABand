@@ -109,6 +109,7 @@ const CreateProject = () => {
             alert("Unable to start project");
             return;
         }
+        //TODO add collaborators to endpoint
     }
 
     const onSelectCollaborator = (selectedList, selectedItem) => {
