@@ -5,6 +5,7 @@ import Feed from './components/feed/Feed.jsx';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
 import UserProfile from './components/UserProfile.js';
+import CreateProject from './modals/CreateProject.jsx';
 import './style/home.css';
 
 function Profile() {
@@ -52,6 +53,7 @@ function Profile() {
             <Navbar/>
             <h3 className="title"> Profile: {profileInfo.Fname + " " + profileInfo.Lname} </h3>
             <h4 className="text-center text-muted">Instrument: {profileInfo.Instrument} </h4>
+            <CreateProject />
             <div className="container-lg">
                 {!isMyProfile &&
                     <AddConnection connection={ connection } />
