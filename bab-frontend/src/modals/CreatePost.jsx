@@ -93,7 +93,6 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
             return;
         } 
         const result = await response.json();
-        console.log("result"+result)
         setAudioID(result)
     }
 
