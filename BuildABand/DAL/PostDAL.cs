@@ -162,7 +162,7 @@ namespace BuildABand.DAL
             {
                 throw new ArgumentException("Invalid MusicianID");
             }
-            if (newPost.AudioID < 1)
+            if (newPost.AudioID < 0)
             {
                 throw new ArgumentException("Invalid AudioID");
             }
@@ -171,6 +171,14 @@ namespace BuildABand.DAL
             INSERT INTO dbo.Post
             VALUES (@CreatedTime, @MusicianID, @Content, @AudioID)
             ";
+
+            if(newPost.AudioID == 0) 
+            {
+                insertStatement = @"
+                    INSERT INTO dbo.Post
+                    VALUES (@CreatedTime, @MusicianID, @Content, null)
+                    ";
+            }
 
             DataTable resultsTable = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
