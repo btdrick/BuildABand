@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BuildABand.DAL
 {
@@ -33,8 +31,13 @@ namespace BuildABand.DAL
         /// </summary>
         /// <param name="MusicianID"></param>
         /// <returns></returns>
-        public List<MusicianConnection> GetMusicianConnectionsByID(int MusicianID)
+        public List<MusicianConnection> GetMusicianConnectionsByMusicianID(int musicianID)
         {
+            if (musicianID < 0)
+            {
+                throw new ArgumentException("Error: musician does not exist");
+            }
+
             List<MusicianConnection> musicianConnections = new List<MusicianConnection>();
             string selectStatement = @"
             SELECT ConnectionID, InitiatorID,
@@ -50,29 +53,36 @@ namespace BuildABand.DAL
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
-                using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
+                try
                 {
-                    selectCommand.Parameters.AddWithValue("MusicianID", MusicianID);
-                    using (SqlDataReader reader = selectCommand.ExecuteReader())
+                    using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
                     {
-                        while (reader.Read())
+                        selectCommand.Parameters.AddWithValue("MusicianID", musicianID);
+                        using (SqlDataReader reader = selectCommand.ExecuteReader())
                         {
-                            MusicianConnection musicianConnection = new MusicianConnection()
+                            while (reader.Read())
                             {
-                                ConnectionID = (int)reader["ConnectionID"],
-                                InitiatorID = (int)reader["InitiatorID"],
-                                InitiatorNames = reader["InitiatorNames"].ToString(),
-                                FollowerID = (int)reader["FollowerID"],
-                                FollowerNames = reader["FollowerNames"].ToString(),
-                                CreatedTime = (DateTime)reader["createdTime"],
-                                Connected = Convert.ToInt32((reader["Connected"]))
-                            };
-                            musicianConnections.Add(musicianConnection);
+                                MusicianConnection musicianConnection = new MusicianConnection()
+                                {
+                                    ConnectionID = (int)reader["ConnectionID"],
+                                    InitiatorID = (int)reader["InitiatorID"],
+                                    InitiatorNames = reader["InitiatorNames"].ToString(),
+                                    FollowerID = (int)reader["FollowerID"],
+                                    FollowerNames = reader["FollowerNames"].ToString(),
+                                    CreatedTime = (DateTime)reader["createdTime"],
+                                    Connected = Convert.ToInt32((reader["Connected"]))
+                                };
+                                musicianConnections.Add(musicianConnection);
+                            }
                         }
                     }
                 }
-
+                catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
             }
+
             return musicianConnections;
         }
 
@@ -136,8 +146,11 @@ namespace BuildABand.DAL
         /// <param name="connectionRequestID"></param>
         public void DisconnectConnectionRequest(int connectionRequestID)
         {
-            string deleteStatement = "DELETE FROM Connection " +
-               "WHERE ConnectionID = @ConnectionID";
+            string deleteStatement = @"
+                DELETE FROM Connection
+                WHERE ConnectionID = @ConnectionID
+                ";
+
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
@@ -155,9 +168,12 @@ namespace BuildABand.DAL
         /// <param name="connectionRequestID"></param>
         public void RejectConnectionRequest(int connectionRequestID)
         {
-            string updateStatement = "UPDATE Connection " +
-                "SET connected = 2 " +
-                "WHERE ConnectionID = @ConnectionID";
+            string updateStatement = @"
+                UPDATE Connection
+                SET connected = 2
+                WHERE ConnectionID = @ConnectionID
+                ";
+
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
@@ -175,9 +191,12 @@ namespace BuildABand.DAL
         /// <param name="connectionRequestID"></param>
         public void AcceptConnectionRequest(int connectionRequestID)
         {
-            string updateStatement = "UPDATE Connection " +
-                "SET connected = 1 " +
-                "WHERE ConnectionID = @ConnectionID";
+            string updateStatement = @"
+                UPDATE Connection
+                SET connected = 1
+                WHERE ConnectionID = @ConnectionID
+                ";
+
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();

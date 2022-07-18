@@ -1,83 +1,82 @@
 import {React, useState, useRef, useEffect} from 'react';
 import { variables } from '../Variables';
+import Modal from 'react-bootstrap/Modal';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
 import UserProfile from '../components/UserProfile';
 
 const CreatePost= ({ canCreatePost, handleSubmit }) => {
     /* Create post modal attributes */
-    const [modalTitle, setModalTitle] = useState("");
-    const [content, setContent] = useState("");
+    const [modalShow, setModalShow] = useState(false);
+    const [postContent, setPostContent] = useState("");
     const [audioID, setAudioID] = useState(0);
     const [postID, setPostID] = useState(0);
-    const [fileInfo, setFileInfo] = useState({});
-    const [resetFile, setResetFile] = useState('')
+    const [resetFile, setResetFile] = useState('');
+    const [error, setError] = useState(undefined);
     const file = useRef();
 
-    /* Only submits post after audio file is uploaded */
+    /* This hook is called with each render */
     useEffect(() => { 
-        if(audioID !== 0) {
-            handleSubmit(content, audioID);
-            setModalTitle("");
-            setContent("");
-            setFileInfo({});
+        if(audioID !== 0 || audioID === null) {
+            audioID === null ? handleSubmit(postContent, 0) : handleSubmit(postContent, audioID);
+            setPostContent("");
             var randomString = Math.random().toString(36)
             setResetFile(randomString);
-        }
-        if(audioID == null) {
-            handleSubmit(content, 0);
-            setModalTitle("");
-            setContent("");
-            setFileInfo({});
-            var otherRandomString = Math.random().toString(36)
-            setResetFile(otherRandomString);
+            setModalShow(false);
         }
         setAudioID(0);
-    }, [content, audioID, handleSubmit])
+    }, [postContent, audioID, handleSubmit])
+
+    /* Resets modal upon close */
+    function closeModal() {
+        setModalShow(false);
+        setPostContent([]);
+        setError(undefined);
+    }
 
     /* Handles event of text entry for Post content */
     const changePostContent =(e)=>{
-        setContent(e.target.value)
+        if (error) {
+            setError(undefined);
+        }
+        setPostContent(e.target.value)
     };
-
-    const changeFile = (e) => {
-        setFileInfo(e.target.files[0]);
-    }
 
     /* Handles onClick event for Add button */
     const addClick = () => {
-        setModalTitle("Create Post");
+        setModalShow(true);
         setPostID(0);
-        setContent("");
-        setFileInfo({});
+        setPostContent("");
         var randomString = Math.random().toString(36)
         setResetFile(randomString);
     };
 
+    /* Handles onClick event for modal */
     const onClick = (event) => {
         event.preventDefault();
-        if(content !== "") {
+        if(postContent !== "") {
             submitFileInfo();
         } else {
-            alert('Post content cannot be blank');
+            setError('Post content cannot be blank')
         }
     }
 
+    /* Submits audio file information */
     const submitFileInfo = async () => {
-        var submittedFile = file.current.files[0] !== undefined ? file.current.files[0] : null;
-        console.log(submittedFile)
+        const submittedFile = file.current.files[0] !== undefined ? file.current.files[0] : null;
         if(submittedFile === null) {
             setAudioID(null);
             return;
         }
         if(submittedFile.name.length > 45) {
-            alert("File name must be under 45 characters")
+            setError("File name must be under 45 characters")
             return;
         }
-        var regex = /^[A-Za-z0-9\-_.]+$/g;
-        if(!submittedFile.name.match(regex)) {
-            alert("File name can only contain letters, numbers, periods, hyphens, and underscores")
+        const fileNameRegex = /^[A-Za-z0-9\-_.]+$/g;
+        if(!submittedFile.name.match(fileNameRegex)) {
+            setError("File name can only contain letters, numbers, periods, hyphens, and underscores")
             return;
         }
         const response = await fetch(variables.API_URL+'audio?filename=' + submittedFile.name + '&musicianID=' + UserProfile.getMusicianID(),{
@@ -89,7 +88,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
             body: submittedFile
         })
         if (!response.ok) {  
-            alert("Invalid file upload")
+            setError("Invalid file upload")
             return;
         } 
         const result = await response.json();
@@ -97,61 +96,66 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
     }
 
     return (
-        <div>
+        <div style={{display: 'flex', justifyContent: 'center', marginBottom: '1em'}}>
             {/* Create post button*/}
             {canCreatePost
                 && <Button 
-                type="button"
-                className="btn m-3"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
-                onClick={addClick}>Create Post</Button>}
+                variant="primary"
+                onClick={() => addClick()}>
+                Create Post</Button>}
             {/* Create post modal */}
-            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-hidden="true">
-                <div className="modal-dialog modal-lg modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">{ modalTitle }</h5>
-                            <Button 
-                            type="button" 
-                            className="btn-close" 
-                            data-bs-dismiss="modal" 
-                            aria-label="Close"/>
-                        </div> 
-                        <div className="modal-body">
-                            {/* Modal input */}
-                            <InputGroup className="mb-3">
-                                <InputGroup.Text 
-                                id="inputPostContent">
-                                Content</InputGroup.Text>
-                                <Form.Control 
-                                type="text"
-                                aria-describedby="inputPostContent"
-                                aria-label="Enter post content..."
-                                placeholder="Enter post content..."
-                                value={ content } 
-                                onChange={ changePostContent }/>
-                            </InputGroup>
-                            <Form.Group controlId="formFile" className="mb-3">
-                                <Form.Label>(Optional) Add a Music Sample (.wav or .mp3)</Form.Label>
-                                <Form.Control 
-                                    type="file" 
-                                    accept='.wav, .mp3' 
-                                    ref={file}
-                                    key={resetFile || ''}
-                                    onChange={ changeFile } />
-                            </Form.Group>                                  
-                            {postID===0?
-                            <Button type="button"
-                            className="btn btn-primary float-start"
-                            onClick={ onClick }
-                            data-bs-dismiss="modal" 
-                            >Create</Button>
-                            :null}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Modal
+            size="lg"
+            show={modalShow}
+            onHide={() => closeModal()}
+            aria-labelledby="create-post-modal"
+            centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="create-post-modal">Create Post</Modal.Title>
+                </Modal.Header>
+                {/* Validation Errors */}
+                {error && 
+                <Alert variant="danger">
+                    <Alert.Heading>An error has occurred</Alert.Heading>
+                    <p>{error}</p>
+                </Alert>}
+                <Modal.Body>
+                    {/* Modal input */}
+                    <InputGroup className="mb-3">
+                    <InputGroup.Text 
+                    id="input-post-content">
+                    Content</InputGroup.Text>
+                    <Form.Control 
+                    type="text"
+                    aria-describedby="inputPostContent"
+                    aria-label="Enter post content..."
+                    placeholder="Enter post content..."
+                    value={ postContent } 
+                    onChange={ changePostContent }/>
+                    </InputGroup>
+                    <Form.Group controlId="formFile" className="mb-3">
+                        <Form.Label>(Optional) Add a Music Sample (.wav or .mp3)</Form.Label>
+                        <Form.Control 
+                        type="file" 
+                        accept='.wav, .mp3' 
+                        ref={file}
+                        key={resetFile || ''} />
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button 
+                    type="button" 
+                    className="btn btn-danger" 
+                    onClick={() => closeModal()}>
+                    Close</Button>
+                    {postID===0?
+                    <Button type="button"
+                    variant="primary"
+                    onClick={ (e) => onClick(e) }
+                    >Create</Button>
+                    :null}
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }

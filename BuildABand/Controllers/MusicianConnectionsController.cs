@@ -1,25 +1,27 @@
 ﻿using BuildABand.DAL;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BuildABand.Controllers
 {
+    /// <summary>
+    /// This class serves as the controller
+    /// for data related to Connection table in DB.
+    /// It is a mediator between the front-end 
+    /// and data access layer for Connection media.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class MusicianConnectionsController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly MusicianConnectionDAL connectionSource;
+        private readonly MusicianConnectionDAL musicianConnectionDAL;
 
         public MusicianConnectionsController(IConfiguration configuration)
         {
             _configuration = configuration;
-            this.connectionSource = new MusicianConnectionDAL(configuration);
+            this.musicianConnectionDAL = new MusicianConnectionDAL(configuration);
         }
 
 
@@ -30,23 +32,9 @@ namespace BuildABand.Controllers
         /// <param name="MusicianID"></param>
         /// <returns>JsonResult with connections</returns
         [HttpGet("{MusicianID}")]
-        public JsonResult GetMusicianConnections(int musicianID)
+        public JsonResult GetMusicianConnectionsByMusicianID(int musicianID)
         {
-            if (musicianID < 0)
-            {
-                throw new ArgumentException("Invalid connection request");
-            }
-
-            try
-            {
-                return new JsonResult(
-                    this.connectionSource.GetMusicianConnectionsByID(musicianID));
-            }
-            catch (Exception ex)
-            {
-
-                return new JsonResult(ex.Message);
-            }
+            return new JsonResult(this.musicianConnectionDAL.GetMusicianConnectionsByMusicianID(musicianID));
         }
 
         /// <summary>
@@ -58,7 +46,7 @@ namespace BuildABand.Controllers
         [HttpGet("{MusicianID}/active")]
         public JsonResult GetActiveMusicianConnectionsByMusicianID(int musicianID)
         {
-            return this.connectionSource.GetActiveMusicianConnectionsByMusicianID(musicianID);
+            return this.musicianConnectionDAL.GetActiveMusicianConnectionsByMusicianID(musicianID);
         }
 
         /// <summary>
@@ -78,7 +66,7 @@ namespace BuildABand.Controllers
 
             try
             {
-                this.connectionSource.SendConnectionRequest(fromMusicianID, toMusicianID);
+                this.musicianConnectionDAL.SendConnectionRequest(fromMusicianID, toMusicianID);
             }
             catch (Exception ex)
             {
@@ -106,7 +94,7 @@ namespace BuildABand.Controllers
 
             try
             {
-                this.connectionSource.AcceptConnectionRequest(connectionRequestID);
+                this.musicianConnectionDAL.AcceptConnectionRequest(connectionRequestID);
             }
             catch (Exception ex)
             {
@@ -135,7 +123,7 @@ namespace BuildABand.Controllers
 
             try
             {
-                this.connectionSource.RejectConnectionRequest(connectionRequestID);
+                this.musicianConnectionDAL.RejectConnectionRequest(connectionRequestID);
             }
             catch (Exception ex)
             {
@@ -162,7 +150,7 @@ namespace BuildABand.Controllers
 
             try
             {
-                this.connectionSource.DisconnectConnectionRequest(connectionRequestID);
+                this.musicianConnectionDAL.DisconnectConnectionRequest(connectionRequestID);
             }
             catch (Exception ex)
             {
