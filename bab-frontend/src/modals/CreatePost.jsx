@@ -25,6 +25,14 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
             var randomString = Math.random().toString(36)
             setResetFile(randomString);
         }
+        if(audioID == null) {
+            handleSubmit(content, 0);
+            setModalTitle("");
+            setContent("");
+            setFileInfo({});
+            var otherRandomString = Math.random().toString(36)
+            setResetFile(otherRandomString);
+        }
         setAudioID(0);
     }, [content, audioID, handleSubmit])
 
@@ -57,28 +65,35 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
     }
 
     const submitFileInfo = async () => {
-        if(fileInfo.name.length > 45) {
+        var submittedFile = file.current.files[0] !== undefined ? file.current.files[0] : null;
+        console.log(submittedFile)
+        if(submittedFile === null) {
+            setAudioID(null);
+            return;
+        }
+        if(submittedFile.name.length > 45) {
             alert("File name must be under 45 characters")
             return;
         }
         var regex = /^[A-Za-z0-9\-_.]+$/g;
-        if(!fileInfo.name.match(regex)) {
+        if(!submittedFile.name.match(regex)) {
             alert("File name can only contain letters, numbers, periods, hyphens, and underscores")
             return;
         }
-        const response = await fetch(variables.API_URL+'audio?filename=' + fileInfo.name + '&musicianID=' + UserProfile.getMusicianID(),{
+        const response = await fetch(variables.API_URL+'audio?filename=' + submittedFile.name + '&musicianID=' + UserProfile.getMusicianID(),{
             method:'POST',
             headers:{
                 'Accept':'application/json',
                 'Content-Type':'application/octet-stream'
             },
-            body: fileInfo
+            body: submittedFile
         })
         if (!response.ok) {  
             alert("Invalid file upload")
             return;
         } 
         const result = await response.json();
+        console.log("result"+result)
         setAudioID(result)
     }
 
