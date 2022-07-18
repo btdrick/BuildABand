@@ -162,7 +162,7 @@ namespace BuildABand.DAL
             {
                 throw new ArgumentException("Invalid MusicianID");
             }
-            if (newPost.AudioID < 1)
+            if (newPost.AudioID < 0)
             {
                 throw new ArgumentException("Invalid AudioID");
             }
@@ -185,7 +185,14 @@ namespace BuildABand.DAL
                         myCommand.Parameters.AddWithValue("@CreatedTime", newPost.CreatedTime);
                         myCommand.Parameters.AddWithValue("@MusicianID", newPost.MusicianID);
                         myCommand.Parameters.AddWithValue("@Content", newPost.Content);
-                        myCommand.Parameters.AddWithValue("@AudioID", newPost.AudioID);
+                        if (newPost.AudioID == 0)
+                        {
+                            myCommand.Parameters.AddWithValue("@AudioID", DBNull.Value);
+                        }
+                        else
+                        {
+                            myCommand.Parameters.AddWithValue("@AudioID", newPost.AudioID);
+                        }
                         dataReader = myCommand.ExecuteReader();
                         resultsTable.Load(dataReader);
                         dataReader.Close();
