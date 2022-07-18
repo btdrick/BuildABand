@@ -32,6 +32,10 @@ const CreateProject = () => {
             data.map(x => x.FollowerID === UserProfile.getMusicianID() ? newData.push({id: x.InitiatorID, name: x.InitiatorNames}) : newData.push({id: x.FollowerID, name: x.FollowerNames}))
             setConnectedConnection(newData);
         });
+        submitProject();
+            multiselectRef.current.resetSelectedValues();
+            closeRef.current.click();
+        
     }, [getConnections, audioID]);
 
     /* Handles onClick event for creating a new project button */
@@ -63,39 +67,36 @@ const CreateProject = () => {
         event.preventDefault();
         if(projectName === "") {
             alert('Must include project name');
-        } else if (projectDescription === "") {
-            alert('Must include project description');
         } else {
             submitFileInfo();
-            submitProject();
-            multiselectRef.current.resetSelectedValues();
-            closeRef.current.click();
         }
     }
 
     const submitFileInfo = async () => {
-        if(Object.keys(fileInfo).length === 0) {
+        var submittedFile = file.current.files[0] !== undefined ? file.current.files[0] : null;
+        if(submittedFile === null) {
+            setAudioID(null);
             return;
         }
-        if(fileInfo.name.length > 45) {
+        if(submittedFile.name.length > 45) {
             alert("File name must be under 45 characters")
             return;
         }
         var regex = /^[A-Za-z0-9\-_.]+$/g;
-        if(!fileInfo.name.match(regex)) {
+        if(!submittedFile.name.match(regex)) {
             alert("File name can only contain letters, numbers, periods, hyphens, and underscores")
             return;
         }
-        const response = await fetch(variables.API_URL+'audio?filename=' + fileInfo.name + '&musicianID=' + UserProfile.getMusicianID(),{
+        const response = await fetch(variables.API_URL+'audio?filename=' + submittedFile.name + '&musicianID=' + UserProfile.getMusicianID(),{
             method:'POST',
             headers:{
                 'Accept':'application/json',
                 'Content-Type':'application/octet-stream'
             },
-            body: fileInfo
+            body: submittedFile
         })
         if (!response.ok) {  
-            alert("Invalid file upload");
+            alert("Invalid file upload")
             return;
         } 
         const result = await response.json();
@@ -103,8 +104,18 @@ const CreateProject = () => {
     }
 
     const submitProject = async () => {
-        //TODO post project to endpoint
-        const response = await fetch(variables.API_URL);
+        const response = await fetch(variables.API_URL+'project', {
+            method: 'POST',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({   
+                Name: projectName,                           
+                OwnerID: UserProfile.getMusicianID(),
+                MusicID: audioID
+            })
+        });
         if (!response.ok) {  
             alert("Unable to start project");
             return;

@@ -66,7 +66,7 @@ function Profile() {
     const getUserProjects = useCallback(async () => {
         const response = await fetch(variables.API_URL+'project/'+id);
         const data = await response.json();
-        setProjects(data);
+        setProjects(data.reverse());
     }, [id])
 
     /* Renders the profile page's html. You can't pass entire object to child component */
@@ -114,7 +114,7 @@ function Profile() {
                         </tr>
 
                         <tr>
-                            <td>
+                            <td style={{verticalAlign: "top"}}>
                                 <Feed getPosts={ getUsersPosts } 
                                 canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
                             </td>

@@ -66,7 +66,7 @@ namespace BuildABand.Controllers
 
         /// <summary>
         ///   Post new project 
-        ///   post: api/project/project
+        ///   post: api/project
         /// </summary>
         /// <param name="project"></param>
         /// <returns></returns>
