@@ -17,6 +17,7 @@ function Profile() {
     const [profileInfo, setProfileInfo] = useState([]);
     const [connection, setConnection] = useState([]);
     const [projects, setProjects] = useState([]);
+    const [refresh, setRefresh] = useState("");
 
     /* Updates projects in real time */
     useEffect(() => {
@@ -51,8 +52,12 @@ function Profile() {
         }
         getConnection();
         getUserProjects();
-    }, [id, isMyProfile]);
+    }, [id, isMyProfile, refresh]);
 
+    const triggerRefresh = () => {
+        var randomString = Math.random().toString(36)
+        setRefresh(randomString)
+    }
     const canDeactivate = isMyProfile || UserProfile.getIsAdmin();
 
     /* Makes api call to backend to get the user's posts */
@@ -109,7 +114,7 @@ function Profile() {
 
                             </td>
                             <td style={{textAlign: "center"}}>
-                                <CreateProject />
+                                <CreateProject refreshEvent={triggerRefresh} />
                             </td>
                         </tr>
 

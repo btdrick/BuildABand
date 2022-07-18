@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import UserProfile from '../components/UserProfile';
 import { variables } from '../Variables';
 
-const CreateProject = () => {
+const CreateProject = (props) => {
     const [collaborators, setCollaborators] = useState([]);
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
@@ -33,8 +33,9 @@ const CreateProject = () => {
             setConnectedConnection(newData);
         });
         submitProject();
-            multiselectRef.current.resetSelectedValues();
-            closeRef.current.click();
+        multiselectRef.current.resetSelectedValues();
+        closeRef.current.click();
+        props.refreshEvent();
         
     }, [getConnections, audioID]);
 
