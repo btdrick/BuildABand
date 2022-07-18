@@ -13,12 +13,10 @@ namespace BuildABand.Controllers
     [ApiController]
     public class AudioController : ControllerBase
     {
-        private readonly string connectionString;
         private MusicDAL musicDal;
 
         public AudioController(IConfiguration configuration)
         {
-            connectionString = configuration.GetConnectionString("AZURE_STORAGE_CONNECTION_STRING");
             musicDal = new MusicDAL(configuration);
         }
 
@@ -35,7 +33,7 @@ namespace BuildABand.Controllers
         //todo: upload blob to azure
         public async Task uploadBlobAsync(string azureFileName, Stream content)
         {
-            BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
+            BlobServiceClient blobServiceClient = new BlobServiceClient("DefaultEndpointsProtocol=https;AccountName=babstorage;AccountKey=FAwXuMf3l7RjNTZbOhO+kVqIoCQtJQkRttiJFD8H+f326b3JS2DL+YlODgL95C6pbTFZs49J4kCR+AStwiF8Hw==;EndpointSuffix=core.windows.net");
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("audio");
             BlobClient blobClient = containerClient.GetBlobClient(azureFileName);
             Console.WriteLine("Uploading to Blob storage as blob:\n\t {0}\n", blobClient.Uri);
@@ -58,7 +56,7 @@ namespace BuildABand.Controllers
         [HttpGet("blob")]
         public async Task<FileStreamResult> getBlob([FromQuery] string azureFileName)
         {
-            BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
+            BlobServiceClient blobServiceClient = new BlobServiceClient("DefaultEndpointsProtocol=https;AccountName=babstorage;AccountKey=FAwXuMf3l7RjNTZbOhO+kVqIoCQtJQkRttiJFD8H+f326b3JS2DL+YlODgL95C6pbTFZs49J4kCR+AStwiF8Hw==;EndpointSuffix=core.windows.net");
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("audio");
             BlobClient blobClient = containerClient.GetBlobClient(azureFileName);
 
