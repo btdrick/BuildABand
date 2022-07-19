@@ -28,7 +28,7 @@ const Project = (props) => {
     /* Render list of project collaborators if they exist */
     const renderCollaborators = () => {
         const collaborators = props.Collaborators;
-        if (!!Object.keys(collaborators).length) {
+        if (Object.keys(collaborators).length > 1) {
             return <div className="project-box-footer">
                 <h4>Collaborators:</h4>
                 <div className="list-group">
@@ -51,12 +51,11 @@ const Project = (props) => {
     return(
         <div className="container-lg card">
             <img src={image} style={{width: "50%", margin: "0 auto"}} alt="sound pic" />
-            
             <div className="container">
                 <h4>{props.Private === true && <LockIcon />}<b>Name: </b>{props.Name}</h4>
+                {isProjectOwner && renderToggleProjectIsPrivateButton()}
                 {props.Description !== "" && <p>Project description: {props.Description}</p>}
                 <AudioPlayer FileName={props.FileName} AzureFileName={props.AzureFileName} />
-                {isProjectOwner && renderToggleProjectIsPrivateButton()}
                 { renderCollaborators() }
             </div>
         </div> 

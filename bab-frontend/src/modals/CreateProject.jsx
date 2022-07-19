@@ -37,7 +37,7 @@ const CreateProject = ( { handleSubmit }) => {
         });
         if (audioID !== 0) {
             const collaboratorIDs = collaborators.map(function(collaborator) {return collaborator["id"]});
-            handleSubmit(projectName, audioID, collaboratorIDs);
+            handleSubmit(projectName, projectDescription, audioID, collaboratorIDs);
             setProjectName("");
             setProjectDescription("");
             var randomString = Math.random().toString(36)
@@ -45,7 +45,7 @@ const CreateProject = ( { handleSubmit }) => {
             setAudioID(0);
             setModalShow(false);
         }
-    }, [getConnections, audioID, projectName, handleSubmit, collaborators]);
+    }, [getConnections, handleSubmit, projectName, projectDescription, audioID, collaborators]);
 
     /* Resets modal upon close */
     function closeModal() {

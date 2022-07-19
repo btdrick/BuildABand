@@ -66,7 +66,7 @@ function Projects() {
     }
 
     /* Creates a new project */
-    const createProject = async (projectName, audioID, collaboratorIDs) => {
+    const createProject = async (projectName, projectDescription, audioID, collaboratorIDs) => {
         fetch(variables.API_URL+'project', {
             method: 'POST',
             headers:{
@@ -76,6 +76,7 @@ function Projects() {
             body:JSON.stringify({   
                 Name:             projectName,                           
                 OwnerID:          UserProfile.getMusicianID(),
+                Description:      projectDescription,
                 AudioID:          audioID,
                 CollaboratorIDs:  collaboratorIDs
             })
