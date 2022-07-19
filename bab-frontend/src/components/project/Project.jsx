@@ -25,14 +25,13 @@ const Project = (props) => {
     }
 
     return(
-        <div className="card">
-            <img src={image} style={{width: "100%"}} alt="sound pic" />
-            <AudioPlayer FileName={props.FileName} AzureFileName={props.AzureFileName} />
+        <div className="container-lg card">
+            <img src={image} style={{width: "50%", margin: "0 auto"}} alt="sound pic" />
             
             <div className="container">
-                <h4>{props.Private === true && <LockIcon />}<b>{props.Name}</b></h4>
+                <h4>{props.Private === true && <LockIcon />}Name: <b>{props.Name}</b></h4>
                 {props.Description !== undefined && <p>Project description: {props.Description}</p>}
-                
+                <AudioPlayer FileName={props.FileName} AzureFileName={props.AzureFileName} />
                 {isProjectOwner && renderToggleProjectIsPrivateButton()}
                 
                 <div className="project-box-footer">

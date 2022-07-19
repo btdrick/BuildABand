@@ -2,7 +2,7 @@ import {React, useState, useEffect} from "react";
 import { variables } from '../../Variables.js';
 import { useNavigate } from 'react-router-dom';
 import UserProfile from "../../components/UserProfile";
-import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/Button';
 
 const AddConnection = ({ followerID, connection }) => {
     const [isConnected, setIsConnected] = useState(false);
