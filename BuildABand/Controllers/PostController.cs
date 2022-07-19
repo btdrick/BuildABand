@@ -2,9 +2,6 @@ using BuildABand.DAL;
 using BuildABand.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace BuildABand.Controllers
 {
@@ -57,40 +54,12 @@ namespace BuildABand.Controllers
         /// Gets all posts for specified users
         /// GET: api/post/UserID
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="musicianID"></param>
         /// <returns>JsonResult table of user's posts</returns>
-        [HttpGet("{id}")]
-        public JsonResult GetPostByID(int id)
+        [HttpGet("{musicianID}")]
+        public JsonResult GetPostsByMusicianID(int musicianID)
         {
-            if (id < 1)
-            {
-                throw new ArgumentException("UserID must be 1 or greater");
-            }
-            //Don't need to make query twice. Not sure how to incorporate DBDAL at this time
-            //this.postDBDAL.GetPostByMusicianID(id);
-            string selectStatement = 
-            @"SELECT *
-            FROM dbo.Post 
-            LEFT JOIN dbo.Music ON dbo.Post.AudioID = dbo.Music.ID
-            WHERE dbo.Post.musicianID = @id";
-
-            DataTable resultsTable = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
-            SqlDataReader dataReader;
-            using (SqlConnection connection = new SqlConnection(sqlDataSource))
-            {
-                connection.Open();
-                using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
-                {
-                    myCommand.Parameters.AddWithValue("@id", id);
-                    dataReader = myCommand.ExecuteReader();
-                    resultsTable.Load(dataReader);
-                    dataReader.Close();
-                    connection.Close();
-                }
-            }
-
-            return new JsonResult(resultsTable);
+            return this.postDAL.GetPostByMusicianID(musicianID);
         }
 
         /// <summary>

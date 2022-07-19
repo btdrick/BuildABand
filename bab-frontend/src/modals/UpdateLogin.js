@@ -118,8 +118,7 @@ const UpdateLogin = () => {
 
     return(
         <div style={{display: 'flex', justifyContent: 'center', marginBottom: '1em'}}>
-            <Button
-            className=""     
+            <Button   
             variant="primary" 
             onClick={() => setModalShow(true)}>
             Update Login</Button>

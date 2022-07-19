@@ -1,21 +1,24 @@
 ﻿using BuildABand.DAL;
 using BuildABand.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BuildABand.Controllers
 {
+    /// <summary>
+    /// This class serves as the controller
+    /// for data related to Project table in DB.
+    /// It is a mediator between the front-end 
+    /// and data access layer for Project media.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ProjectController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly ProjectDAL projectSource;
+        private readonly ProjectDAL projectDAL;
 
         /// <summary>
         /// 1-param constructor.
@@ -24,9 +27,8 @@ namespace BuildABand.Controllers
         public ProjectController(IConfiguration configuration)
         {
             _configuration = configuration;
-            this.projectSource = new ProjectDAL(_configuration);
+            this.projectDAL = new ProjectDAL(_configuration);
         }
-
 
         /// <summary>
         /// Gets specified project by MusicianID
@@ -44,13 +46,13 @@ namespace BuildABand.Controllers
             try
             {
                 List<Project> projects = new List<Project>();
-                projects = this.projectSource.getProjectByMusicianID(musicianID);
+                projects = this.projectDAL.GetProjectByMusicianID(musicianID);
                 if (projects is null)
                     throw new ArgumentException("No Project");
 
                 foreach (var project in projects)
                 {
-                    project.Collaborators = this.projectSource.GetCollaboratorsByProjectID
+                    project.Collaborators = this.projectDAL.GetCollaboratorsByProjectID
                             (project.ProjectID);
                 }
 
@@ -58,7 +60,6 @@ namespace BuildABand.Controllers
             }
             catch (Exception ex)
             {
-
                 return new JsonResult(ex.Message);
             }
 
@@ -73,20 +74,7 @@ namespace BuildABand.Controllers
         [HttpPost]
         public JsonResult addProject(Project project)
         {
-            if (project == null)
-            {
-                throw new ArgumentException("Invalid project");
-            }
-
-            try
-            {
-                this.projectSource.addProject(project);
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(ex.Message);
-            }
-            return new JsonResult("Project added");
+            return this.projectDAL.AddProject(project);
         }
 
 
@@ -96,28 +84,10 @@ namespace BuildABand.Controllers
         /// </summary>
         /// <param name="project"></param>
         /// <returns></returns>
-        [HttpPost("addcollaborator/{projectID}/{musicianID}")]
+        [HttpPost("{projectID}/{musicianID}/add")]
         public JsonResult addProjectCollaborator(int projectID, int musicianID)
         {
-            if (projectID < 0)
-            {
-                throw new ArgumentException("Invalid projectID");
-            }
-
-            if (musicianID < 0)
-            {
-                throw new ArgumentException("Invalid musicianID");
-            }
-
-            try
-            {
-                this.projectSource.addCollaborator(projectID, musicianID);
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(ex.Message);
-            }
-            return new JsonResult("Collaborator added");
+            return this.projectDAL.AddCollaborator(projectID, musicianID);
         }
 
         /// <summary>
@@ -126,28 +96,22 @@ namespace BuildABand.Controllers
         /// </summary>
         /// <param name="project"></param>
         /// <returns></returns>
-        [HttpPost("removecollaborator/{projectID}/{musicianID}")]
+        [HttpPost("{projectID}/{musicianID}/remove")]
         public JsonResult removeCollaborator(int projectID, int musicianID)
         {
-            if (projectID < 0)
-            {
-                throw new ArgumentException("Invalid projectID");
-            }
-
-            try
-            {
-               int result = this.projectSource.removeCollaborator(projectID, musicianID);
-                if (result == 1)
-                    return new JsonResult("Can't remove project owner");
-
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(ex.Message);
-            }
-            return new JsonResult("Collabrator removed");
+            return this.projectDAL.RemoveCollaborator(projectID, musicianID); 
         }
 
-
+        /// <summary>
+        /// Toggles whether project is private.
+        /// PATCH: api/project/ProjectID/private
+        /// </summary>
+        /// <param name="projectID"></param>
+        /// <returns>JsonResult if successful</returns>
+        [HttpPatch("{ProjectID}/private")]
+        public JsonResult ToggleProjectIsPrivate(int projectID)
+        {
+            return this.projectDAL.ToggleProjectIsPrivate(projectID);
+        }
     }
 }

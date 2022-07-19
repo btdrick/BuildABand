@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using BuildABand.Models;
@@ -91,6 +90,51 @@ namespace BuildABand.DAL
                     }
                 }
                 catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult(resultsTable);
+        }
+
+        /// <summary>
+        /// Gets post by musicianID
+        /// </summary>
+        /// <param name="musicianID"></param>
+        /// <returns>JsonResult of posts made by musician</returns>
+        public JsonResult GetPostByMusicianID(int musicianID)
+        {
+            if (!this.MusicianExists(musicianID))
+            {
+                throw new ArgumentException("Error: musician does not exist");
+            }
+
+            string selectStatement = @"
+            SELECT *
+            FROM dbo.Post 
+            LEFT JOIN dbo.Music ON dbo.Post.AudioID = dbo.Music.ID
+            WHERE dbo.Post.musicianID = @MusicianID
+            ";
+
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand myCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        myCommand.Parameters.AddWithValue("@MusicianID", musicianID);
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close();
+                    }
+                }
+                catch(Exception ex)
                 {
                     throw new Exception(ex.Message);
                 }
@@ -193,7 +237,14 @@ namespace BuildABand.DAL
                         myCommand.Parameters.AddWithValue("@CreatedTime", newPost.CreatedTime);
                         myCommand.Parameters.AddWithValue("@MusicianID", newPost.MusicianID);
                         myCommand.Parameters.AddWithValue("@Content", newPost.Content);
-                        myCommand.Parameters.AddWithValue("@AudioID", newPost.AudioID);
+                        if (newPost.AudioID == 0)
+                        {
+                            myCommand.Parameters.AddWithValue("@AudioID", DBNull.Value);
+                        }
+                        else
+                        {
+                            myCommand.Parameters.AddWithValue("@AudioID", newPost.AudioID);
+                        }
                         dataReader = myCommand.ExecuteReader();
                         resultsTable.Load(dataReader);
                         dataReader.Close();
@@ -252,46 +303,6 @@ namespace BuildABand.DAL
             }
 
             return new JsonResult(resultsTable);
-        }
-
-        public List<Post> GetPostByMusicianID(int musicianID)
-        {
-            List<Post> posts = new List<Post>();
-            string selectStatement = 
-                @"SELECT *
-                FROM dbo.Post 
-                WHERE musicianID = @id";
-
-            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
-            {
-                connection.Open();
-                using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
-                {
-                    selectCommand.Parameters.AddWithValue("@id", musicianID);
-                     using (SqlDataReader reader = selectCommand.ExecuteReader())
-                    {
-                        if (!reader.HasRows)
-                        {
-                            return null;
-                        }
-
-                        while (reader.Read())
-                        {
-                            Post post = new Post
-                            {
-                                PostID = (int)reader["postID"],
-                                CreatedTime = (DateTime)reader["createdTime"],
-                                MusicianID = (int)reader["musicianID"],
-                                Content = reader["content"].ToString(),
-                            };
-
-                        posts.Add(post);
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            return posts;
         }
 
         /// <summary>
@@ -405,6 +416,44 @@ namespace BuildABand.DAL
                         bool postExists = Convert.ToBoolean(selectCommand.ExecuteScalar());
 
                         return postExists;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new ArgumentException(ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns true if musician exists.
+        /// </summary>
+        /// <param name="musicianID"></param>
+        /// <returns>True if musician  exists</returns>
+        public bool MusicianExists(int musicianID)
+        {
+            if (musicianID <= 0)
+            {
+                throw new ArgumentException("Error: musician ID must be greater than 0");
+            }
+
+            string selectStatement = @"
+            SELECT COUNT(*)
+            FROM dbo.Musician
+            WHERE MusicianID = @MusicianID
+            ";
+
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        selectCommand.Parameters.AddWithValue("@MusicianID", musicianID);
+                        bool commentLikeExists = Convert.ToBoolean(selectCommand.ExecuteScalar());
+
+                        return commentLikeExists;
                     }
                 }
                 catch (Exception ex)

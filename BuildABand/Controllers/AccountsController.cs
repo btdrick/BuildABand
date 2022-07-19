@@ -8,21 +8,36 @@ using System.Data.SqlClient;
 
 namespace BuildABand.Controllers
 {
+    /// <summary>
+    /// This class serves as the controller
+    /// for data related to Accounts table in DB.
+    /// It is a mediator between the front-end 
+    /// and data access layer for Account media.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        private IConfiguration _configuration;
         private AccountDAL accountDAL;
 
+        /// <summary>
+        /// 1-param costructor
+        /// </summary>
+        /// <param name="configuration"></param>
         public AccountsController(IConfiguration configuration)
         {
-            _configuration = configuration;
+            this._configuration = configuration;
             this.accountDAL = new AccountDAL(configuration);
         }
 
-        // GET: api/accounts/login
-        // Confirm login
+        /// <summary>
+        /// Validates login credentials 
+        /// GET: api/accounts/login
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns>AccountID and Admin status if successful</returns>
         [HttpGet("login")]
         public ActionResult<int> ValidateLogin([FromQuery][Required] string username, [FromQuery][Required] string password)
         {
@@ -60,15 +75,13 @@ namespace BuildABand.Controllers
             var row = resultsTable.Rows[0];
             var dbPassword = row.Field<string>("Password");
 
-            if (dbPassword == PasswordHash.GetSha256Hash(password))
-            {
-                int[] data = { row.Field<int>("MusicianID"), row.Field<byte>("is_Admin") };
-                return Ok(data);
-            }
-            else
+            if (dbPassword != PasswordHash.GetSha256Hash(password))
             {
                 return BadRequest("Username or password is incorrect");
             }
+
+            int[] data = { row.Field<int>("MusicianID"), row.Field<byte>("is_Admin") };
+            return Ok(data);
         }
 
         /// <summary>

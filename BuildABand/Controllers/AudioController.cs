@@ -13,12 +13,10 @@ namespace BuildABand.Controllers
     [ApiController]
     public class AudioController : ControllerBase
     {
-        private readonly string connectionString;
         private MusicDAL musicDal;
 
         public AudioController(IConfiguration configuration)
         {
-            connectionString = configuration.GetConnectionString("AZURE_STORAGE_CONNECTION_STRING");
             musicDal = new MusicDAL(configuration);
         }
 
