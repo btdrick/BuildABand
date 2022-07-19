@@ -46,7 +46,7 @@ function Projects() {
     /* Renders visible projects */
     const renderProjects = () => {
         return projects.map(project => {
-            console.log(collaborativeProjectIDs)
+            console.log("Can see?", collaborativeProjectIDs.some((projectID) => projectID === project.ProjectID));
             if (collaborativeProjectIDs.some((projectID) => projectID === project.ProjectID)) {
                 return <div className='row' key={project.ProjectID}>
                     <Project 
@@ -66,7 +66,7 @@ function Projects() {
     }
 
     /* Creates a new project */
-    const createProject = async (projectName, audioID) => {
+    const createProject = async (projectName, audioID, collaboratorIDs) => {
         fetch(variables.API_URL+'project', {
             method: 'POST',
             headers:{
@@ -74,9 +74,10 @@ function Projects() {
                 'Content-Type':'application/json'
             },
             body:JSON.stringify({   
-                Name:    projectName,                           
-                OwnerID: UserProfile.getMusicianID(),
-                AudioID: audioID
+                Name:             projectName,                           
+                OwnerID:          UserProfile.getMusicianID(),
+                AudioID:          audioID,
+                CollaboratorIDs:  collaboratorIDs
             })
         })
         .then(res=>res.json())
@@ -85,6 +86,7 @@ function Projects() {
                 setProjects(data);
             });
         },(_error)=>{
+            console.log(_error)
             alert("Unable to start project");
         });
     }
