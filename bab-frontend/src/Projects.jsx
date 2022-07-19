@@ -46,12 +46,12 @@ function Projects() {
     /* Renders visible projects */
     const renderProjects = () => {
         return projects.map(project => {
-            console.log("Can see?", collaborativeProjectIDs.some((projectID) => projectID === project.ProjectID));
             if (collaborativeProjectIDs.some((projectID) => projectID === project.ProjectID)) {
                 return <div className='row' key={project.ProjectID}>
                     <Project 
                     ProjectID={project.ProjectID}
                     OwnerID={project.OwnerID}
+                    Collaborators={project.Collaborators}
                     Name={project.Name}
                     Description={project.Description}
                     FileName={project.FileName}
@@ -61,7 +61,7 @@ function Projects() {
                 </div>
             }
             else {
-                return <></>
+                return null;
             }});
     }
 
@@ -82,11 +82,14 @@ function Projects() {
         })
         .then(res=>res.json())
         .then((result) => {
+            /* Update the backend */
             getProjectOwnersProjects().then((data) => {
                 setProjects(data);
             });
+            getUserProjectCollaborationsProjectIDs().then((data) => {
+                setCollaborativeProjectIDs(data);
+            });
         },(_error)=>{
-            console.log(_error)
             alert("Unable to start project");
         });
     }

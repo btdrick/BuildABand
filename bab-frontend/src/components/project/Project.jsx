@@ -1,4 +1,4 @@
-import {React} from "react";
+import { React } from "react";
 import AudioPlayer from '../audio/AudioPlayer';
 import Button from "react-bootstrap/esm/Button";
 import LockIcon from '@mui/icons-material/Lock';
@@ -9,6 +9,7 @@ import './project.css';
 const Project = (props) => {
     const isProjectOwner = props.OwnerID === UserProfile.getMusicianID();
 
+    /* Render button to toggle if project is public */
     const renderToggleProjectIsPrivateButton = () => {
         if (props.Private === true) {
             return <Button 
@@ -24,27 +25,39 @@ const Project = (props) => {
         }
     }
 
+    /* Render list of project collaborators if they exist */
+    const renderCollaborators = () => {
+        const collaborators = props.Collaborators;
+        if (!!Object.keys(collaborators).length) {
+            return <div className="project-box-footer">
+                <h4>Collaborators:</h4>
+                <div className="list-group">
+                    {collaborators.map((collaborator) => {
+                        if (collaborator.musicianID !== UserProfile.getMusicianID()) {
+                            return <a key={collaborator.musicianID}
+                            href={`#/profile/${collaborator.musicianID}`} 
+                            className="list-group-item list-group-item-action">
+                            {collaborator.FirstName + " " + collaborator.LastName}</a>
+                        }
+                        else {
+                            return null;
+                        }
+                    })}
+                </div>
+            </div>
+        }
+    }
+
     return(
         <div className="container-lg card">
             <img src={image} style={{width: "50%", margin: "0 auto"}} alt="sound pic" />
             
             <div className="container">
-                <h4>{props.Private === true && <LockIcon />}Name: <b>{props.Name}</b></h4>
-                {props.Description !== undefined && <p>Project description: {props.Description}</p>}
+                <h4>{props.Private === true && <LockIcon />}<b>Name: </b>{props.Name}</h4>
+                {props.Description !== "" && <p>Project description: {props.Description}</p>}
                 <AudioPlayer FileName={props.FileName} AzureFileName={props.AzureFileName} />
                 {isProjectOwner && renderToggleProjectIsPrivateButton()}
-                
-                <div className="project-box-footer">
-                    <div className="participants">
-                        <img src={ require("../comments/user-icon.png") } alt="user icon" style={{borderRadius: "50%", border: "1px solid black"}} />
-                        <img src={ require("../comments/user-icon.png") } alt="user icon" style={{borderRadius: "50%", border: "1px solid black", marginLeft: "-30px"}} />
-                        <button className="add-participant" style={{color: "#4f3ff0", border: "1px solid black"}}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="feather feather-plus">
-                                <path d="M12 5v14M5 12h14" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+                { renderCollaborators() }
             </div>
         </div> 
     )
