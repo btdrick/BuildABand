@@ -64,6 +64,7 @@ export default function Messenger(){
          
 
     const getMessages = async()=> {
+        if(!currentChat) return;
         const res = await fetch(variables.API_URL+'message/'+ currentChat.ConversationID);
         const data = await res.json();
         setMessages(data);
@@ -135,7 +136,7 @@ export default function Messenger(){
                         <h3> Conversation</h3>
                         {conversations.map((c, i) => (
                             <div key={i}  onClick={()=> setCurrentChat(c)}>
-                            <Conversation conversation={c}/>
+                                <Conversation conversation={c}/>
                             </div>
                         ))}    
                 </div>
@@ -150,9 +151,9 @@ export default function Messenger(){
                 <>
                 <div className="chatBoxTop">
                 
-                  {messages.map(m=>(
-                    <div ref={scrollRef}>
-                       <Message message={m} own={m.SenderID === MusicianID} /> 
+                  {messages.map((m, i)=>(
+                    <div key={i} ref={scrollRef}>
+                       <Message  message={m} own={m.SenderID === MusicianID} /> 
                     </div>
                     
                   ))
@@ -172,8 +173,8 @@ export default function Messenger(){
            
                 <div className="chatOnlineWrapper">
                        <h3 > Connections</h3>
-                             { connections.map(c=> (
-                                <div onClick={()=> addConversation(c)}>
+                             { connections.map((c, i)=> (
+                                <div   key={i} onClick={()=> addConversation(c)}>
                                         <ChatOnline connection={c} currentMusicianID={MusicianID} />
                                 </div>                            
                             ))}            
