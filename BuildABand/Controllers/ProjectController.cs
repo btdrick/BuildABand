@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 
 namespace BuildABand.Controllers
 {
@@ -41,7 +42,7 @@ namespace BuildABand.Controllers
             try
             {
                 List<Project> projects = new List<Project>();
-                projects = this.projectSource.getProjectByMusicianID(musicianID);
+                projects = this.projectSource.GetProjectByMusicianID(musicianID);
                 if (projects is null)
                     throw new ArgumentException("No Project");
 
@@ -70,7 +71,7 @@ namespace BuildABand.Controllers
         [HttpPost]
         public JsonResult addProject(Project project)
         {
-            return this.projectSource.addProject(project);
+            return this.projectSource.AddProject(project);
         }
 
 
@@ -95,7 +96,7 @@ namespace BuildABand.Controllers
 
             try
             {
-                this.projectSource.addCollaborator(projectID, musicianID);
+                this.projectSource.AddCollaborator(projectID, musicianID);
             }
             catch (Exception ex)
             {
@@ -120,7 +121,7 @@ namespace BuildABand.Controllers
 
             try
             {
-               int result = this.projectSource.removeCollaborator(projectID, musicianID);
+                int result = this.projectSource.RemoveCollaborator(projectID, musicianID);
                 if (result == 1)
                     return new JsonResult("Can't remove project owner");
 
@@ -132,6 +133,16 @@ namespace BuildABand.Controllers
             return new JsonResult("Collabrator removed");
         }
 
-
+        /// <summary>
+        /// Toggles whether project is private.
+        /// PATCH: api/project/ProjectID/private
+        /// </summary>
+        /// <param name="projectID"></param>
+        /// <returns>JsonResult if successful</returns>
+        [HttpPatch("{ProjectID}/private")]
+        public JsonResult ToggleProjectIsPrivate(int projectID)
+        {
+            return this.projectSource.ToggleProjectIsPrivate(projectID);
+        }
     }
 }

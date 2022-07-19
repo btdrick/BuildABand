@@ -44,7 +44,6 @@ const CreateProject = ( { handleSubmit }) => {
             setAudioID(0);
             setModalShow(false);
         }
-        console.log("yes")
     }, [getConnections, audioID, projectName, handleSubmit]);
 
     /* Resets modal upon close */

@@ -14,13 +14,12 @@ function Projects() {
     /* Projects are loading? */
     const [loading, setLoading] = useState(true);
 
-    const canSeeAllProjects = true;
-
     /* Makes api call to backend to get the user's projects */
     const getUserProjects = useCallback(async () => {
         const response = await fetch(variables.API_URL+'project/'+id);
         const data = await response.json();
         if (data !== undefined) {
+            console.log(data)
             return data.reverse();
         }
     }, [id]);
@@ -30,7 +29,6 @@ function Projects() {
         setLoading(true);
         getUserProjects().then((data) => {
             setProjects(data);
-            console.log("New")
         });
         setLoading(false);
     }, [getUserProjects]);
@@ -55,8 +53,29 @@ function Projects() {
                 setProjects(data);
             });
         },(_error)=>{
-            console.log(_error);
             alert("Unable to start project");
+        });
+    }
+
+    const toggleProjectIsPrivate = async (projectID) => {
+        fetch(variables.API_URL+'project/'+projectID+"/private",{
+            method:'PATCH',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({   
+                ProjectID:  projectID
+            })
+        })
+        .then(res=>res.json())
+        .then((result)=>{ 
+            /* Refresh projects */
+            getUserProjects().then((data) => {
+                setProjects(data);
+            });               
+        },(_error)=>{
+            alert('An error has occurred with toggling your project');
         });
     }
 
@@ -71,9 +90,14 @@ function Projects() {
                     <>
                         {projects.map(project => <div className='row' key={project.ProjectID}>
                             <Project 
-                            name={project.Name}
+                            ProjectID={project.ProjectID}
+                            OwnerID={project.OwnerID}
+                            Name={project.Name}
+                            Description={project.Description}
                             FileName={project.FileName}
-                            AzureFileName={project.AzureFileName} /> 
+                            AzureFileName={project.AzureFileName}
+                            Private={project.IsPrivate === 1} 
+                            ToggleIsPrivate={toggleProjectIsPrivate} /> 
                         </div>)}
                     </>
                     ) : ( 
