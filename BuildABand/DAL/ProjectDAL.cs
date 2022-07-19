@@ -21,7 +21,7 @@ namespace BuildABand.DAL
         /// Add new project to database
         /// </summary>
         /// <param name="project"> project</param>
-        public JsonResult addProject(Project project)
+        public JsonResult AddProject(Project project)
         {
             if (project is null)
             {
@@ -47,13 +47,12 @@ namespace BuildABand.DAL
                             insertCommand.Parameters.AddWithValue("@AudioID", project.AudioID);
                             insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
 
-
                             insertCommand.ExecuteNonQuery();
                         }
 
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     throw new Exception(ex.Message);
                 }
@@ -67,9 +66,8 @@ namespace BuildABand.DAL
         /// return 1 = error(Can't delete project owner)
         /// </summary>
         /// <param name="project"> project</param>
-        public int removeCollaborator(int projectID, int musicianID)
+        public int RemoveCollaborator(int projectID, int musicianID)
         {
-           
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
@@ -82,19 +80,17 @@ namespace BuildABand.DAL
                     var returnParameter = insertCommand.Parameters.Add("@result", SqlDbType.Int);
                     returnParameter.Direction = ParameterDirection.ReturnValue;
 
-                    insertCommand.ExecuteNonQuery();  
+                    insertCommand.ExecuteNonQuery();
                     return (int)returnParameter.Value;
                 }
             }
-
         }
-
 
         /// <summary>
         /// Remove new project to database
         /// </summary>
         /// <param name="project"> project</param>
-        public void addCollaborator(int projectID, int musicianID)
+        public void AddCollaborator(int projectID, int musicianID)
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
@@ -104,16 +100,14 @@ namespace BuildABand.DAL
                     INSERT Project_workon VALUES (@ProjectID, @MusicianID, @JoinedDate)
                     ";
 
-                 using (SqlCommand insertCommand = new SqlCommand(insertStatement, connection))
-                    {
-                        insertCommand.Parameters.AddWithValue("@ProjectID", projectID);
-                        insertCommand.Parameters.AddWithValue("@MusicianID", musicianID);
-                        insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
- 
-                        insertCommand.ExecuteNonQuery();
-                    }
+                using (SqlCommand insertCommand = new SqlCommand(insertStatement, connection))
+                {
+                    insertCommand.Parameters.AddWithValue("@ProjectID", projectID);
+                    insertCommand.Parameters.AddWithValue("@MusicianID", musicianID);
+                    insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
 
-             
+                    insertCommand.ExecuteNonQuery();
+                }
             }
         }
 
@@ -121,18 +115,20 @@ namespace BuildABand.DAL
         /// DAL to return project by musicianID
         /// </summary>
         /// <param name="project"> project</param>
-        public List<Project> getProjectByMusicianID(int musicianID)
+        public List<Project> GetProjectByMusicianID(int musicianID)
         {
             List<Project> projects = new List<Project>();
             string selectStatement = @"
-                SELECT PW.ProjectID, P.Name, OwnerID, StartDate, EndDate, P.AudioID,
-                azure_file_name, file_name,
+                SELECT PW.ProjectID, P.Name, P.Description, 
+                OwnerID, StartDate, EndDate, P.AudioID,
+                azure_file_name, file_name, P.is_Private,
                 CONCAT(M.Fname, ' ', M.Lname) AS OwnerNames
                 FROM Project_Workon PW
                 JOIN Project P ON PW.ProjectID = P.ProjectID
                 fULL OUTER JOIN Music MS ON P.AudioID = MS.ID
                 JOIN Musician M ON P.OwnerID = M.MusicianID
-                WHERE PW.MusicianID = @MusicianID ";
+                WHERE PW.MusicianID = @MusicianID
+                ";
 
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
@@ -148,12 +144,14 @@ namespace BuildABand.DAL
 
                             project.ProjectID = (int)reader["ProjectID"];
                             project.Name = reader["Name"].ToString();
+                            project.Description = reader["Description"].ToString();
                             project.OwnerID = (int)reader["OwnerID"];
                             project.OwnerNames = reader["OwnerNames"].ToString();
                             project.StartDate = (DateTime)reader["StartDate"];
                             project.AudioID = (int)reader["AudioID"];
                             project.FileName = reader["file_name"].ToString();
                             project.AzureFileName = reader["azure_file_name"].ToString();
+                            project.IsPrivate = (byte)reader["is_Private"];
 
                             if (reader["EndDate"] == DBNull.Value)
                                 project.EndDate = null;
@@ -197,7 +195,7 @@ namespace BuildABand.DAL
                                 musicianID = (int)reader["MusicianID"],
                                 FirstName = reader["Fname"].ToString(),
                                 LastName = reader["Lname"].ToString()
-                                
+
                             };
                             musicians.Add(musician);
                         }
@@ -208,7 +206,89 @@ namespace BuildABand.DAL
             return musicians;
         }
 
+        /// <summary>
+        /// Toggles whether a project is private
+        /// </summary>
+        /// <param name="projectID"></param>
+        /// <returns>JsonResult if successful</returns>
+        public JsonResult ToggleProjectIsPrivate(int projectID)
+        {
+            if (!this.ProjectExists(projectID))
+            {
+                throw new ArgumentException("Error: project does not exist");
+            }
 
+            string updateStatement = @"
+            UPDATE dbo.Project
+            SET is_Private = CASE
+            WHEN is_Private = 0 THEN 1
+            ELSE 0
+            END
+            WHERE ProjectID = @ProjectID
+            ";
 
+            DataTable resultsTable = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("BuildABandAppCon");
+            SqlDataReader dataReader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand myCommand = new SqlCommand(updateStatement, connection))
+                    {
+                        myCommand.Parameters.AddWithValue("@ProjectID", projectID);
+                        dataReader = myCommand.ExecuteReader();
+                        resultsTable.Load(dataReader);
+                        dataReader.Close();
+                        connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult("Project Toggled Successfully");
+        }
+
+        /// <summary>
+        /// Returns true if project exists.
+        /// </summary>
+        /// <param name="accountID"></param>
+        /// <returns>True if project exists</returns>
+        public bool ProjectExists(int projectID)
+        {
+            if (projectID <= 0)
+            {
+                throw new ArgumentException("Error: project ID must be greater than 0");
+            }
+
+            string selectStatement = @"
+            SELECT COUNT(*)
+            FROM dbo.Project
+            WHERE ProjectID = @ProjectID
+            ";
+
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        selectCommand.Parameters.AddWithValue("@ProjectID", projectID);
+                        bool projectExists = Convert.ToBoolean(selectCommand.ExecuteScalar());
+
+                        return projectExists;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new ArgumentException(ex.Message);
+                }
+            }
+        }
     }
 }
