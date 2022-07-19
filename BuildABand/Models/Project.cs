@@ -15,10 +15,10 @@ namespace BuildABand.Models
         public DateTime StartDate { get; set; }
         public Nullable<DateTime> EndDate { get; set; }
         public List<Musician> Collaborators { get; set; }
+        public int[] CollaboratorIDs { get; set; }
         public int AudioID { get; set; }
         public string FileName { get; set; }
         public String  AzureFileName { get; set; }
         public byte IsPrivate { get; set; }
-
     }
 }
