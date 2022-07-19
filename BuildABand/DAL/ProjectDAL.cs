@@ -1,11 +1,10 @@
 ﻿using BuildABand.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BuildABand.DAL
 {
@@ -22,34 +21,45 @@ namespace BuildABand.DAL
         /// Add new project to database
         /// </summary>
         /// <param name="project"> project</param>
-        public void addProject(Project project)
+        public JsonResult addProject(Project project)
         {
+            if (project is null)
+            {
+                throw new ArgumentException("Error: project cannot be null");
+            }
 
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
             {
                 connection.Open();
-
-                
+                try
                 {
-                    using (SqlCommand insertCommand = new SqlCommand("dbo.addProject", connection))
                     {
-                        insertCommand.CommandType = System.Data.CommandType.StoredProcedure;
-                        insertCommand.Parameters.AddWithValue("@Name", project.Name);
-                        insertCommand.Parameters.AddWithValue("@OwnerID", project.OwnerID);
-                        insertCommand.Parameters.AddWithValue("@StartDate", DateTime.Now);
-                        if (project.EndDate == null)
-                            insertCommand.Parameters.AddWithValue("@EndDate", DBNull.Value);
-                        else
-                            insertCommand.Parameters.AddWithValue("@EndDate", project.EndDate);
-                        insertCommand.Parameters.AddWithValue("@MusicID", project.MusicID);
-                        insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
+                        using (SqlCommand insertCommand = new SqlCommand("dbo.addProject", connection))
+                        {
+                            insertCommand.CommandType = CommandType.StoredProcedure;
+                            insertCommand.Parameters.AddWithValue("@Name", project.Name);
+                            insertCommand.Parameters.AddWithValue("@OwnerID", project.OwnerID);
+                            insertCommand.Parameters.AddWithValue("@StartDate", DateTime.Now);
+                            if (project.EndDate is null)
+                                insertCommand.Parameters.AddWithValue("@EndDate", DBNull.Value);
+                            else
+                                insertCommand.Parameters.AddWithValue("@EndDate", project.EndDate);
+                            insertCommand.Parameters.AddWithValue("@AudioID", project.AudioID);
+                            insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
 
 
-                        insertCommand.ExecuteNonQuery();
+                            insertCommand.ExecuteNonQuery();
+                        }
+
                     }
-
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
                 }
             }
+
+            return new JsonResult("Project Added Successfully");
         }
 
         /// <summary>
@@ -115,12 +125,12 @@ namespace BuildABand.DAL
         {
             List<Project> projects = new List<Project>();
             string selectStatement = @"
-                SELECT PW.ProjectID, P.Name, OwnerID, StartDate, EndDate, P.MusicID,
+                SELECT PW.ProjectID, P.Name, OwnerID, StartDate, EndDate, P.AudioID,
                 azure_file_name, file_name,
                 CONCAT(M.Fname, ' ', M.Lname) AS OwnerNames
                 FROM Project_Workon PW
                 JOIN Project P ON PW.ProjectID = P.ProjectID
-                fULL OUTER JOIN Music MS ON P.MusicID = MS.ID
+                fULL OUTER JOIN Music MS ON P.AudioID = MS.ID
                 JOIN Musician M ON P.OwnerID = M.MusicianID
                 WHERE PW.MusicianID = @MusicianID ";
 
@@ -141,7 +151,7 @@ namespace BuildABand.DAL
                             project.OwnerID = (int)reader["OwnerID"];
                             project.OwnerNames = reader["OwnerNames"].ToString();
                             project.StartDate = (DateTime)reader["StartDate"];
-                            project.MusicID = (int)reader["MusicID"];
+                            project.AudioID = (int)reader["AudioID"];
                             project.FileName = reader["file_name"].ToString();
                             project.AzureFileName = reader["azure_file_name"].ToString();
 

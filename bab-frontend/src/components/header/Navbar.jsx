@@ -89,6 +89,11 @@ export class Navbar extends React.Component {
                                       Messages
                                   </Nav.Link>
                                 </Nav.Item>
+                                <Nav.Item>
+                                  <Nav.Link href={`#/profile/projects/${UserProfile.getMusicianID()}`}>
+                                      Projects
+                                  </Nav.Link>
+                                </Nav.Item>
                             </Nav>
                             {/* Dropdown menu */}
                             <Dropdown className="dropdown">
