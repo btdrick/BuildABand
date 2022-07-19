@@ -22,7 +22,7 @@ namespace BuildABand.Controllers
         private AccountDAL accountDAL;
 
         /// <summary>
-        /// 1-para, costructor
+        /// 1-param costructor
         /// </summary>
         /// <param name="configuration"></param>
         public AccountsController(IConfiguration configuration)

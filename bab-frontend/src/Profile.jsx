@@ -6,6 +6,7 @@ import Feed from './components/feed/Feed.jsx';
 import Navbar from './components/header/Navbar';
 import AddConnection from './components/connection/AddConnection.js';
 import DeactivateAccount from './components/account/DeactivateAccount.js';
+import Button from 'react-bootstrap/Button'
 import './style/home.css';
 
 function Profile() {
@@ -74,9 +75,14 @@ function Profile() {
                     <AddConnection 
                     followerID={ parseInt(id) }
                     connection={ connection } />}
+                {/* Projects */}
+                    <Button 
+                    variant="secondary"
+                    href={`#/profile/projects/${id}`}>
+                    Projects</Button>
                 {/* Profile feed */}
-                <Feed getPosts={ getUsersPosts } 
-                canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
+                    <Feed getPosts={ getUsersPosts } 
+                    canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
             </div>
         </div>
     );

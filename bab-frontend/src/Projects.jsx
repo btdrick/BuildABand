@@ -9,29 +9,61 @@ import './style/home.css';
 
 function Projects() {
     const { id } = useParams();
-    /* Users projects */
+    /* Project owner's projects */
     const [projects, setProjects] = useState([]);
+    /* Current user's collaborations */
+    const [collaborativeProjectIDs, setCollaborativeProjectIDs] = useState([]);
     /* Projects are loading? */
     const [loading, setLoading] = useState(true);
 
     /* Makes api call to backend to get the user's projects */
-    const getUserProjects = useCallback(async () => {
+    const getProjectOwnersProjects = useCallback(async () => {
         const response = await fetch(variables.API_URL+'project/'+id);
         const data = await response.json();
-        if (data !== undefined) {
-            console.log(data)
-            return data.reverse();
-        }
+        return data.reverse();
     }, [id]);
+
+    /* Makes api call to backend to get projectID for user's project collaborations */
+    const getUserProjectCollaborationsProjectIDs = useCallback(async () => {
+        const response = await fetch(variables.API_URL+'collaboration/collaborator/'+UserProfile.getMusicianID());
+        const data = await response.json();
+        const projectIDs = data.map(function(row) { return row.ProjectID; });
+        return projectIDs;
+    }, []);
 
     /* Hook is called after each refresh */
     useEffect(() => {
         setLoading(true);
-        getUserProjects().then((data) => {
+        getProjectOwnersProjects().then((data) => {
             setProjects(data);
         });
+        getUserProjectCollaborationsProjectIDs().then((data) => {
+            setCollaborativeProjectIDs(data);
+        });
         setLoading(false);
-    }, [getUserProjects]);
+    }, [getProjectOwnersProjects, getUserProjectCollaborationsProjectIDs]);
+
+    /* Renders visible projects */
+    const renderProjects = () => {
+        return projects.map(project => {
+            console.log(collaborativeProjectIDs)
+            if (collaborativeProjectIDs.some((projectID) => projectID === project.ProjectID)) {
+                return <div className='row' key={project.ProjectID}>
+                    <Project 
+                    ProjectID={project.ProjectID}
+                    OwnerID={project.OwnerID}
+                    Name={project.Name}
+                    Description={project.Description}
+                    FileName={project.FileName}
+                    AzureFileName={project.AzureFileName}
+                    Private={project.IsPrivate === 1} 
+                    ToggleIsPrivate={toggleProjectIsPrivate} />
+                </div>
+            }
+            else {
+                return <></>
+            }});
+    }
 
     /* Creates a new project */
     const createProject = async (projectName, audioID) => {
@@ -49,7 +81,7 @@ function Projects() {
         })
         .then(res=>res.json())
         .then((result) => {
-            getUserProjects().then((data) => {
+            getProjectOwnersProjects().then((data) => {
                 setProjects(data);
             });
         },(_error)=>{
@@ -57,6 +89,7 @@ function Projects() {
         });
     }
 
+    /* Toggles a project as either private or public */
     const toggleProjectIsPrivate = async (projectID) => {
         fetch(variables.API_URL+'project/'+projectID+"/private",{
             method:'PATCH',
@@ -69,11 +102,17 @@ function Projects() {
             })
         })
         .then(res=>res.json())
-        .then((result)=>{ 
-            /* Refresh projects */
-            getUserProjects().then((data) => {
-                setProjects(data);
-            });               
+        .then((result) => { 
+            /* Update projects with toggled project */
+            const updatedProjects = projects.map(project => {
+                var toggle;
+                if(project.ProjectID === projectID) {
+                    project.IsPrivate === 1 ? toggle = 0 : toggle = 1;
+                    return {...project, IsPrivate: toggle}
+                }
+                return project;
+            });
+            setProjects(updatedProjects);
         },(_error)=>{
             alert('An error has occurred with toggling your project');
         });
@@ -87,19 +126,7 @@ function Projects() {
                 <div className="container-lg">
                     <CreateProject handleSubmit={ createProject }/>
                     {projects.length > 0 ? (
-                    <>
-                        {projects.map(project => <div className='row' key={project.ProjectID}>
-                            <Project 
-                            ProjectID={project.ProjectID}
-                            OwnerID={project.OwnerID}
-                            Name={project.Name}
-                            Description={project.Description}
-                            FileName={project.FileName}
-                            AzureFileName={project.AzureFileName}
-                            Private={project.IsPrivate === 1} 
-                            ToggleIsPrivate={toggleProjectIsPrivate} /> 
-                        </div>)}
-                    </>
+                    <>{renderProjects()}</>
                     ) : ( 
                         <h6 className="text-center text-muted">No projects found</h6>
                     )}
@@ -110,7 +137,6 @@ function Projects() {
     if (loading) {
         return (<div>loading projects...</div>);
     }
-    
 }
 
 export default Projects;

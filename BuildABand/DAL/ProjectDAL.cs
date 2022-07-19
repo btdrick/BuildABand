@@ -8,107 +8,20 @@ using System.Data.SqlClient;
 
 namespace BuildABand.DAL
 {
+    /// <summary>
+    /// Project table data access layer (DAL).
+    /// </summary>
     public class ProjectDAL
     {
         private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// 1-param constructor
+        /// </summary>
+        /// <param name="configuration"></param>
         public ProjectDAL(IConfiguration configuration)
         {
             this._configuration = configuration;
-        }
-
-        /// <summary>
-        /// Add new project to database
-        /// </summary>
-        /// <param name="project"> project</param>
-        public JsonResult AddProject(Project project)
-        {
-            if (project is null)
-            {
-                throw new ArgumentException("Error: project cannot be null");
-            }
-
-            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
-            {
-                connection.Open();
-                try
-                {
-                    {
-                        using (SqlCommand insertCommand = new SqlCommand("dbo.addProject", connection))
-                        {
-                            insertCommand.CommandType = CommandType.StoredProcedure;
-                            insertCommand.Parameters.AddWithValue("@Name", project.Name);
-                            insertCommand.Parameters.AddWithValue("@OwnerID", project.OwnerID);
-                            insertCommand.Parameters.AddWithValue("@StartDate", DateTime.Now);
-                            if (project.EndDate is null)
-                                insertCommand.Parameters.AddWithValue("@EndDate", DBNull.Value);
-                            else
-                                insertCommand.Parameters.AddWithValue("@EndDate", project.EndDate);
-                            insertCommand.Parameters.AddWithValue("@AudioID", project.AudioID);
-                            insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
-
-                            insertCommand.ExecuteNonQuery();
-                        }
-
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }
-
-            return new JsonResult("Project Added Successfully");
-        }
-
-        /// <summary>
-        /// Remove collaborator except project owner,
-        /// return 1 = error(Can't delete project owner)
-        /// </summary>
-        /// <param name="project"> project</param>
-        public int RemoveCollaborator(int projectID, int musicianID)
-        {
-            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
-            {
-                connection.Open();
-                using (SqlCommand insertCommand = new SqlCommand("dbo.removeCollaborator", connection))
-                {
-                    insertCommand.CommandType = System.Data.CommandType.StoredProcedure;
-                    insertCommand.Parameters.AddWithValue("@projectID", projectID);
-                    insertCommand.Parameters.AddWithValue("@musicianID", musicianID);
-
-                    var returnParameter = insertCommand.Parameters.Add("@result", SqlDbType.Int);
-                    returnParameter.Direction = ParameterDirection.ReturnValue;
-
-                    insertCommand.ExecuteNonQuery();
-                    return (int)returnParameter.Value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Remove new project to database
-        /// </summary>
-        /// <param name="project"> project</param>
-        public void AddCollaborator(int projectID, int musicianID)
-        {
-            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
-            {
-                connection.Open();
-
-                String insertStatement = @"
-                    INSERT Project_workon VALUES (@ProjectID, @MusicianID, @JoinedDate)
-                    ";
-
-                using (SqlCommand insertCommand = new SqlCommand(insertStatement, connection))
-                {
-                    insertCommand.Parameters.AddWithValue("@ProjectID", projectID);
-                    insertCommand.Parameters.AddWithValue("@MusicianID", musicianID);
-                    insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
-
-                    insertCommand.ExecuteNonQuery();
-                }
-            }
         }
 
         /// <summary>
@@ -117,6 +30,11 @@ namespace BuildABand.DAL
         /// <param name="project"> project</param>
         public List<Project> GetProjectByMusicianID(int musicianID)
         {
+            if (!this.MusicianExists(musicianID))
+            {
+                throw new ArgumentException("Error: musician does not exist");
+            }
+
             List<Project> projects = new List<Project>();
             string selectStatement = @"
                 SELECT PW.ProjectID, P.Name, P.Description, 
@@ -164,6 +82,139 @@ namespace BuildABand.DAL
                 }
             }
             return projects;
+        }
+
+        /// <summary>
+        /// Add new project to database
+        /// </summary>
+        /// <param name="project"> project</param>
+        public JsonResult AddProject(Project project)
+        {
+            if (project is null)
+            {
+                throw new ArgumentException("Error: project cannot be null");
+            }
+
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                try
+                {
+                    {
+                        using (SqlCommand insertCommand = new SqlCommand("dbo.addProject", connection))
+                        {
+                            insertCommand.CommandType = CommandType.StoredProcedure;
+                            insertCommand.Parameters.AddWithValue("@Name", project.Name);
+                            insertCommand.Parameters.AddWithValue("@OwnerID", project.OwnerID);
+                            insertCommand.Parameters.AddWithValue("@StartDate", DateTime.Now);
+                            if (project.EndDate is null)
+                                insertCommand.Parameters.AddWithValue("@EndDate", DBNull.Value);
+                            else
+                                insertCommand.Parameters.AddWithValue("@EndDate", project.EndDate);
+                            insertCommand.Parameters.AddWithValue("@AudioID", project.AudioID);
+                            insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
+
+                            insertCommand.ExecuteNonQuery();
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult("Project Added Successfully");
+        }
+
+        /// <summary>
+        /// Remove new project to database
+        /// </summary>
+        /// <param name="project"> project</param>
+        public JsonResult AddCollaborator(int projectID, int musicianID)
+        {
+            if (!this.ProjectExists(projectID))
+            {
+                throw new ArgumentException("Error: project does not exist");
+            }
+            if (!this.MusicianExists(musicianID))
+            {
+                throw new ArgumentException("Error: musician does not exist");
+            }
+
+            string insertStatement = @"
+                    INSERT Project_workon 
+                    VALUES (@ProjectID, @MusicianID, @JoinedDate)
+                    ";
+
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand insertCommand = new SqlCommand(insertStatement, connection))
+                    {
+                        insertCommand.Parameters.AddWithValue("@ProjectID", projectID);
+                        insertCommand.Parameters.AddWithValue("@MusicianID", musicianID);
+                        insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
+
+                        insertCommand.ExecuteNonQuery();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult("Collaborator Added Successfully");
+        }
+
+        /// <summary>
+        /// Remove collaborator except project owner,
+        /// return 1 = error(Can't delete project owner)
+        /// </summary>
+        /// <param name="project"> project</param>
+        public JsonResult RemoveCollaborator(int projectID, int musicianID)
+        {
+            if (!this.ProjectExists(projectID))
+            {
+                throw new ArgumentException("Error: project does not exist");
+            }
+            if(!this.MusicianExists(musicianID))
+            {
+                throw new ArgumentException("Error: musician does not exist");
+            }
+
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand insertCommand = new SqlCommand("dbo.removeCollaborator", connection))
+                    {
+                        insertCommand.CommandType = CommandType.StoredProcedure;
+                        insertCommand.Parameters.AddWithValue("@projectID", projectID);
+                        insertCommand.Parameters.AddWithValue("@musicianID", musicianID);
+
+                        var returnParameter = insertCommand.Parameters.Add("@result", SqlDbType.Int);
+                        returnParameter.Direction = ParameterDirection.ReturnValue;
+
+                        insertCommand.ExecuteNonQuery();
+                        if ((int)returnParameter.Value == 1)
+                        {
+                            throw new Exception("Can't delete project owner");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return new JsonResult("Collaborator Successfully Removed");
         }
 
         /// <summary>
@@ -256,7 +307,7 @@ namespace BuildABand.DAL
         /// <summary>
         /// Returns true if project exists.
         /// </summary>
-        /// <param name="accountID"></param>
+        /// <param name="projectID"></param>
         /// <returns>True if project exists</returns>
         public bool ProjectExists(int projectID)
         {
@@ -279,6 +330,44 @@ namespace BuildABand.DAL
                     using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
                     {
                         selectCommand.Parameters.AddWithValue("@ProjectID", projectID);
+                        bool projectExists = Convert.ToBoolean(selectCommand.ExecuteScalar());
+
+                        return projectExists;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new ArgumentException(ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns true if musician exists.
+        /// </summary>
+        /// <param name="musicianID"></param>
+        /// <returns>True if musician exists</returns>
+        public bool MusicianExists(int musicianID)
+        {
+            if (musicianID <= 0)
+            {
+                throw new ArgumentException("Error: musician ID must be greater than 0");
+            }
+
+            string selectStatement = @"
+            SELECT COUNT(*)
+            FROM dbo.Musician
+            WHERE MusicianID = @MusicianID
+            ";
+
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        selectCommand.Parameters.AddWithValue("@MusicianID", musicianID);
                         bool projectExists = Convert.ToBoolean(selectCommand.ExecuteScalar());
 
                         return projectExists;
