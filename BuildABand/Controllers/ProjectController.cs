@@ -72,9 +72,9 @@ namespace BuildABand.Controllers
         /// <param name="project"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult addProject(Project project)
+        public JsonResult CreateProject(Project project)
         {
-            return this.projectDAL.AddProject(project);
+            return this.projectDAL.CreateProject(project);
         }
 
 
@@ -85,9 +85,9 @@ namespace BuildABand.Controllers
         /// <param name="project"></param>
         /// <returns></returns>
         [HttpPost("{projectID}/{musicianID}/add")]
-        public JsonResult addProjectCollaborator(int projectID, int musicianID)
+        public JsonResult AddProjectCollaborator(int projectID, int musicianID)
         {
-            return this.projectDAL.AddCollaborator(projectID, musicianID);
+            return this.projectDAL.AddProjectCollaborator(projectID, musicianID);
         }
 
         /// <summary>
@@ -97,9 +97,9 @@ namespace BuildABand.Controllers
         /// <param name="project"></param>
         /// <returns></returns>
         [HttpPost("{projectID}/{musicianID}/remove")]
-        public JsonResult removeCollaborator(int projectID, int musicianID)
+        public JsonResult RemoveProjectCollaborator(int projectID, int musicianID)
         {
-            return this.projectDAL.RemoveCollaborator(projectID, musicianID); 
+            return this.projectDAL.RemoveProjectCollaborator(projectID, musicianID); 
         }
 
         /// <summary>
