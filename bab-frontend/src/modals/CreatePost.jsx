@@ -32,7 +32,7 @@ const CreatePost= ({ canCreatePost, handleSubmit }) => {
     /* Resets modal upon close */
     function closeModal() {
         setModalShow(false);
-        setPostContent([]);
+        setPostContent("");
         setError(undefined);
     }
 

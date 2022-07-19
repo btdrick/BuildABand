@@ -1,12 +1,9 @@
 ﻿using BuildABand.DAL;
 using BuildABand.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BuildABand.Controllers
 {
@@ -73,20 +70,7 @@ namespace BuildABand.Controllers
         [HttpPost]
         public JsonResult addProject(Project project)
         {
-            if (project == null)
-            {
-                throw new ArgumentException("Invalid project");
-            }
-
-            try
-            {
-                this.projectSource.addProject(project);
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(ex.Message);
-            }
-            return new JsonResult("Project added");
+            return this.projectSource.addProject(project);
         }
 
 
