@@ -88,7 +88,7 @@ namespace BuildABand.DAL
         /// Add new project to database
         /// </summary>
         /// <param name="project"> project</param>
-        public JsonResult AddProject(Project project)
+        public JsonResult CreateProject(Project project)
         {
             if (project is null)
             {
@@ -104,8 +104,12 @@ namespace BuildABand.DAL
                         using (SqlCommand insertCommand = new SqlCommand("dbo.addProject", connection))
                         {
                             insertCommand.CommandType = CommandType.StoredProcedure;
-                            insertCommand.Parameters.AddWithValue("@Name", project.Name);
                             insertCommand.Parameters.AddWithValue("@OwnerID", project.OwnerID);
+                            insertCommand.Parameters.AddWithValue("@Name", project.Name);
+                            if (string.IsNullOrWhiteSpace(project.Description))
+                                insertCommand.Parameters.AddWithValue("@Description", DBNull.Value);
+                            else
+                                insertCommand.Parameters.AddWithValue("@Description", project.Description);
                             insertCommand.Parameters.AddWithValue("@StartDate", DateTime.Now);
                             if (project.EndDate is null)
                                 insertCommand.Parameters.AddWithValue("@EndDate", DBNull.Value);
@@ -114,7 +118,16 @@ namespace BuildABand.DAL
                             insertCommand.Parameters.AddWithValue("@AudioID", project.AudioID);
                             insertCommand.Parameters.AddWithValue("@JoinedDate", DateTime.Now);
 
-                            insertCommand.ExecuteNonQuery();
+                            project.ProjectID = (int) insertCommand.ExecuteScalar();
+                            if (project.CollaboratorIDs.Length > 0)
+                            {
+                                for(int i = 0; i < project.CollaboratorIDs.Length; i++)
+                                {
+                                    this.AddProjectCollaborator(project.ProjectID, project.CollaboratorIDs[i]);
+                                }
+                            }
+
+                            connection.Close();
                         }
 
                     }
@@ -125,14 +138,17 @@ namespace BuildABand.DAL
                 }
             }
 
-            return new JsonResult("Project Added Successfully");
+            return new JsonResult("Project Created Successfully");
         }
 
         /// <summary>
-        /// Remove new project to database
+        /// Add project collaborator
+        /// to specified project
         /// </summary>
-        /// <param name="project"> project</param>
-        public JsonResult AddCollaborator(int projectID, int musicianID)
+        /// <param name="projectID"></param>
+        /// <param name="musicianID"></param>
+        /// <returns></returns>
+        public JsonResult AddProjectCollaborator(int projectID, int musicianID)
         {
             if (!this.ProjectExists(projectID))
             {
@@ -176,7 +192,7 @@ namespace BuildABand.DAL
         /// return 1 = error(Can't delete project owner)
         /// </summary>
         /// <param name="project"> project</param>
-        public JsonResult RemoveCollaborator(int projectID, int musicianID)
+        public JsonResult RemoveProjectCollaborator(int projectID, int musicianID)
         {
             if (!this.ProjectExists(projectID))
             {
