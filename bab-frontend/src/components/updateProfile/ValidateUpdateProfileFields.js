@@ -7,8 +7,8 @@ var ValidateUpdateProfileFormFields = (function() {
     }
 
     /* Validates string is not undefined or empty */
-    function invalidString(string) {
-      return !string || string === "";
+    function isEmptyOrWhiteSpaces(value){
+      return value === null || value.match(/^ *$/) !== null;
     }
 
     /* Validates input matches pattern */
@@ -16,9 +16,18 @@ var ValidateUpdateProfileFormFields = (function() {
       return input && !regex.test(input);
     }
 
+    const noChangesMade = (o1, o2) =>
+        Object.keys(o1).length === Object.keys(o2).length 
+            && Object.keys(o1).every(p => o1[p] === o2[p]);
+
     /* Validate input fields */
-    function invalidSubmit(input) {
+    function invalidSubmit(input, musician) {
         let errors = {};
+
+        if(noChangesMade(input, musician)) {
+          errors["Input"] = "No changes detected";
+          return errors;
+        }
 
         /* Date of Birth validation */
         if (!input.DateOfBirth || input.DateOfBirth === '') {
@@ -35,31 +44,30 @@ var ValidateUpdateProfileFormFields = (function() {
         }
 
         /* Phone format validation */
-        if (invalidString(input.Phone) || invalidFormat(input.Phone, regPatterns['Phone'])) {
+        if (isEmptyOrWhiteSpaces(input.Phone) || invalidFormat(input.Phone, regPatterns['Phone'])) {
           errors["Phone"] = "Please enter valid phone number(XXX-XXX-XXXX).";
         }
-
+        
         /* Email format validation */
-        if (invalidString(input.Email) || invalidFormat(input.Email, regPatterns['Email'])) {
+        if (isEmptyOrWhiteSpaces(input.Email) || invalidFormat(input.Email, regPatterns['Email'])) {
           errors["Email"] = "Please enter a valid email Address.";
         }
   
         /* Address 1 validation */
-        if (invalidString(input.Address1)) {
+        if (isEmptyOrWhiteSpaces(input.Address1)) {
           errors["Address1"] = "Please enter your address.";
         }
 
         /* City validation */
-        if (invalidString(input.City)) {
+        if (isEmptyOrWhiteSpaces(input.City)) {
           errors["City"] = "Please enter your city.";
         }
     
         /* Zip code validation */
-        if (invalidString(input.ZipCode) || invalidFormat(input.ZipCode, regPatterns['ZipCode'])) {
+        if (isEmptyOrWhiteSpaces(input.ZipCode) || invalidFormat(input.ZipCode, regPatterns['ZipCode'])) {
           errors["ZipCode"] = "Please enter a valid zip code.";
         }
 
-        console.log(errors)
         if (Object.keys(errors).length) {
           return errors;
         }
