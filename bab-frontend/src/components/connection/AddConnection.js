@@ -33,7 +33,6 @@ const AddConnection = ({ followerID, connection }) => {
                 alert(result);
                 navigate('/connections'); 
             },(_error)=>{
-                console.log(_error);
                 alert('An error has occurred with your connection request');
             });
     }
