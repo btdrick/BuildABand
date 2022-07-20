@@ -15,6 +15,17 @@ function Projects() {
     const [collaborativeProjectIDs, setCollaborativeProjectIDs] = useState([]);
     /* Projects are loading? */
     const [loading, setLoading] = useState(true);
+    /* User's info */
+    const [profileInfo, setProfileInfo] = useState([]);
+
+    /* Makes api call to backend to get the user's info */
+    const getProfileInfo = async() => {
+        fetch(variables.API_URL+'musician/'+ id)
+        .then(res=>res.json())
+        .then((data) => {
+            setProfileInfo(data[0]);
+        })
+    }
 
     /* Makes api call to backend to get the user's projects */
     const getProjectOwnersProjects = useCallback(async () => {
@@ -34,6 +45,7 @@ function Projects() {
     /* Hook is called after each refresh */
     useEffect(() => {
         setLoading(true);
+        getProfileInfo();
         getProjectOwnersProjects().then((data) => {
             setProjects(data);
         });
@@ -52,6 +64,7 @@ function Projects() {
                     ProjectID={project.ProjectID}
                     OwnerID={project.OwnerID}
                     Collaborators={project.Collaborators}
+                    OwnerName={project.OwnerNames}
                     Name={project.Name}
                     Description={project.Description}
                     FileName={project.FileName}
@@ -128,7 +141,7 @@ function Projects() {
         return(
             <div id="container">
                 <Navbar/>
-                <h3 className="title"> Projects </h3>
+                <h3 className="title"> {profileInfo.Fname + " " + profileInfo.Lname}'s Projects </h3>
                 <div className="container-lg">
                     <CreateProject handleSubmit={ createProject }/>
                     {projects.length > 0 ? (
