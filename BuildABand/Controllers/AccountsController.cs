@@ -85,6 +85,17 @@ namespace BuildABand.Controllers
         }
 
         /// <summary>
+        /// GET: api/accounts/is_active
+        /// </summary>
+        /// <param name="accountID"></param>
+        /// <returns>True if account active</returns>
+        [HttpGet("{accountID}/is_active")]
+        public bool IsActiveAccount(int accountID)
+        {
+            return this.accountDAL.IsActiveAccount(accountID);
+        }
+
+        /// <summary>
         /// Update row for account
         /// PATCH: api/accounts/accountID
         /// </summary>
