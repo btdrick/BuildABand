@@ -30,7 +30,7 @@ const Project = (props) => {
         const collaborators = props.Collaborators;
         if (Object.keys(collaborators).length > 1) {
             return <div className="project-box-footer">
-                <h4>Collaborators:</h4>
+                <h4>Collaborators: </h4>
                 <div className="list-group">
                     {collaborators.map((collaborator) => {
                         if (collaborator.musicianID !== UserProfile.getMusicianID()) {
@@ -51,11 +51,29 @@ const Project = (props) => {
     return(
         <div className="container-lg card">
             <img src={image} style={{width: "50%", margin: "0 auto"}} alt="sound pic" />
-            <div className="container">
-                <h4>{props.Private === true && <LockIcon />}<b>Name: </b>{props.Name}</h4>
-                {isProjectOwner && renderToggleProjectIsPrivateButton()}
-                {props.Description !== "" && <p>Project description: {props.Description}</p>}
+            <div style={{width: "50%", margin: "0 auto"}}>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <h4>{props.Private === true && <LockIcon />}<b>Project Name: </b>{props.Name}</h4>
+                                <p>created by {props.OwnerName}</p>
+                            </th>
+                            <th style={{verticalAlign:"top", paddingLeft:"20px"}}>
+                                {isProjectOwner && renderToggleProjectIsPrivateButton()}
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                
+                <hr></hr>
+                
+                {props.Description !== "" && <h3>About: {props.Description}</h3>}
+
+                <hr></hr>
+
                 <AudioPlayer FileName={props.FileName} AzureFileName={props.AzureFileName} />
+                <hr></hr>
                 { renderCollaborators() }
             </div>
         </div> 
