@@ -18,7 +18,7 @@ function AudioPlayer(props) {
 
   return (
     <div>
-      <h3>Track name: {props.FileName}</h3>
+      <h4>Track name: {props.FileName}</h4>
       <ReactPlayer
         url={file}
         width="400px"
