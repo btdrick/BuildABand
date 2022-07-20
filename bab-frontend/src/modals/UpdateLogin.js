@@ -14,6 +14,11 @@ const UpdateLogin = () => {
     const [error, setError] = useState(undefined);
     let navigate = useNavigate();
 
+    /* Check for valid string value */
+    function isEmptyOrWhiteSpaces(value){
+        return value === null || value.match(/^ *$/) !== null;
+    }
+
     /* Resets modal upon close */
     function closeModal() {
         setModalShow(false);
@@ -33,27 +38,40 @@ const UpdateLogin = () => {
         setInput(newInput);
     }
 
+    /* Validate login credentials */
+    const validLogin = async() => {
+        const response = await fetch(variables.API_URL+'accounts/login?username='+ input['username'] + '&password=' + input['password'])
+        const result = await response.ok;
+        return result;
+    }
+
     /* Validate input */
     const validInput = async() => {
-        const noNewUsername = !input['newUsername'] || input['newUsername'] === '';
-        const noNewPassword = (!input['newPassword'] || input['newPassword'] === '')
-            && (!input['confirmedNewPassword'] || input['confirmedNewPassword'] === '')
+        const noNewUsername = !input['newUsername'] || isEmptyOrWhiteSpaces(input['newUsername']);
+        const noNewPassword = (!input['newPassword'] || isEmptyOrWhiteSpaces(input['newPassword']))
+            && (!input['confirmedNewPassword'] || isEmptyOrWhiteSpaces(input['confirmedNewPassword']));
         if (noNewUsername && noNewPassword) {
             setError('Please enter a new username or password');
             return;
         }
         /* Validate login credentials */
-        const response = await fetch(variables.API_URL+'accounts/login?username='+ input['username'] + '&password=' + input['password']);
-        if (!response.ok) {  
+        var loginValidated = await validLogin();
+        if (loginValidated === false) {
             setError('Current username or password is incorrect');
             return;
         } 
         /* Validate new username, password format */
-        const canUpdateLogin = (validNewUsername() && validNewPassword()) || 
-        (validNewUsername() && noNewPassword) || (validNewPassword() && noNewUsername)
+        var canUpdateLogin; 
+        if (noNewUsername || noNewPassword) {
+            canUpdateLogin = ((noNewUsername && validNewPassword()) 
+                || (noNewPassword && validNewUsername()));
+        }
+        if (!noNewUsername && !noNewPassword) {
+            canUpdateLogin = (validNewUsername() && validNewPassword());
+        }
         if (canUpdateLogin) {
-            setError('');
-            return window.confirm('Are you sure you want to update your login?');  
+            setError(undefined);
+            return true;  
         }
     }
 
@@ -82,7 +100,7 @@ const UpdateLogin = () => {
             setError('New passwords do not match');
             return false;
         }
-        if (input['newPassword'].length <= 5) {
+        if (input['newPassword'] === undefined || input['newPassword'].length <= 5) {
             setError('Password must be at least 6 characters');
             return false;
         }   
@@ -91,9 +109,14 @@ const UpdateLogin = () => {
     }
 
     /* Handle submit */
-    const handleSubmit = () => {
-        const musicianID = UserProfile.getMusicianID();
-        if (validInput() && !error) {
+    const handleSubmit = async() => {
+        /* Validate before submit */
+        const inputIsValid = await validInput();
+        if (inputIsValid !== true) {
+            return;
+        }
+        if (window.confirm('Are you sure you want to update your login?')) {
+            const musicianID = UserProfile.getMusicianID();
             fetch(variables.API_URL+'accounts/'+musicianID,{
                 method:'PATCH',
                 headers:{
