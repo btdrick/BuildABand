@@ -134,6 +134,7 @@ const UpdateLogin = () => {
                 alert(result);   
                 navigate('/profile/'+musicianID);           
             },(_error)=>{
+                console.log(_error)
                 setError('An error has occurred with updating your information');
             });
         }
