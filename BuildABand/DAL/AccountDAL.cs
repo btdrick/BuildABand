@@ -61,8 +61,10 @@ namespace BuildABand.DAL
                     using (SqlCommand myCommand = new SqlCommand(updateStatement, connection))
                     {
                         myCommand.Parameters.AddWithValue("@AccountID", musician.AccountID);
-                        myCommand.Parameters.AddWithValue("@Username", musician.Username);
-                        myCommand.Parameters.AddWithValue("@Password", PasswordHash.GetSha256Hash(musician.Password));
+                        if (!string.IsNullOrWhiteSpace(musician.Username))
+                            myCommand.Parameters.AddWithValue("@Username", musician.Username);
+                        if (!string.IsNullOrWhiteSpace(musician.Password))
+                            myCommand.Parameters.AddWithValue("@Password", PasswordHash.GetSha256Hash(musician.Password));
                         dataReader = myCommand.ExecuteReader();
                         resultsTable.Load(dataReader);
                         dataReader.Close();
@@ -77,6 +79,46 @@ namespace BuildABand.DAL
 
             return new JsonResult("Account Updated Successfully");
         }
+
+        /// <summary>
+        /// Returns whether account is active
+        /// </summary>
+        /// <param name="accountID"></param>
+        /// <returns>True if account active</returns>
+        public bool IsActiveAccount(int accountID)
+        {
+            if(!this.AccountExists(accountID))
+            {
+                throw new ArgumentException("Error: account does not exist");
+            }
+
+            string selectStatement = @"
+            SELECT COUNT(*)
+            FROM dbo.Accounts
+            WHERE AccountID = @AccountID
+            AND is_Active = 1
+            ";
+
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("BuildABandAppCon")))
+            {
+                connection.Open();
+                try
+                {
+                    using (SqlCommand selectCommand = new SqlCommand(selectStatement, connection))
+                    {
+                        selectCommand.Parameters.AddWithValue("@AccountID", accountID);
+                        bool accountExists = Convert.ToBoolean(selectCommand.ExecuteScalar());
+
+                        return accountExists;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new ArgumentException(ex.Message);
+                }
+            }
+        }
+    
 
         /// <summary>
         /// Deactivates an account
