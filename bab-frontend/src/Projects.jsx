@@ -17,14 +17,14 @@ function Projects() {
     const [loading, setLoading] = useState(true);
     /* User's info */
     const [profileInfo, setProfileInfo] = useState([]);
+    /* Can't create project on another user's project page */
+    const canCreateProject = (UserProfile.getMusicianID() === parseInt(id));
 
     /* Makes api call to backend to get the user's info */
     const getProfileInfo = async() => {
-        fetch(variables.API_URL+'musician/'+ id)
-        .then(res=>res.json())
-        .then((data) => {
-            setProfileInfo(data[0]);
-        })
+        const response = await fetch(variables.API_URL+'musician/'+ id);
+        const data = await response.json();
+        return data;
     }
 
     /* Makes api call to backend to get the user's projects */
@@ -45,7 +45,9 @@ function Projects() {
     /* Hook is called after each refresh */
     useEffect(() => {
         setLoading(true);
-        getProfileInfo();
+        getProfileInfo().then((data) => {
+            setProfileInfo(data[0]);
+        });
         getProjectOwnersProjects().then((data) => {
             setProjects(data);
         });
@@ -58,7 +60,8 @@ function Projects() {
     /* Renders visible projects */
     const renderProjects = () => {
         return projects.map(project => {
-            if (collaborativeProjectIDs.some((projectID) => projectID === project.ProjectID)) {
+            if (collaborativeProjectIDs.some((projectID) => projectID === project.ProjectID) 
+                || project.IsPrivate === 0) {
                 return <div className='row' key={project.ProjectID}>
                     <Project 
                     ProjectID={project.ProjectID}
@@ -143,7 +146,9 @@ function Projects() {
                 <Navbar/>
                 <h3 className="title"> {profileInfo.Fname + " " + profileInfo.Lname}'s Projects </h3>
                 <div className="container-lg">
-                    <CreateProject handleSubmit={ createProject }/>
+                    {canCreateProject  &&
+                    <CreateProject 
+                    handleSubmit={ createProject }/>}
                     {projects.length > 0 ? (
                     <>{renderProjects()}</>
                     ) : ( 
