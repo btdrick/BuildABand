@@ -38,7 +38,6 @@ const DeactivateAccount = ({ accountID }) => {
                     logout();
                 }           
             },(_error)=>{
-                console.log(_error);
                 alert('An error has occurred with deactivating this account');
             });
         }
