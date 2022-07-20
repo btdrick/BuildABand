@@ -15,9 +15,20 @@ function Profile() {
     const isMyProfile = (id === UserProfile.getMusicianID().toString()) ? true : false;
     const [profileInfo, setProfileInfo] = useState([]);
     const [connection, setConnection] = useState([]);
+    const [isActive, setIsActive] = useState(false);
 
     /* Sets profile and connection information */
     useEffect(() => {
+        ///Get whether user is active
+        const getIsActive = async() => {
+            fetch(variables.API_URL+"accounts/"+id+"/is_active")
+            .then(res=>res.json())
+            .then((data) => {
+                setIsActive(data);
+            })
+        }
+        getIsActive();
+
         ///Set musician information
         const getProfileInfo = async() => {
             fetch(variables.API_URL+'musician/'+ id)
@@ -55,37 +66,42 @@ function Profile() {
     }, [id]);
 
     /* Renders the profile page's html. You can't pass entire object to child component */
-    return ( 
-        <div id="container">
-            <Navbar/>
-            {/* Profile header */}
-            <h3 className="title"> Profile: {profileInfo.Fname + " " + profileInfo.Lname} </h3>
-            {profileInfo.Instrument ? (
-            <h4 className="text-center text-muted">Instrument: {profileInfo.Instrument} </h4>
-            ) : (
-            <h4 className="text-center text-muted">No instrument chosen{profileInfo.Instrument} </h4>)}
-            <h6 className="text-center">{profileInfo.City + " ," + profileInfo.StateCode}</h6>
-            {/* Profile buttons */}
-            <div className="container-lg">
-                {/* Deactivate account section */}
-                {canDeactivate && 
-                    <DeactivateAccount accountID={ id } />}
-                {/* Add connection section */}
-                {!isMyProfile &&
-                    <AddConnection 
-                    followerID={ parseInt(id) }
-                    connection={ connection } />}
-                {/* Projects */}
-                    <Button 
-                    variant="secondary"
-                    href={`#/profile/projects/${id}`}>
-                    Projects</Button>
-                {/* Profile feed */}
-                    <Feed getPosts={ getUsersPosts } 
-                    canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
+    if (isActive) {
+        return ( 
+            <div id="container">
+                <Navbar/>
+                {/* Profile header */}
+                <h3 className="title"> Profile: {profileInfo.Fname + " " + profileInfo.Lname} </h3>
+                {profileInfo.Instrument ? (
+                <h4 className="text-center text-muted">Instrument: {profileInfo.Instrument} </h4>
+                ) : (
+                <h4 className="text-center text-muted">No instrument chosen{profileInfo.Instrument} </h4>)}
+                <h6 className="text-center">{profileInfo.City + " ," + profileInfo.StateCode}</h6>
+                {/* Profile buttons */}
+                <div className="container-lg">
+                    {/* Deactivate account section */}
+                    {canDeactivate && 
+                        <DeactivateAccount accountID={ id } />}
+                    {/* Add connection section */}
+                    {!isMyProfile &&
+                        <AddConnection 
+                        followerID={ parseInt(id) }
+                        connection={ connection } />}
+                    {/* Projects */}
+                        <Button 
+                        variant="secondary"
+                        href={`#/profile/projects/${id}`}>
+                        Projects</Button>
+                    {/* Profile feed */}
+                        <Feed getPosts={ getUsersPosts } 
+                        canCreatePost={ parseInt(id) === UserProfile.getMusicianID() }/>
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
+    if (!isActive) {
+        return(<div>This user is currently inactive</div>);
+    }
 }
 
 export default Profile;
