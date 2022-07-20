@@ -60,7 +60,8 @@ function Projects() {
     /* Renders visible projects */
     const renderProjects = () => {
         return projects.map(project => {
-            if (collaborativeProjectIDs.some((projectID) => projectID === project.ProjectID)) {
+            if (collaborativeProjectIDs.some((projectID) => projectID === project.ProjectID) 
+                || project.IsPrivate === 0) {
                 return <div className='row' key={project.ProjectID}>
                     <Project 
                     ProjectID={project.ProjectID}
