@@ -12,6 +12,13 @@ const UpdateProfileForm = ({musicianID}) => {
     const [states, setStates] = useState([]);
     let navigate = useNavigate();
 
+    /* Validates string is not undefined or empty */
+    function isEmptyOrWhiteSpaces(value) { 
+        if (typeof value === 'string') {
+            return value === null || value.match(/^ *$/) !== null;
+        }
+      }
+
     /* Once the page renders, this hook takes place */
     useEffect(() => {
         /* Retrieve information related to author of post */
@@ -48,18 +55,28 @@ const UpdateProfileForm = ({musicianID}) => {
         }
         if (e.target.type === 'date' && !Date.parse(e.target.value)) {
             return;
-        }
+        } 
         const fieldName = e.target.name;
         const inputValue = e.target.value;
         var newInput = input;
         newInput[fieldName] = inputValue;
+
+        /* Replace keys of empty values with original musician information */
+        if (!!Object.keys(input).length) {
+            Object.keys(newInput).forEach(key => {
+                const value = newInput[key];
+                if (isEmptyOrWhiteSpaces(value) || value === null) {
+                  newInput[key] = musician[key];
+                }
+            });
+        }
+
         setInput(newInput);
     }
 
     /* Handle form submission */
     const handleSubmit = () => {
-        console.log(input)
-        const errors = ValidateFields.invalidSubmit(input);
+        const errors = ValidateFields.invalidSubmit(input, musician);
         if (errors !== false) {
             setErrors(errors);
             return;
@@ -106,7 +123,7 @@ const UpdateProfileForm = ({musicianID}) => {
             {/* Validation Errors */}
             {!!Object.keys(errors).length && 
             <Alert variant="danger" onClose={() => setErrors([])} dismissible>
-                <Alert.Heading>Invalid input detected</Alert.Heading>
+                <Alert.Heading>Invalid input error:</Alert.Heading>
                 <ul>{Object.keys(errors).map(function(key) {return <li key={key}>{errors[key]}</li>})}</ul> 
             </Alert>}
             <Form.Group className="mb-3">
@@ -174,6 +191,7 @@ const UpdateProfileForm = ({musicianID}) => {
                     <Form.Label htmlFor="StateCode">State:</Form.Label>
                     <Form.Select 
                     onChange={ (e) => handleInput(e) } 
+                    value={input["StateCode"]}
                     id="StateCode"  
                     name="StateCode">
                         {getStateNames()}
