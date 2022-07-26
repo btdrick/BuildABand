@@ -5,6 +5,12 @@ using System;
 
 namespace BuildABand.Controllers
 {
+    /// <summary>
+    /// This class serves as the controller
+    /// for data related to Conversation table in DB.
+    /// It is a mediator between the front-end 
+    /// and data access layer for Conversation media.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ConversationController : ControllerBase
@@ -12,6 +18,10 @@ namespace BuildABand.Controllers
         private readonly IConfiguration _configuration;
         private readonly ConversationDAL conversationSource;
 
+        /// <summary>
+        /// 1-param constructor
+        /// </summary>
+        /// <param name="configuration"></param>
         public ConversationController(IConfiguration configuration)
         {
             _configuration = configuration;

@@ -5,6 +5,12 @@ using System;
 
 namespace BuildABand.Controllers
 {
+    /// <summary>
+    /// This class serves as the controller
+    /// for data related to States table in DB.
+    /// It is a mediator between the front-end 
+    /// and data access layer for State media.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class StatesController : ControllerBase

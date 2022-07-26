@@ -11,6 +11,8 @@ namespace BuildABand.Controllers
     /// <summary>
     /// This class serves as the controller
     /// for data related to Musician table in DB.
+    /// It is a mediator between the front-end 
+    /// and data access layer for Musician media.
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
