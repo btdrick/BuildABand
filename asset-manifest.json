@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/BuildABand/static/css/main.387b3919.css",
+    "main.js": "/BuildABand/static/js/main.dccf7317.js",
+    "static/js/787.b4988657.chunk.js": "/BuildABand/static/js/787.b4988657.chunk.js",
+    "static/media/soundpic.jpg": "/BuildABand/static/media/soundpic.30fb87387a05449d16f5.jpg",
+    "index.html": "/BuildABand/index.html",
+    "main.387b3919.css.map": "/BuildABand/static/css/main.387b3919.css.map",
+    "main.dccf7317.js.map": "/BuildABand/static/js/main.dccf7317.js.map",
+    "787.b4988657.chunk.js.map": "/BuildABand/static/js/787.b4988657.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.387b3919.css",
+    "static/js/main.dccf7317.js"
+  ]
+}
